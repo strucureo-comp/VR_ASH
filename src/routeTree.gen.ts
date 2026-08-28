@@ -16,7 +16,10 @@ import { Route as CertificationsRouteImport } from './routes/certifications'
 import { Route as ClinicsRouteImport } from './routes/clinics'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as FaqRouteImport } from './routes/faq'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as ShippingRouteImport } from './routes/shipping'
 import { Route as SolidermaRouteImport } from './routes/soliderma'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as WoundCareRouteImport } from './routes/wound-care'
 import { Route as ProductsIndexRouteImport } from './routes/products.index'
 import { Route as ProductsSlugRouteImport } from './routes/products.$slug'
@@ -56,9 +59,24 @@ const FaqRoute = FaqRouteImport.update({
   path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShippingRoute = ShippingRouteImport.update({
+  id: '/shipping',
+  path: '/shipping',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SolidermaRoute = SolidermaRouteImport.update({
   id: '/soliderma',
   path: '/soliderma',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WoundCareRoute = WoundCareRouteImport.update({
@@ -85,7 +103,10 @@ export interface FileRoutesByFullPath {
   '/clinics': typeof ClinicsRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
+  '/privacy': typeof PrivacyRoute
+  '/shipping': typeof ShippingRoute
   '/soliderma': typeof SolidermaRoute
+  '/terms': typeof TermsRoute
   '/wound-care': typeof WoundCareRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/products/': typeof ProductsIndexRoute
@@ -98,7 +119,10 @@ export interface FileRoutesByTo {
   '/clinics': typeof ClinicsRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
+  '/privacy': typeof PrivacyRoute
+  '/shipping': typeof ShippingRoute
   '/soliderma': typeof SolidermaRoute
+  '/terms': typeof TermsRoute
   '/wound-care': typeof WoundCareRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/products': typeof ProductsIndexRoute
@@ -112,7 +136,10 @@ export interface FileRoutesById {
   '/clinics': typeof ClinicsRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
+  '/privacy': typeof PrivacyRoute
+  '/shipping': typeof ShippingRoute
   '/soliderma': typeof SolidermaRoute
+  '/terms': typeof TermsRoute
   '/wound-care': typeof WoundCareRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/products/': typeof ProductsIndexRoute
@@ -127,7 +154,10 @@ export interface FileRouteTypes {
     | '/clinics'
     | '/contact'
     | '/faq'
+    | '/privacy'
+    | '/shipping'
     | '/soliderma'
+    | '/terms'
     | '/wound-care'
     | '/products/$slug'
     | '/products/'
@@ -140,7 +170,10 @@ export interface FileRouteTypes {
     | '/clinics'
     | '/contact'
     | '/faq'
+    | '/privacy'
+    | '/shipping'
     | '/soliderma'
+    | '/terms'
     | '/wound-care'
     | '/products/$slug'
     | '/products'
@@ -153,7 +186,10 @@ export interface FileRouteTypes {
     | '/clinics'
     | '/contact'
     | '/faq'
+    | '/privacy'
+    | '/shipping'
     | '/soliderma'
+    | '/terms'
     | '/wound-care'
     | '/products/$slug'
     | '/products/'
@@ -167,7 +203,10 @@ export interface RootRouteChildren {
   ClinicsRoute: typeof ClinicsRoute
   ContactRoute: typeof ContactRoute
   FaqRoute: typeof FaqRoute
+  PrivacyRoute: typeof PrivacyRoute
+  ShippingRoute: typeof ShippingRoute
   SolidermaRoute: typeof SolidermaRoute
+  TermsRoute: typeof TermsRoute
   WoundCareRoute: typeof WoundCareRoute
   ProductsSlugRoute: typeof ProductsSlugRoute
   ProductsIndexRoute: typeof ProductsIndexRoute
@@ -224,11 +263,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shipping': {
+      id: '/shipping'
+      path: '/shipping'
+      fullPath: '/shipping'
+      preLoaderRoute: typeof ShippingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/soliderma': {
       id: '/soliderma'
       path: '/soliderma'
       fullPath: '/soliderma'
       preLoaderRoute: typeof SolidermaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/wound-care': {
@@ -263,7 +323,10 @@ const rootRouteChildren: RootRouteChildren = {
   ClinicsRoute: ClinicsRoute,
   ContactRoute: ContactRoute,
   FaqRoute: FaqRoute,
+  PrivacyRoute: PrivacyRoute,
+  ShippingRoute: ShippingRoute,
   SolidermaRoute: SolidermaRoute,
+  TermsRoute: TermsRoute,
   WoundCareRoute: WoundCareRoute,
   ProductsSlugRoute: ProductsSlugRoute,
   ProductsIndexRoute: ProductsIndexRoute,

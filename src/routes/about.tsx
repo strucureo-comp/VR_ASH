@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Quote } from "lucide-react";
 import { Reveal } from "@/components/site/Reveal";
 import { Section, SectionLabel, Note } from "@/components/site/Section";
+import { Stars } from "@/components/site/Stars";
+import { ABOUT_SNIPPET, METRICS, TESTIMONIALS } from "@/lib/site";
 import leaf from "@/assets/leaf-texture.jpg";
 
 export const Route = createFileRoute("/about")({
@@ -47,12 +50,12 @@ function About() {
           className="pointer-events-none absolute inset-y-0 right-0 h-full w-1/3 object-cover opacity-15"
         />
         <div className="relative mx-auto max-w-4xl">
-          <p className="eyebrow text-[color:var(--gold)]">08 &nbsp;·&nbsp; About</p>
+          <p className="eyebrow text-[color:var(--gold)]">About Us</p>
           <h1 className="mt-5 text-5xl text-foreground">
             Rooted in Traditional Healing. Focused on Better Care.
           </h1>
           <div className="mt-7 max-w-2xl space-y-4 text-[15px] leading-relaxed text-muted-foreground">
-            <p>Vallalaar Remedies brings an Ayurvedic perspective to modern healthcare needs.</p>
+            <p>{ABOUT_SNIPPET}</p>
             <p>
               Our focus is on developing and bringing forward herbal formulations that can be
               presented in practical, accessible formats for today&rsquo;s users.
@@ -62,12 +65,22 @@ function About() {
               Ayurvedic proprietary formulation with a convenient modern spray format.
             </p>
           </div>
+          <dl className="mt-12 grid gap-8 border-t border-border pt-8 sm:grid-cols-4">
+            {METRICS.map((m) => (
+              <div key={m.label}>
+                <dt className="font-display text-3xl text-[color:var(--burgundy)]">{m.value}</dt>
+                <dd className="mt-1 text-xs uppercase tracking-[0.14em] text-muted-foreground">
+                  {m.label}
+                </dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </section>
 
       <Section>
         <Reveal>
-          <SectionLabel index="—" label="Our Approach" />
+          <SectionLabel index="01" label="Our Approach" />
         </Reveal>
         <div className="mt-10 grid gap-10 sm:grid-cols-2">
           {APPROACH.map((a, i) => (
@@ -81,22 +94,39 @@ function About() {
         </div>
       </Section>
 
-      <Section className="bg-[color:var(--surface)]">
+      {/* Same testimonials as the home page snippet. */}
+      <Section id="testimonials" className="bg-[color:var(--surface)]">
         <Reveal>
-          <SectionLabel index="13" label="Testimonials" />
-          <h2 className="mt-6 text-4xl text-foreground">Trusted Through Experience.</h2>
-          <blockquote className="mt-8 max-w-2xl font-display text-2xl leading-snug text-[color:var(--burgundy)]">
-            &ldquo;Care is more than a product. It is a journey.&rdquo;
-          </blockquote>
+          <SectionLabel index="02" label="Testimonials" />
+          <h2 className="mt-6 text-4xl text-foreground">Real Stories. Real Results.</h2>
           <p className="mt-6 max-w-2xl text-[15px] leading-relaxed text-muted-foreground">
-            Hear from doctors, practitioners and customers who have experienced the product as part
-            of their wound-care journey.
+            Doctors, practitioners and customers who have used the product as part of their
+            wound-care journey.
           </p>
-          <Note>
-            Testimonials are displayed using the exact approved wording supplied by the client,
-            together with appropriate attribution and consent.
-          </Note>
         </Reveal>
+        <div className="mt-12 grid gap-6 lg:grid-cols-3">
+          {TESTIMONIALS.map((t, i) => (
+            <Reveal key={t.name} delay={i * 0.06}>
+              <figure className="flex h-full flex-col rounded-2xl border border-border bg-card p-7">
+                <Quote className="h-7 w-7 text-[color:var(--gold)]" />
+                <Stars rating={t.rating} className="mt-4" />
+                <blockquote className="mt-4 flex-1 text-sm leading-relaxed text-foreground">
+                  &ldquo;{t.quote}&rdquo;
+                </blockquote>
+                <figcaption className="mt-6 border-t border-border pt-4">
+                  <span className="block font-display text-lg text-foreground">{t.name}</span>
+                  <span className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
+                    {t.role}
+                  </span>
+                </figcaption>
+              </figure>
+            </Reveal>
+          ))}
+        </div>
+        <Note>
+          Testimonials are displayed using the exact approved wording supplied by the client,
+          together with appropriate attribution and consent.
+        </Note>
       </Section>
     </>
   );

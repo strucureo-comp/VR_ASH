@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/site/Reveal";
 import { Section, SectionLabel, Note } from "@/components/site/Section";
-import { PRODUCTS } from "@/lib/products";
+import { PRODUCTS, priceLabel } from "@/lib/products";
 
 export const Route = createFileRoute("/products/")({
   head: () => ({
@@ -69,8 +69,14 @@ function ProductsIndex() {
                   <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
                     {p.blurb}
                   </p>
+                  <p className="mt-4 text-xs uppercase tracking-[0.14em] text-muted-foreground">
+                    {p.variants.map((v) => v.size).join(" · ")}
+                  </p>
+                  <p className="mt-1 font-display text-xl text-foreground">
+                    {p.available ? priceLabel(p) : "Coming soon"}
+                  </p>
                   <span className="mt-5 inline-flex items-center gap-2 text-xs uppercase tracking-[0.16em] text-[color:var(--gold)]">
-                    {p.available ? "View product" : "Coming soon"}
+                    {p.available ? "View product" : "Notify me"}
                     <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                   </span>
                 </div>
@@ -81,8 +87,8 @@ function ProductsIndex() {
       </div>
 
       <Note>
-        Ayurvedic proprietary medicine. Use as directed. Consult a qualified practitioner for
-        deep, infected or non-healing wounds.
+        Ayurvedic proprietary medicine. Use as directed. Consult a qualified practitioner for deep,
+        infected or non-healing wounds.
       </Note>
     </Section>
   );

@@ -5,14 +5,13 @@ import { ChevronDown } from "lucide-react";
 import { Reveal } from "@/components/site/Reveal";
 import { Section, SectionLabel, Note } from "@/components/site/Section";
 import { AddToCart } from "@/components/site/AddToCart";
+import { NotifyMe } from "@/components/site/NotifyMe";
 import { Button } from "@/components/ui/button";
-import { PRODUCTS, getProduct } from "@/lib/products";
-import { BENEFITS, INGREDIENTS, STEPS, WOUND_CATEGORIES } from "@/lib/site";
+import { PRODUCTS, getProduct, variantPriceLabel } from "@/lib/products";
+import { BENEFITS, CONDITIONS, INGREDIENTS, STEPS } from "@/lib/site";
 import bottle from "@/assets/soliderma-bottle.png";
 import bottleBack from "@/assets/soliderma-bottle-back.png";
 import botanicals from "@/assets/botanicals.jpg";
-
-
 
 export const Route = createFileRoute("/soliderma")({
   head: () => ({
@@ -26,7 +25,8 @@ export const Route = createFileRoute("/soliderma")({
       { property: "og:title", content: "Soliderma™ Wound Healing Spray" },
       {
         property: "og:description",
-        content: "Herbal wound-care spray with an Ayurvedic proprietary formulation. 50 ml and 100 ml.",
+        content:
+          "Herbal wound-care spray with an Ayurvedic proprietary formulation. 50 ml and 100 ml.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -37,7 +37,6 @@ export const Route = createFileRoute("/soliderma")({
 
 const SOLIDERMA_PRODUCT = getProduct("soliderma");
 const OTHER_PRODUCTS = PRODUCTS.filter((p) => p.slug !== "soliderma");
-
 
 function Soliderma() {
   const stageRef = useRef<HTMLDivElement>(null);
@@ -159,6 +158,9 @@ function Soliderma() {
                       <div>
                         <h3 className="text-2xl text-foreground">{v.size}</h3>
                         <p className="mt-2 text-sm text-muted-foreground">{v.note}</p>
+                        <p className="mt-3 font-display text-lg text-foreground">
+                          {variantPriceLabel(v)}
+                        </p>
                       </div>
                       <AddToCart product={{ ...soliderma, variants: [v] }} compact />
                     </div>
@@ -170,10 +172,15 @@ function Soliderma() {
                   <Reveal key={prod.slug} delay={i * 0.06}>
                     <div className="h-full rounded-lg border border-dashed border-border p-6">
                       <h3 className="text-lg text-foreground">{prod.name}</h3>
-                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{prod.blurb}</p>
+                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                        {prod.blurb}
+                      </p>
                       <p className="mt-4 text-xs uppercase tracking-[0.16em] text-[color:var(--gold)]">
                         Coming soon
                       </p>
+                      <div className="mt-4">
+                        <NotifyMe productName={prod.name} />
+                      </div>
                     </div>
                   </Reveal>
                 ))}
@@ -182,7 +189,6 @@ function Soliderma() {
           </div>
         </div>
       </section>
-
 
       <Section className="bg-[color:var(--surface)]">
         <div className="grid gap-14 lg:grid-cols-2">
@@ -200,13 +206,24 @@ function Soliderma() {
           <Reveal delay={0.1}>
             <h2 className="text-3xl text-foreground">Suitable Wound Categories</h2>
             <ul className="mt-6 divide-y divide-border border-t border-border">
-              {WOUND_CATEGORIES.map((c) => (
-                <li key={c.title} className="py-4">
-                  <p className="text-lg text-foreground">{c.title}</p>
-                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{c.body}</p>
+              {CONDITIONS.map((c) => (
+                <li key={c.title} className="flex gap-4 py-4">
+                  <span className="mt-1 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[color:var(--botanical)]/10">
+                    <c.icon className="h-4 w-4 text-[color:var(--botanical)]" />
+                  </span>
+                  <div>
+                    <p className="text-lg text-foreground">{c.title}</p>
+                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{c.body}</p>
+                  </div>
                 </li>
               ))}
             </ul>
+            <Link
+              to="/wound-care"
+              className="mt-8 inline-flex items-center gap-2 border-b border-[color:var(--burgundy)] pb-1 text-sm font-medium text-[color:var(--burgundy)]"
+            >
+              Read the wellness guide
+            </Link>
           </Reveal>
         </div>
       </Section>
@@ -265,7 +282,8 @@ function Soliderma() {
         </div>
         <Note>
           For significant, infected, deep, diabetic or otherwise serious wounds, please seek
-          appropriate professional medical care. Product use should follow the approved instructions.
+          appropriate professional medical care. Product use should follow the approved
+          instructions.
         </Note>
       </Section>
     </>

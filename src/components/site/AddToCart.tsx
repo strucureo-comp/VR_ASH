@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { ShoppingBag, Check } from "lucide-react";
 import { toast } from "sonner";
 import { useCart } from "./CartProvider";
+import { NotifyMe } from "./NotifyMe";
 import type { Product } from "@/lib/products";
 
 export function AddToCart({ product, compact = false }: { product: Product; compact?: boolean }) {
@@ -11,11 +12,7 @@ export function AddToCart({ product, compact = false }: { product: Product; comp
   const [added, setAdded] = useState(false);
 
   if (!product.available) {
-    return (
-      <span className="inline-flex items-center rounded-full border border-border px-5 py-2.5 text-xs text-muted-foreground">
-        Coming soon
-      </span>
-    );
+    return <NotifyMe productName={product.name} />;
   }
 
   const onAdd = () => {

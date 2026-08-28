@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound, redirect } from "@tanstack/react-route
 import { Reveal } from "@/components/site/Reveal";
 import { Section, SectionLabel, Note } from "@/components/site/Section";
 import { AddToCart } from "@/components/site/AddToCart";
-import { getProduct, PRODUCTS } from "@/lib/products";
+import { getProduct, PRODUCTS, priceLabel, variantPriceLabel } from "@/lib/products";
 
 export const Route = createFileRoute("/products/$slug")({
   loader: ({ params }) => {
@@ -14,7 +14,10 @@ export const Route = createFileRoute("/products/$slug")({
   head: ({ loaderData }) => {
     if (!loaderData) {
       return {
-        meta: [{ title: "Product unavailable | Vallalaar Remedies" }, { name: "robots", content: "noindex" }],
+        meta: [
+          { title: "Product unavailable | Vallalaar Remedies" },
+          { name: "robots", content: "noindex" },
+        ],
       };
     }
     const { product } = loaderData;
@@ -39,7 +42,10 @@ function ProductNotFound() {
     <Section className="bg-[color:var(--surface)]">
       <h1 className="text-4xl text-foreground">Product not found</h1>
       <p className="mt-4 text-muted-foreground">This product is not part of the current range.</p>
-      <Link to="/products" className="mt-8 inline-flex text-sm text-[color:var(--burgundy)] underline">
+      <Link
+        to="/products"
+        className="mt-8 inline-flex text-sm text-[color:var(--burgundy)] underline"
+      >
         Back to all products
       </Link>
     </Section>
@@ -79,7 +85,9 @@ function ProductDetail() {
           <Reveal delay={0.08}>
             <p className="eyebrow text-[color:var(--gold)]">Product</p>
             <h1 className="mt-4 text-4xl text-foreground sm:text-5xl">{product.name}</h1>
-            <p className="mt-3 font-display text-xl text-[color:var(--burgundy)]">{product.subtitle}</p>
+            <p className="mt-3 font-display text-xl text-[color:var(--burgundy)]">
+              {product.subtitle}
+            </p>
             <p className="mt-5 max-w-lg text-[15px] leading-relaxed text-muted-foreground">
               {product.blurb}
             </p>
@@ -94,6 +102,12 @@ function ProductDetail() {
                 <dt className="eyebrow text-muted-foreground">Status</dt>
                 <dd className="mt-1 text-foreground">
                   {product.available ? "Available" : "In development"}
+                </dd>
+              </div>
+              <div>
+                <dt className="eyebrow text-muted-foreground">Price</dt>
+                <dd className="mt-1 font-display text-xl text-foreground">
+                  {product.available ? priceLabel(product) : "—"}
                 </dd>
               </div>
             </dl>
@@ -121,6 +135,7 @@ function ProductDetail() {
               <div className="h-full rounded-lg border border-border bg-card p-7">
                 <h3 className="text-2xl text-foreground">{v.size}</h3>
                 <p className="mt-2 text-sm text-muted-foreground">{v.note}</p>
+                <p className="mt-4 font-display text-lg text-foreground">{variantPriceLabel(v)}</p>
               </div>
             </Reveal>
           ))}

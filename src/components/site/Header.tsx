@@ -38,18 +38,18 @@ export function Header() {
           <Link to="/" onClick={() => setOpen(false)}>
             <Logo />
           </Link>
-          <nav className="hidden items-center gap-7 lg:flex">
+          <nav className="hidden items-center gap-5 lg:flex xl:gap-7">
             {NAV.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
                 activeOptions={{ exact: item.to === "/" }}
-                className="text-sm text-muted-foreground transition-colors hover:text-primary [&.active]:text-primary"
+                className="whitespace-nowrap text-[13px] text-muted-foreground transition-colors hover:text-primary xl:text-sm [&.active]:text-primary"
               >
                 {item.label}
               </Link>
             ))}
-            <CartButton />
+            <CartButton className="shrink-0" />
           </nav>
           <div className="flex items-center gap-3 lg:hidden">
             <CartButton onClick={() => setOpen(false)} className="px-4 py-1.5 text-xs" />

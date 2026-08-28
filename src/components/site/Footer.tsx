@@ -1,38 +1,71 @@
 import { Link } from "@tanstack/react-router";
+import { MessageCircle, MapPin, Phone, Mail } from "lucide-react";
 import { Logo } from "./Logo";
+import { PHONE_DISPLAY, PHONE_TEL, WA_ORDER } from "@/lib/site";
 
-const links = [
+type FooterLink = { to: string; hash?: string; label: string };
+
+const quickLinks: FooterLink[] = [
   { to: "/", label: "Home" },
-  { to: "/soliderma", label: "Products" },
+  { to: "/products", label: "Products" },
   { to: "/about", label: "About Us" },
-  { to: "/soliderma", label: "How to Use" },
-  { to: "/certifications", label: "Certifications" },
+  { to: "/certifications", label: "Our Science" },
+  { to: "/wound-care", label: "Wellness Guide" },
+  { to: "/", hash: "testimonials", label: "Testimonials" },
   { to: "/faq", label: "FAQ" },
-  { to: "/wound-care", label: "Wound Care" },
-  { to: "/clinics", label: "For Clinics" },
   { to: "/contact", label: "Contact" },
 ];
+
+const supportLinks: FooterLink[] = [
+  { to: "/clinics", label: "For Professionals" },
+  { to: "/clinics", label: "Bulk Orders" },
+  { to: "/shipping", label: "Shipping & Returns" },
+  { to: "/terms", label: "Terms & Conditions" },
+  { to: "/privacy", label: "Privacy Policy" },
+];
+
+const linkClass = "text-primary-foreground/75 transition-colors hover:text-primary-foreground";
 
 export function Footer() {
   return (
     <footer className="bg-[color:var(--botanical-deep)] text-primary-foreground">
-      <div className="mx-auto grid max-w-6xl gap-12 px-6 py-16 md:grid-cols-[1.3fr_1fr_1fr]">
+      <div className="mx-auto grid max-w-6xl gap-12 px-6 py-16 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.1fr]">
         <div>
           <Logo tone="light" />
           <p className="mt-5 max-w-xs text-sm leading-relaxed text-primary-foreground/70">
-            Ayurvedic healthcare, presented with modern convenience.
+            Vallalaar Remedies — Ayurvedic wound care, manufactured with modern quality discipline.
+            Soliderma™ Multi Action Wound Healing Spray.
           </p>
+          <ul className="mt-6 space-y-3 text-sm text-primary-foreground/75">
+            <li className="flex gap-3">
+              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--gold)]" />
+              <span>
+                25/5, Nathamuni Street,
+                <br />
+                T. Nagar, Chennai – 600 017
+              </span>
+            </li>
+            <li className="flex gap-3">
+              <Phone className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--gold)]" />
+              <a href={`tel:${PHONE_TEL}`} className={linkClass}>
+                {PHONE_DISPLAY}
+              </a>
+            </li>
+            <li className="flex gap-3">
+              <Mail className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--gold)]" />
+              <Link to="/contact" className={linkClass}>
+                Send an enquiry
+              </Link>
+            </li>
+          </ul>
         </div>
 
         <div>
-          <h3 className="eyebrow text-primary-foreground/60">Explore</h3>
-          <ul className="mt-4 grid grid-cols-2 gap-y-2 text-sm">
-            {links.map((l) => (
+          <h3 className="eyebrow text-primary-foreground/60">Quick Links</h3>
+          <ul className="mt-4 space-y-2.5 text-sm">
+            {quickLinks.map((l) => (
               <li key={l.label}>
-                <Link
-                  to={l.to}
-                  className="text-primary-foreground/80 transition-colors hover:text-primary-foreground"
-                >
+                <Link to={l.to} {...(l.hash ? { hash: l.hash } : {})} className={linkClass}>
                   {l.label}
                 </Link>
               </li>
@@ -40,21 +73,42 @@ export function Footer() {
           </ul>
         </div>
 
-        <div className="text-sm text-primary-foreground/80">
-          <h3 className="eyebrow text-primary-foreground/60">Soliderma&trade;</h3>
-          <p className="mt-4">Multi Action Wound Healing Spray</p>
-          <p className="mt-5 leading-relaxed">
-            25/5, Nathamuni Street,
-            <br />
-            T. Nagar, Chennai &ndash; 600 017
+        <div>
+          <h3 className="eyebrow text-primary-foreground/60">Support</h3>
+          <ul className="mt-4 space-y-2.5 text-sm">
+            {supportLinks.map((l) => (
+              <li key={l.label}>
+                <Link to={l.to} {...(l.hash ? { hash: l.hash } : {})} className={linkClass}>
+                  {l.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <h3 className="eyebrow text-primary-foreground/60">Order &amp; Enquiries</h3>
+          <p className="mt-4 text-sm leading-relaxed text-primary-foreground/70">
+            Fastest way to reach us — message our team directly for orders, sizes and clinic
+            enquiries.
           </p>
-          <a href="tel:+919445848148" className="mt-3 inline-block hover:text-primary-foreground">
-            94458 48148
+          <a
+            href={WA_ORDER}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-5 inline-flex items-center gap-2 rounded-full bg-primary-foreground px-6 py-3 text-sm font-semibold text-[color:var(--botanical-deep)] transition-transform duration-300 hover:-translate-y-0.5"
+          >
+            <MessageCircle className="h-4 w-4" />
+            Chat on WhatsApp
           </a>
         </div>
       </div>
-      <div className="border-t border-primary-foreground/15 py-6 text-center text-xs text-primary-foreground/60">
-        &copy; {new Date().getFullYear()} Vallalaar Remedies. All Rights Reserved.
+
+      <div className="border-t border-primary-foreground/15 px-6 py-6">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 text-xs text-primary-foreground/60 sm:flex-row">
+          <p>&copy; {new Date().getFullYear()} Vallalaar Remedies. All Rights Reserved.</p>
+          <p>Ayurvedic proprietary medicine. Use as directed by a qualified practitioner.</p>
+        </div>
       </div>
     </footer>
   );

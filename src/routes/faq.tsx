@@ -7,6 +7,11 @@ import {
 } from "@/components/ui/accordion";
 import { Reveal } from "@/components/site/Reveal";
 import { Section } from "@/components/site/Section";
+import { CERTIFICATIONS, CONDITIONS } from "@/lib/site";
+
+/** Read from the shared lists so the answers cannot drift from the pages. */
+const CONDITION_LIST = CONDITIONS.map((c) => c.title.toLowerCase()).join(", ");
+const CERT_LIST = CERTIFICATIONS.map((c) => c.title).join(", ");
 
 const FAQS = [
   {
@@ -15,7 +20,7 @@ const FAQS = [
   },
   {
     q: "What is Soliderma used for?",
-    a: "The supplied product material highlights diabetic wounds, bed sores, accident injuries and fire injuries.",
+    a: `It is used as part of the care routine for ${CONDITION_LIST}. It supports a wound-care plan rather than replacing one.`,
   },
   {
     q: "How should Soliderma be applied?",
@@ -27,7 +32,15 @@ const FAQS = [
   },
   {
     q: "Where is Soliderma manufactured?",
-    a: "The supplied material identifies Kniss Laboratories (P) Ltd. as the manufacturer.",
+    a: "The supplied material identifies Kniss Laboratories (P) Ltd. as the manufacturer. Vallalaar Remedies markets the product.",
+  },
+  {
+    q: "What certifications does it hold?",
+    a: `${CERT_LIST}. Certificates and regulatory documentation are listed on the Our Science page and can be provided on request.`,
+  },
+  {
+    q: "What does Soliderma cost?",
+    a: "Prices are confirmed by our team over WhatsApp before dispatch, since sizes and availability can change. Adding items to the cart creates an enquiry, not a binding sale.",
   },
   {
     q: "Can I order Soliderma online?",
@@ -67,7 +80,7 @@ function Faq() {
     <>
       <section className="bg-[color:var(--surface)] px-6 py-20">
         <div className="mx-auto max-w-4xl">
-          <p className="eyebrow text-[color:var(--gold)]">15 &nbsp;·&nbsp; FAQ</p>
+          <p className="eyebrow text-[color:var(--gold)]">FAQ</p>
           <h1 className="mt-5 text-5xl text-foreground">Frequently Asked Questions</h1>
         </div>
       </section>
@@ -76,7 +89,9 @@ function Faq() {
           <Accordion type="single" collapsible className="w-full">
             {FAQS.map((f, i) => (
               <AccordionItem key={f.q} value={`item-${i}`}>
-                <AccordionTrigger className="text-left font-display text-lg">{f.q}</AccordionTrigger>
+                <AccordionTrigger className="text-left font-display text-lg">
+                  {f.q}
+                </AccordionTrigger>
                 <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
                   {f.a}
                 </AccordionContent>
