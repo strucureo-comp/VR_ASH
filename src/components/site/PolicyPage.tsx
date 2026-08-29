@@ -28,7 +28,9 @@ export function PolicyPage({
     <Section className="bg-[color:var(--surface)]">
       <Reveal>
         <p className="eyebrow text-[color:var(--gold)]">{eyebrow}</p>
-        <h1 className="mt-5 max-w-3xl text-4xl text-foreground sm:text-5xl">{title}</h1>
+        <h1 className="mt-4 max-w-3xl text-[2rem] leading-tight text-foreground sm:mt-5 sm:text-4xl lg:text-5xl">
+          {title}
+        </h1>
         <p className="mt-6 max-w-2xl text-[15px] leading-relaxed text-muted-foreground">{intro}</p>
         <p className="mt-4 text-xs uppercase tracking-[0.16em] text-muted-foreground">
           Last updated: {updated}

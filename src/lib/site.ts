@@ -28,8 +28,13 @@ export function whatsappLink(message: string) {
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }
 
-export const WA_ORDER = whatsappLink(
-  "Hello Vallalaar Remedies, I would like to order Soliderma Multi Action Wound Healing Spray.",
+/**
+ * Enquiry only. Ordering happens through the Shopify cart and hosted checkout —
+ * WhatsApp must not be offered as an order path, since nothing there produces a
+ * real order, payment or inventory movement.
+ */
+export const WA_ENQUIRY = whatsappLink(
+  "Hello Vallalaar Remedies, I have a question about Soliderma.",
 );
 
 export const WA_CLINIC = whatsappLink(

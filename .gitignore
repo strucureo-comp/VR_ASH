@@ -16,6 +16,16 @@ dist-ssr
 .nitro
 *.local
 
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Shopify CLI
+shopify.app.toml
+shopify.app.*.toml
+.shopify/
+
 # Wrangler / Cloudflare
 .wrangler/
 .dev.vars

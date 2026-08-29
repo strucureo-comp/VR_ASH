@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { MessageCircle, MapPin, Phone, Mail } from "lucide-react";
 import { Logo } from "./Logo";
-import { PHONE_DISPLAY, PHONE_TEL, WA_ORDER } from "@/lib/site";
+import { PHONE_DISPLAY, PHONE_TEL, WA_ENQUIRY } from "@/lib/site";
 
 type FooterLink = { to: string; hash?: string; label: string };
 
@@ -29,12 +29,12 @@ const linkClass = "text-primary-foreground/75 transition-colors hover:text-prima
 export function Footer() {
   return (
     <footer className="bg-[color:var(--botanical-deep)] text-primary-foreground">
-      <div className="mx-auto grid max-w-6xl gap-12 px-6 py-16 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.1fr]">
-        <div>
+      <div className="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-5 py-12 sm:gap-10 sm:px-6 sm:py-16 lg:grid-cols-[1.4fr_1fr_1fr_1.1fr] lg:gap-12">
+        <div className="col-span-2 lg:col-span-1">
           <Logo tone="light" />
           <p className="mt-5 max-w-xs text-sm leading-relaxed text-primary-foreground/70">
-            Vallalaar Remedies — Ayurvedic wound care, manufactured with modern quality discipline.
-            Soliderma™ Multi Action Wound Healing Spray.
+            Vallalaar Remedies — an Ayurvedic healthcare brand from Chennai. Herbal formulations
+            manufactured with modern quality discipline.
           </p>
           <ul className="mt-6 space-y-3 text-sm text-primary-foreground/75">
             <li className="flex gap-3">
@@ -86,14 +86,14 @@ export function Footer() {
           </ul>
         </div>
 
-        <div>
+        <div className="col-span-2 lg:col-span-1">
           <h3 className="eyebrow text-primary-foreground/60">Order &amp; Enquiries</h3>
           <p className="mt-4 text-sm leading-relaxed text-primary-foreground/70">
-            Fastest way to reach us — message our team directly for orders, sizes and clinic
+            Fastest way to reach us — message our team directly about products, sizes and clinic
             enquiries.
           </p>
           <a
-            href={WA_ORDER}
+            href={WA_ENQUIRY}
             target="_blank"
             rel="noopener noreferrer"
             className="mt-5 inline-flex items-center gap-2 rounded-full bg-primary-foreground px-6 py-3 text-sm font-semibold text-[color:var(--botanical-deep)] transition-transform duration-300 hover:-translate-y-0.5"
@@ -104,7 +104,7 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="border-t border-primary-foreground/15 px-6 py-6">
+      <div className="border-t border-primary-foreground/15 px-5 py-6 sm:px-6">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 text-xs text-primary-foreground/60 sm:flex-row">
           <p>&copy; {new Date().getFullYear()} Vallalaar Remedies. All Rights Reserved.</p>
           <p>Ayurvedic proprietary medicine. Use as directed by a qualified practitioner.</p>

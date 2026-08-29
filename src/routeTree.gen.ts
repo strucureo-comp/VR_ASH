@@ -21,8 +21,15 @@ import { Route as ShippingRouteImport } from './routes/shipping'
 import { Route as SolidermaRouteImport } from './routes/soliderma'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as WoundCareRouteImport } from './routes/wound-care'
+import { Route as AccountIndexRouteImport } from './routes/account.index'
+import { Route as AccountAddressesRouteImport } from './routes/account.addresses'
+import { Route as AccountCallbackRouteImport } from './routes/account.callback'
+import { Route as AccountLoginRouteImport } from './routes/account.login'
+import { Route as AccountLogoutRouteImport } from './routes/account.logout'
 import { Route as ProductsIndexRouteImport } from './routes/products.index'
 import { Route as ProductsSlugRouteImport } from './routes/products.$slug'
+import { Route as AccountOrdersIndexRouteImport } from './routes/account.orders.index'
+import { Route as AccountOrdersIdRouteImport } from './routes/account.orders.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -84,6 +91,31 @@ const WoundCareRoute = WoundCareRouteImport.update({
   path: '/wound-care',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AccountIndexRoute = AccountIndexRouteImport.update({
+  id: '/account/',
+  path: '/account/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountAddressesRoute = AccountAddressesRouteImport.update({
+  id: '/account/addresses',
+  path: '/account/addresses',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountCallbackRoute = AccountCallbackRouteImport.update({
+  id: '/account/callback',
+  path: '/account/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountLoginRoute = AccountLoginRouteImport.update({
+  id: '/account/login',
+  path: '/account/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountLogoutRoute = AccountLogoutRouteImport.update({
+  id: '/account/logout',
+  path: '/account/logout',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProductsIndexRoute = ProductsIndexRouteImport.update({
   id: '/products/',
   path: '/products/',
@@ -92,6 +124,16 @@ const ProductsIndexRoute = ProductsIndexRouteImport.update({
 const ProductsSlugRoute = ProductsSlugRouteImport.update({
   id: '/products/$slug',
   path: '/products/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountOrdersIndexRoute = AccountOrdersIndexRouteImport.update({
+  id: '/account/orders/',
+  path: '/account/orders/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountOrdersIdRoute = AccountOrdersIdRouteImport.update({
+  id: '/account/orders/$id',
+  path: '/account/orders/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -108,8 +150,15 @@ export interface FileRoutesByFullPath {
   '/soliderma': typeof SolidermaRoute
   '/terms': typeof TermsRoute
   '/wound-care': typeof WoundCareRoute
+  '/account/addresses': typeof AccountAddressesRoute
+  '/account/callback': typeof AccountCallbackRoute
+  '/account/login': typeof AccountLoginRoute
+  '/account/logout': typeof AccountLogoutRoute
   '/products/$slug': typeof ProductsSlugRoute
+  '/account/': typeof AccountIndexRoute
   '/products/': typeof ProductsIndexRoute
+  '/account/orders/$id': typeof AccountOrdersIdRoute
+  '/account/orders/': typeof AccountOrdersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -124,8 +173,15 @@ export interface FileRoutesByTo {
   '/soliderma': typeof SolidermaRoute
   '/terms': typeof TermsRoute
   '/wound-care': typeof WoundCareRoute
+  '/account/addresses': typeof AccountAddressesRoute
+  '/account/callback': typeof AccountCallbackRoute
+  '/account/login': typeof AccountLoginRoute
+  '/account/logout': typeof AccountLogoutRoute
   '/products/$slug': typeof ProductsSlugRoute
+  '/account': typeof AccountIndexRoute
   '/products': typeof ProductsIndexRoute
+  '/account/orders/$id': typeof AccountOrdersIdRoute
+  '/account/orders': typeof AccountOrdersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -141,8 +197,15 @@ export interface FileRoutesById {
   '/soliderma': typeof SolidermaRoute
   '/terms': typeof TermsRoute
   '/wound-care': typeof WoundCareRoute
+  '/account/addresses': typeof AccountAddressesRoute
+  '/account/callback': typeof AccountCallbackRoute
+  '/account/login': typeof AccountLoginRoute
+  '/account/logout': typeof AccountLogoutRoute
   '/products/$slug': typeof ProductsSlugRoute
+  '/account/': typeof AccountIndexRoute
   '/products/': typeof ProductsIndexRoute
+  '/account/orders/$id': typeof AccountOrdersIdRoute
+  '/account/orders/': typeof AccountOrdersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -159,8 +222,15 @@ export interface FileRouteTypes {
     | '/soliderma'
     | '/terms'
     | '/wound-care'
+    | '/account/addresses'
+    | '/account/callback'
+    | '/account/login'
+    | '/account/logout'
     | '/products/$slug'
+    | '/account/'
     | '/products/'
+    | '/account/orders/$id'
+    | '/account/orders/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -175,8 +245,15 @@ export interface FileRouteTypes {
     | '/soliderma'
     | '/terms'
     | '/wound-care'
+    | '/account/addresses'
+    | '/account/callback'
+    | '/account/login'
+    | '/account/logout'
     | '/products/$slug'
+    | '/account'
     | '/products'
+    | '/account/orders/$id'
+    | '/account/orders'
   id:
     | '__root__'
     | '/'
@@ -191,8 +268,15 @@ export interface FileRouteTypes {
     | '/soliderma'
     | '/terms'
     | '/wound-care'
+    | '/account/addresses'
+    | '/account/callback'
+    | '/account/login'
+    | '/account/logout'
     | '/products/$slug'
+    | '/account/'
     | '/products/'
+    | '/account/orders/$id'
+    | '/account/orders/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -208,8 +292,15 @@ export interface RootRouteChildren {
   SolidermaRoute: typeof SolidermaRoute
   TermsRoute: typeof TermsRoute
   WoundCareRoute: typeof WoundCareRoute
+  AccountAddressesRoute: typeof AccountAddressesRoute
+  AccountCallbackRoute: typeof AccountCallbackRoute
+  AccountLoginRoute: typeof AccountLoginRoute
+  AccountLogoutRoute: typeof AccountLogoutRoute
   ProductsSlugRoute: typeof ProductsSlugRoute
+  AccountIndexRoute: typeof AccountIndexRoute
   ProductsIndexRoute: typeof ProductsIndexRoute
+  AccountOrdersIdRoute: typeof AccountOrdersIdRoute
+  AccountOrdersIndexRoute: typeof AccountOrdersIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -298,6 +389,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WoundCareRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/account/': {
+      id: '/account/'
+      path: '/account'
+      fullPath: '/account/'
+      preLoaderRoute: typeof AccountIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account/addresses': {
+      id: '/account/addresses'
+      path: '/account/addresses'
+      fullPath: '/account/addresses'
+      preLoaderRoute: typeof AccountAddressesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account/callback': {
+      id: '/account/callback'
+      path: '/account/callback'
+      fullPath: '/account/callback'
+      preLoaderRoute: typeof AccountCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account/login': {
+      id: '/account/login'
+      path: '/account/login'
+      fullPath: '/account/login'
+      preLoaderRoute: typeof AccountLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account/logout': {
+      id: '/account/logout'
+      path: '/account/logout'
+      fullPath: '/account/logout'
+      preLoaderRoute: typeof AccountLogoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/products/': {
       id: '/products/'
       path: '/products'
@@ -310,6 +436,20 @@ declare module '@tanstack/react-router' {
       path: '/products/$slug'
       fullPath: '/products/$slug'
       preLoaderRoute: typeof ProductsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account/orders/': {
+      id: '/account/orders/'
+      path: '/account/orders'
+      fullPath: '/account/orders/'
+      preLoaderRoute: typeof AccountOrdersIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account/orders/$id': {
+      id: '/account/orders/$id'
+      path: '/account/orders/$id'
+      fullPath: '/account/orders/$id'
+      preLoaderRoute: typeof AccountOrdersIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -328,8 +468,15 @@ const rootRouteChildren: RootRouteChildren = {
   SolidermaRoute: SolidermaRoute,
   TermsRoute: TermsRoute,
   WoundCareRoute: WoundCareRoute,
+  AccountAddressesRoute: AccountAddressesRoute,
+  AccountCallbackRoute: AccountCallbackRoute,
+  AccountLoginRoute: AccountLoginRoute,
+  AccountLogoutRoute: AccountLogoutRoute,
   ProductsSlugRoute: ProductsSlugRoute,
+  AccountIndexRoute: AccountIndexRoute,
   ProductsIndexRoute: ProductsIndexRoute,
+  AccountOrdersIdRoute: AccountOrdersIdRoute,
+  AccountOrdersIndexRoute: AccountOrdersIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

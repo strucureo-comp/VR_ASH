@@ -41,7 +41,7 @@ const APPROACH = [
 function About() {
   return (
     <>
-      <section className="relative overflow-hidden bg-[color:var(--surface)] px-6 py-20">
+      <section className="relative overflow-hidden bg-[color:var(--surface)] px-5 py-12 sm:px-6 sm:py-20">
         <img
           src={leaf}
           alt=""
@@ -51,7 +51,7 @@ function About() {
         />
         <div className="relative mx-auto max-w-4xl">
           <p className="eyebrow text-[color:var(--gold)]">About Us</p>
-          <h1 className="mt-5 text-5xl text-foreground">
+          <h1 className="mt-4 text-[2rem] leading-tight text-foreground sm:mt-5 sm:text-4xl lg:text-5xl">
             Rooted in Traditional Healing. Focused on Better Care.
           </h1>
           <div className="mt-7 max-w-2xl space-y-4 text-[15px] leading-relaxed text-muted-foreground">
@@ -98,7 +98,9 @@ function About() {
       <Section id="testimonials" className="bg-[color:var(--surface)]">
         <Reveal>
           <SectionLabel index="02" label="Testimonials" />
-          <h2 className="mt-6 text-4xl text-foreground">Real Stories. Real Results.</h2>
+          <h2 className="mt-5 text-[1.75rem] leading-tight text-foreground sm:mt-6 sm:text-4xl">
+            Real Stories. Real Results.
+          </h2>
           <p className="mt-6 max-w-2xl text-[15px] leading-relaxed text-muted-foreground">
             Doctors, practitioners and customers who have used the product as part of their
             wound-care journey.

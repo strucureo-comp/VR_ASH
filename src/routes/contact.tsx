@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { WA_ORDER } from "@/lib/site";
+import { WA_ENQUIRY } from "@/lib/site";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -20,7 +20,8 @@ export const Route = createFileRoute("/contact")({
       { property: "og:title", content: "Let's Talk About Better Wound Care" },
       {
         property: "og:description",
-        content: "Customers, healthcare professionals, clinics and distributors are welcome to reach out.",
+        content:
+          "Customers, healthcare professionals, clinics and distributors are welcome to reach out.",
       },
     ],
   }),
@@ -40,13 +41,15 @@ function Contact() {
 
   return (
     <>
-      <section className="bg-[color:var(--botanical-deep)] px-6 pb-40 pt-20 text-primary-foreground">
+      <section className="bg-[color:var(--botanical-deep)] px-5 pb-32 pt-12 text-primary-foreground sm:px-6 sm:pb-40 sm:pt-20">
         <div className="mx-auto max-w-4xl">
-          <p className="eyebrow text-[color:var(--gold)]">19 &nbsp;·&nbsp; Contact</p>
-          <h1 className="mt-5 text-5xl">Let&rsquo;s Talk About Better Wound Care.</h1>
+          <p className="eyebrow text-[color:var(--gold)]">Contact</p>
+          <h1 className="mt-4 text-[2rem] leading-tight sm:mt-5 sm:text-4xl lg:text-5xl">
+            Let&rsquo;s Talk About Better Wound Care.
+          </h1>
           <p className="mt-6 max-w-2xl text-[15px] leading-relaxed text-primary-foreground/75">
-            Whether you&rsquo;re a customer, healthcare professional, clinic or distributor, we&rsquo;d
-            love to hear from you.
+            Whether you&rsquo;re a customer, healthcare professional, clinic or distributor,
+            we&rsquo;d love to hear from you.
           </p>
         </div>
       </section>
@@ -130,7 +133,7 @@ function Contact() {
             </ul>
 
             <a
-              href={WA_ORDER}
+              href={WA_ENQUIRY}
               target="_blank"
               rel="noreferrer"
               className="mt-8 inline-block rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground"

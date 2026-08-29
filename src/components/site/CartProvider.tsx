@@ -1,88 +1,231 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import type { ReactNode } from "react";
+import { toast } from "sonner";
 
-export type CartItem = {
-  id: string;
-  slug: string;
-  name: string;
-  size: string;
-  qty: number;
-};
+import {
+  cartAddLines,
+  cartAttachCustomer,
+  cartCreate,
+  cartRemoveLines,
+  cartUpdateLines,
+  fetchCart,
+} from "@/lib/shopify/api";
+import type { Cart, CartResult } from "@/lib/shopify/types";
 
 type CartContextValue = {
-  items: CartItem[];
+  /** `null` before the first line is added, or after checkout completes. */
+  cart: Cart | null;
   count: number;
-  add: (item: Omit<CartItem, "id" | "qty">, qty?: number) => void;
-  setQty: (id: string, qty: number) => void;
-  remove: (id: string) => void;
+  /** True while a Shopify mutation is in flight. */
+  loading: boolean;
+  add: (merchandiseId: string, quantity?: number) => Promise<void>;
+  setQty: (lineId: string, quantity: number) => Promise<void>;
+  remove: (lineId: string) => Promise<void>;
   clear: () => void;
+  /**
+   * Attaches the signed-in customer to the cart, returning the checkout URL to
+   * use afterwards — or `null` when there was nothing to attach.
+   */
+  attachCustomer: () => Promise<string | null>;
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
-const STORAGE_KEY = "vr-cart-v1";
+
+/**
+ * v2 stores a Shopify cart id; v1 stored a local array of line objects with no
+ * prices in it. The key is versioned rather than reused because the old reader
+ * cast whatever it found straight to `CartItem[]` without validating it.
+ */
+const STORAGE_KEY = "vr-cart-v2";
+const LEGACY_STORAGE_KEY = "vr-cart-v1";
+
+function readStoredCartId(): string | null {
+  try {
+    localStorage.removeItem(LEGACY_STORAGE_KEY);
+    const id = localStorage.getItem(STORAGE_KEY);
+    return id && id.startsWith("gid://shopify/Cart/") ? id : null;
+  } catch {
+    return null;
+  }
+}
+
+function storeCartId(id: string | null) {
+  try {
+    if (id) localStorage.setItem(STORAGE_KEY, id);
+    else localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    /* storage unavailable (private mode, quota) — the cart still works in-memory */
+  }
+}
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>([]);
-  const [hydrated, setHydrated] = useState(false);
+  const [cart, setCart] = useState<Cart | null>(null);
+  const [loading, setLoading] = useState(false);
+  /** Optimistic quantity per line id, so the stepper responds before Shopify does. */
+  const [pendingQty, setPendingQty] = useState<Record<string, number>>({});
+  const cartIdRef = useRef<string | null>(null);
 
+  // Rehydrate from the stored id. Shopify is the source of truth for contents,
+  // prices and availability, so nothing but the id is persisted locally.
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) setItems(parsed as CartItem[]);
+    const stored = readStoredCartId();
+    if (!stored) return;
+    cartIdRef.current = stored;
+    let cancelled = false;
+
+    void (async () => {
+      try {
+        const existing = await fetchCart({ data: stored });
+        if (cancelled) return;
+        if (existing) {
+          setCart(existing);
+        } else {
+          // Completed or expired carts return null — drop the stale id.
+          cartIdRef.current = null;
+          storeCartId(null);
+        }
+      } catch {
+        if (!cancelled) setCart(null);
       }
-    } catch {
-      /* ignore malformed storage */
-    }
-    setHydrated(true);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  useEffect(() => {
-    if (!hydrated) return;
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-    } catch {
-      /* storage unavailable */
+  const applyResult = useCallback((result: CartResult): boolean => {
+    for (const error of result.userErrors) {
+      toast.error(error.message);
     }
-  }, [items, hydrated]);
+    if (result.cart) {
+      setCart(result.cart);
+      cartIdRef.current = result.cart.id;
+      storeCartId(result.cart.id);
+    }
+    return result.userErrors.length === 0;
+  }, []);
 
-  const add = useCallback((item: Omit<CartItem, "id" | "qty">, qty = 1) => {
-    const id = `${item.slug}--${item.size}`;
-    setItems((prev) => {
-      const existing = prev.find((i) => i.id === id);
-      if (existing) {
-        return prev.map((i) => (i.id === id ? { ...i, qty: Math.min(99, i.qty + qty) } : i));
+  const run = useCallback(
+    async (action: () => Promise<CartResult>) => {
+      setLoading(true);
+      try {
+        applyResult(await action());
+      } catch (error) {
+        console.error(error);
+        toast.error("We could not update your cart", {
+          description: "Please check your connection and try again.",
+        });
+      } finally {
+        setPendingQty({});
+        setLoading(false);
       }
-      return [...prev, { ...item, id, qty }];
-    });
+    },
+    [applyResult],
+  );
+
+  const add = useCallback(
+    async (merchandiseId: string, quantity = 1) => {
+      const cartId = cartIdRef.current;
+      await run(() =>
+        cartId
+          ? cartAddLines({ data: { cartId, lines: [{ merchandiseId, quantity }] } })
+          : cartCreate({ data: { lines: [{ merchandiseId, quantity }] } }),
+      );
+    },
+    [run],
+  );
+
+  const setQty = useCallback(
+    async (lineId: string, quantity: number) => {
+      const cartId = cartIdRef.current;
+      if (!cartId) return;
+      if (quantity <= 0) {
+        setPendingQty((prev) => ({ ...prev, [lineId]: 0 }));
+        await run(() => cartRemoveLines({ data: { cartId, lineIds: [lineId] } }));
+        return;
+      }
+      const clamped = Math.min(99, quantity);
+      setPendingQty((prev) => ({ ...prev, [lineId]: clamped }));
+      await run(() =>
+        cartUpdateLines({ data: { cartId, lines: [{ id: lineId, quantity: clamped }] } }),
+      );
+    },
+    [run],
+  );
+
+  const remove = useCallback(
+    async (lineId: string) => {
+      const cartId = cartIdRef.current;
+      if (!cartId) return;
+      setPendingQty((prev) => ({ ...prev, [lineId]: 0 }));
+      await run(() => cartRemoveLines({ data: { cartId, lineIds: [lineId] } }));
+    },
+    [run],
+  );
+
+  /**
+   * Local reset only — used after the shopper returns from a completed checkout.
+   * Shopify carts are not deleted; they simply stop resolving once ordered.
+   */
+  const clear = useCallback(() => {
+    cartIdRef.current = null;
+    storeCartId(null);
+    setPendingQty({});
+    setCart(null);
   }, []);
 
-  const setQty = useCallback((id: string, qty: number) => {
-    setItems((prev) =>
-      qty <= 0
-        ? prev.filter((i) => i.id !== id)
-        : prev.map((i) => (i.id === id ? { ...i, qty: Math.min(99, qty) } : i)),
-    );
+  /**
+   * Called just before checkout rather than at sign-in, because the cart id lives
+   * in this browser and `/account/callback` — a server handler — cannot see it.
+   *
+   * Failure is deliberately silent: a guest checkout is still a valid checkout,
+   * so a problem here must not stop the shopper from paying.
+   */
+  const attachCustomer = useCallback(async (): Promise<string | null> => {
+    const cartId = cartIdRef.current;
+    if (!cartId) return null;
+    try {
+      const result = await cartAttachCustomer({ data: { cartId } });
+      if (!result?.cart) return null;
+      setCart(result.cart);
+      return result.cart.checkoutUrl;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
   }, []);
 
-  const remove = useCallback((id: string) => {
-    setItems((prev) => prev.filter((i) => i.id !== id));
-  }, []);
+  const value = useMemo<CartContextValue>(() => {
+    const optimisticCart: Cart | null =
+      cart && Object.keys(pendingQty).length > 0
+        ? {
+            ...cart,
+            lines: cart.lines
+              .map((line) => ({ ...line, quantity: pendingQty[line.id] ?? line.quantity }))
+              .filter((line) => line.quantity > 0),
+          }
+        : cart;
 
-  const clear = useCallback(() => setItems([]), []);
-
-  const value = useMemo<CartContextValue>(
-    () => ({
-      items,
-      count: items.reduce((n, i) => n + i.qty, 0),
+    return {
+      cart: optimisticCart,
+      count: optimisticCart?.lines.reduce((n, line) => n + line.quantity, 0) ?? 0,
+      loading,
       add,
       setQty,
       remove,
       clear,
-    }),
-    [items, add, setQty, remove, clear],
-  );
+      attachCustomer,
+    };
+  }, [cart, pendingQty, loading, add, setQty, remove, clear, attachCustomer]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

@@ -26,10 +26,12 @@ export const Route = createFileRoute("/wound-care")({
 function WoundCare() {
   return (
     <>
-      <section className="bg-[color:var(--botanical-deep)] px-6 py-20 text-primary-foreground">
+      <section className="bg-[color:var(--botanical-deep)] px-5 py-12 text-primary-foreground sm:px-6 sm:py-20">
         <div className="mx-auto max-w-4xl">
           <p className="eyebrow text-[color:var(--gold)]">Wellness Guide</p>
-          <h1 className="mt-5 text-5xl">Learn. Care. Stay Healthy.</h1>
+          <h1 className="mt-4 text-[2rem] leading-tight sm:mt-5 sm:text-4xl lg:text-5xl">
+            Learn. Care. Stay Healthy.
+          </h1>
           <p className="mt-6 max-w-2xl text-[15px] leading-relaxed text-primary-foreground/75">
             A wound needs appropriate attention, consistency and care. Different wounds can require
             different approaches depending on their cause, severity and the individual&rsquo;s
@@ -42,7 +44,7 @@ function WoundCare() {
       <Section id="conditions">
         <Reveal>
           <SectionLabel index="01" label="All Conditions" />
-          <h2 className="mt-6 max-w-2xl text-4xl text-foreground">
+          <h2 className="mt-5 max-w-2xl text-[1.75rem] leading-tight text-foreground sm:mt-6 sm:text-4xl">
             Care that works where you need it most
           </h2>
           <p className="mt-6 max-w-2xl text-[15px] leading-relaxed text-muted-foreground">
@@ -72,7 +74,9 @@ function WoundCare() {
       <Section className="border-y border-border bg-[color:var(--surface)]">
         <Reveal>
           <SectionLabel index="02" label="Guides" />
-          <h2 className="mt-6 max-w-2xl text-4xl text-foreground">Practical care at home</h2>
+          <h2 className="mt-5 max-w-2xl text-[1.75rem] leading-tight text-foreground sm:mt-6 sm:text-4xl">
+            Practical care at home
+          </h2>
         </Reveal>
         <div className="mt-14 space-y-14">
           {GUIDES.map((g, i) => (

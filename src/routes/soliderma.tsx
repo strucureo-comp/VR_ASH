@@ -7,13 +7,24 @@ import { Section, SectionLabel, Note } from "@/components/site/Section";
 import { AddToCart } from "@/components/site/AddToCart";
 import { NotifyMe } from "@/components/site/NotifyMe";
 import { Button } from "@/components/ui/button";
-import { PRODUCTS, getProduct, variantPriceLabel } from "@/lib/products";
+import { formatMoney, isSolidermaHandle, variantLabel } from "@/lib/shopify/format";
+import { productQuery, productsQuery } from "@/lib/shopify/queryOptions";
 import { BENEFITS, CONDITIONS, INGREDIENTS, STEPS } from "@/lib/site";
 import bottle from "@/assets/soliderma-bottle.png";
 import bottleBack from "@/assets/soliderma-bottle-back.png";
 import botanicals from "@/assets/botanicals.jpg";
 
 export const Route = createFileRoute("/soliderma")({
+  loader: async ({ context }) => {
+    // This page's editorial content is written in code, so it stays useful even
+    // if the Shopify handle does not resolve — only the buy controls disappear.
+    const [exact, all] = await Promise.all([
+      context.queryClient.ensureQueryData(productQuery("soliderma")),
+      context.queryClient.ensureQueryData(productsQuery(24)),
+    ]);
+    const product = exact ?? all.find((p) => isSolidermaHandle(p.handle)) ?? null;
+    return { product, others: all.filter((p) => !isSolidermaHandle(p.handle)).slice(0, 3) };
+  },
   head: () => ({
     meta: [
       { title: "Soliderma™ Multi Action Wound Healing Spray | Vallalaar Remedies" },
@@ -35,10 +46,8 @@ export const Route = createFileRoute("/soliderma")({
   component: Soliderma,
 });
 
-const SOLIDERMA_PRODUCT = getProduct("soliderma");
-const OTHER_PRODUCTS = PRODUCTS.filter((p) => p.slug !== "soliderma");
-
 function Soliderma() {
+  const { product, others } = Route.useLoaderData();
   const stageRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: stageRef,
@@ -57,10 +66,6 @@ function Soliderma() {
   const scrollToDetails = () => {
     document.getElementById("details")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
-
-  if (!SOLIDERMA_PRODUCT) return null;
-
-  const soliderma = SOLIDERMA_PRODUCT;
 
   return (
     <>
@@ -97,7 +102,9 @@ function Soliderma() {
           <div className="relative z-10">
             <div className="flex min-h-[60vh] flex-col justify-center py-10 lg:min-h-screen lg:py-0">
               <p className="eyebrow text-[color:var(--gold)]">Product</p>
-              <h1 className="mt-4 text-5xl text-foreground">Soliderma&trade;</h1>
+              <h1 className="mt-4 text-[2rem] leading-tight text-foreground sm:text-4xl lg:text-5xl">
+                Soliderma&trade;
+              </h1>
               <p className="mt-3 font-display text-xl text-[color:var(--burgundy)]">
                 Multi Action Wound Healing Spray
               </p>
@@ -115,10 +122,10 @@ function Soliderma() {
                 </div>
               </dl>
               <div className="mt-9 space-y-4">
-                <AddToCart product={soliderma} />
+                {product && <AddToCart product={product} />}
                 <Link
                   to="/contact"
-                  className="inline-flex rounded-full border border-[color:var(--burgundy)] px-7 py-3 text-sm font-medium text-[color:var(--burgundy)]"
+                  className="inline-flex min-h-12 items-center rounded-full border border-[color:var(--burgundy)] px-7 text-sm font-medium text-[color:var(--burgundy)]"
                 >
                   Send an Enquiry
                 </Link>
@@ -148,43 +155,74 @@ function Soliderma() {
               className="flex min-h-[60vh] scroll-mt-0 flex-col justify-center border-t border-border py-14 lg:min-h-screen"
             >
               <Reveal>
-                <SectionLabel index="02" label="Products" />
-                <h2 className="mt-6 text-4xl text-foreground">Available Product Sizes</h2>
+                <SectionLabel index="01" label="Products" />
+                <h2 className="mt-5 text-[1.75rem] leading-tight text-foreground sm:mt-6 sm:text-4xl">
+                  Available Product Sizes
+                </h2>
               </Reveal>
               <div className="mt-10 grid gap-6">
-                {soliderma.variants.map((v, i) => (
-                  <Reveal key={v.size} delay={i * 0.06}>
+                {product?.variants.map((v, i) => (
+                  <Reveal key={v.id} delay={i * 0.06}>
                     <div className="flex h-full flex-wrap items-center justify-between gap-6 rounded-lg border border-border bg-card p-7">
                       <div>
-                        <h3 className="text-2xl text-foreground">{v.size}</h3>
-                        <p className="mt-2 text-sm text-muted-foreground">{v.note}</p>
+                        <h3 className="text-2xl text-foreground">
+                          {variantLabel(v.title) || v.title}
+                        </h3>
+                        <p className="mt-2 text-sm text-muted-foreground">
+                          {v.availableForSale ? "In stock" : "Out of stock"}
+                        </p>
                         <p className="mt-3 font-display text-lg text-foreground">
-                          {variantPriceLabel(v)}
+                          {formatMoney(v.price)}
                         </p>
                       </div>
-                      <AddToCart product={{ ...soliderma, variants: [v] }} compact />
+                      <AddToCart product={product} variants={[v]} compact />
                     </div>
                   </Reveal>
                 ))}
+                {!product && (
+                  <p className="rounded-lg border border-dashed border-border p-7 text-sm text-muted-foreground">
+                    Sizes and pricing are being updated. Please{" "}
+                    <Link to="/contact" className="text-[color:var(--burgundy)] underline">
+                      contact us
+                    </Link>{" "}
+                    to order.
+                  </p>
+                )}
               </div>
-              <div className="mt-10 grid gap-5 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
-                {OTHER_PRODUCTS.map((prod, i) => (
-                  <Reveal key={prod.slug} delay={i * 0.06}>
-                    <div className="h-full rounded-lg border border-dashed border-border p-6">
-                      <h3 className="text-lg text-foreground">{prod.name}</h3>
-                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                        {prod.blurb}
-                      </p>
-                      <p className="mt-4 text-xs uppercase tracking-[0.16em] text-[color:var(--gold)]">
-                        Coming soon
-                      </p>
-                      <div className="mt-4">
-                        <NotifyMe productName={prod.name} />
+              {others.length > 0 && (
+                <div className="mt-10 grid gap-5 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
+                  {others.map((prod, i) => (
+                    <Reveal key={prod.handle} delay={i * 0.06}>
+                      <div className="h-full rounded-lg border border-dashed border-border p-6">
+                        <h3 className="text-lg text-foreground">{prod.title}</h3>
+                        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                          {prod.description}
+                        </p>
+                        <div className="mt-4">
+                          {prod.availableForSale ? (
+                            <Link
+                              to="/products/$slug"
+                              params={{ slug: prod.handle }}
+                              className="inline-flex min-h-10 items-center text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--burgundy)]"
+                            >
+                              View product
+                            </Link>
+                          ) : (
+                            <>
+                              <p className="text-xs uppercase tracking-[0.16em] text-[color:var(--gold)]">
+                                Coming soon
+                              </p>
+                              <div className="mt-3">
+                                <NotifyMe productName={prod.title} />
+                              </div>
+                            </>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </Reveal>
-                ))}
-              </div>
+                    </Reveal>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -228,15 +266,17 @@ function Soliderma() {
         </div>
       </Section>
 
-      <section className="bg-[color:var(--botanical-deep)] px-6 py-24 text-primary-foreground">
+      <section className="bg-[color:var(--botanical-deep)] px-5 py-16 text-primary-foreground sm:px-6 sm:py-24">
         <div className="mx-auto grid max-w-6xl gap-14 lg:grid-cols-2 lg:items-center">
           <Reveal>
             <div className="flex items-center gap-3">
-              <span className="eyebrow text-[color:var(--gold)]">04</span>
+              <span className="eyebrow text-[color:var(--gold)]">02</span>
               <span className="h-px w-8 bg-primary-foreground/30" />
               <span className="eyebrow text-primary-foreground/70">Formulation Details</span>
             </div>
-            <h2 className="mt-6 text-4xl">Selected Formulation Ingredients</h2>
+            <h2 className="mt-5 text-[1.75rem] leading-tight sm:mt-6 sm:text-4xl">
+              Selected Formulation Ingredients
+            </h2>
             <ul className="mt-8 divide-y divide-primary-foreground/15 border-t border-primary-foreground/15">
               {INGREDIENTS.map((i) => (
                 <li key={i.name} className="grid grid-cols-[1fr_1.2fr_auto] gap-3 py-3 text-sm">
@@ -266,8 +306,10 @@ function Soliderma() {
 
       <Section>
         <Reveal>
-          <SectionLabel index="07" label="How to Use" />
-          <h2 className="mt-6 text-4xl text-foreground">Simple Application. Consistent Care.</h2>
+          <SectionLabel index="03" label="How to Use" />
+          <h2 className="mt-5 text-[1.75rem] leading-tight text-foreground sm:mt-6 sm:text-4xl">
+            Simple Application. Consistent Care.
+          </h2>
         </Reveal>
         <div className="mt-12 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
           {STEPS.map((s, i) => (

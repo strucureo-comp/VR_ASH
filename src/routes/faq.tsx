@@ -40,11 +40,11 @@ const FAQS = [
   },
   {
     q: "What does Soliderma cost?",
-    a: "Prices are confirmed by our team over WhatsApp before dispatch, since sizes and availability can change. Adding items to the cart creates an enquiry, not a binding sale.",
+    a: "Live prices are shown on each product page and in the cart, per size. Shipping and any taxes are calculated at checkout.",
   },
   {
     q: "Can I order Soliderma online?",
-    a: "Yes. You can select products and send your order through WhatsApp for manual confirmation.",
+    a: "Yes. Add the size you need to the cart and check out — payment is processed securely by our Shopify checkout, and you will receive an order confirmation by email.",
   },
   {
     q: "Can clinics order in bulk?",
@@ -78,10 +78,12 @@ export const Route = createFileRoute("/faq")({
 function Faq() {
   return (
     <>
-      <section className="bg-[color:var(--surface)] px-6 py-20">
+      <section className="bg-[color:var(--surface)] px-5 py-12 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-4xl">
           <p className="eyebrow text-[color:var(--gold)]">FAQ</p>
-          <h1 className="mt-5 text-5xl text-foreground">Frequently Asked Questions</h1>
+          <h1 className="mt-4 text-[2rem] leading-tight text-foreground sm:mt-5 sm:text-4xl lg:text-5xl">
+            Frequently Asked Questions
+          </h1>
         </div>
       </section>
       <Section>

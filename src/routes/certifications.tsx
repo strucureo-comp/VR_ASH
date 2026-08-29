@@ -25,10 +25,12 @@ export const Route = createFileRoute("/certifications")({
 function Certifications() {
   return (
     <>
-      <section className="bg-[color:var(--surface)] px-6 py-20">
+      <section className="bg-[color:var(--surface)] px-5 py-12 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-4xl">
           <p className="eyebrow text-[color:var(--gold)]">Our Science</p>
-          <h1 className="mt-5 text-5xl text-foreground">Manufactured with Care.</h1>
+          <h1 className="mt-4 text-[2rem] leading-tight text-foreground sm:mt-5 sm:text-4xl lg:text-5xl">
+            Manufactured with Care.
+          </h1>
           <p className="mt-6 text-[15px] text-muted-foreground">Soliderma is manufactured by:</p>
           <p className="mt-2 font-display text-2xl text-[color:var(--burgundy)]">
             Kniss Laboratories (P) Ltd.
@@ -44,7 +46,9 @@ function Certifications() {
       <Section>
         <Reveal>
           <SectionLabel index="01" label="Certifications" />
-          <h2 className="mt-6 text-4xl text-foreground">Trust Should Be Verifiable.</h2>
+          <h2 className="mt-5 text-[1.75rem] leading-tight text-foreground sm:mt-6 sm:text-4xl">
+            Trust Should Be Verifiable.
+          </h2>
           <p className="mt-5 max-w-2xl text-[15px] leading-relaxed text-muted-foreground">
             We believe credibility comes from transparency. Explore the available certification and
             regulatory documentation associated with Soliderma and its manufacturing.

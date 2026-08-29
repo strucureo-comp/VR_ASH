@@ -26,10 +26,12 @@ export const Route = createFileRoute("/clinics")({
 function Clinics() {
   return (
     <>
-      <section className="bg-[color:var(--botanical-deep)] px-6 py-20 text-primary-foreground">
+      <section className="bg-[color:var(--botanical-deep)] px-5 py-12 text-primary-foreground sm:px-6 sm:py-20">
         <div className="mx-auto max-w-4xl">
           <p className="eyebrow text-[color:var(--gold)]">For Professionals</p>
-          <h1 className="mt-5 text-5xl">For Healthcare Professionals</h1>
+          <h1 className="mt-4 text-[2rem] leading-tight sm:mt-5 sm:text-4xl lg:text-5xl">
+            For Healthcare Professionals
+          </h1>
           <p className="mt-6 max-w-2xl text-[15px] leading-relaxed text-primary-foreground/75">
             Better access for healthcare professionals. Vallalaar Remedies provides a dedicated
             channel for clinics, practitioners, pharmacies and other professional buyers.

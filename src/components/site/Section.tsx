@@ -20,7 +20,7 @@ export function Section({
   id?: string;
 }) {
   return (
-    <section id={id} className={`px-6 py-24 sm:py-28 ${className}`}>
+    <section id={id} className={`px-5 py-16 sm:px-6 sm:py-24 lg:py-28 ${className}`}>
       <div className="mx-auto max-w-6xl">{children}</div>
     </section>
   );
@@ -28,7 +28,7 @@ export function Section({
 
 export function Note({ children }: { children: ReactNode }) {
   return (
-    <p className="mt-10 max-w-3xl border-l-2 border-[color:var(--gold)] pl-4 text-xs leading-relaxed text-muted-foreground">
+    <p className="mt-8 max-w-3xl border-l-2 border-[color:var(--gold)] pl-4 text-xs leading-relaxed text-muted-foreground sm:mt-10">
       {children}
     </p>
   );
