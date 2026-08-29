@@ -75,9 +75,12 @@ export function AccountShell({
 export function SignInPrompt({
   returnTo = "/account",
   reason,
+  notice,
 }: {
   returnTo?: string;
   reason?: string | undefined;
+  /** Good news to lead with — e.g. a guest returning from a completed checkout. */
+  notice?: string | undefined;
 }) {
   const message = reason ? SIGN_IN_FAILURES[reason] : null;
 
@@ -86,6 +89,11 @@ export function SignInPrompt({
       <div className="mx-auto max-w-md text-center">
         <span className="eyebrow text-[color:var(--gold)]">Your account</span>
         <h1 className="mt-3 text-[1.75rem] leading-tight text-foreground sm:text-4xl">Sign in</h1>
+        {notice ? (
+          <p className="mt-6 rounded-lg border border-[color:var(--gold)]/40 bg-card p-4 text-sm leading-relaxed text-foreground">
+            {notice}
+          </p>
+        ) : null}
         <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
           We email you a one-time code — no password to remember. Signing in for the first time
           creates your account.
