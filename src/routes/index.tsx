@@ -276,17 +276,25 @@ function Home() {
             <div className="mt-5 grid gap-5 sm:mt-6 sm:grid-cols-2 sm:gap-6">
               {upcoming.map((p, i) => (
                 <Reveal key={p.handle} delay={i * 0.06}>
-                  <article className="flex h-full flex-col items-start gap-4 rounded-2xl border border-dashed border-border p-5 sm:flex-row sm:items-center sm:p-7">
+                  <article className="group flex h-full flex-col items-start gap-4 rounded-2xl border border-dashed border-border p-5 transition-colors sm:flex-row sm:items-center sm:p-7 sm:hover:border-[color:var(--gold)]">
                     <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[color:var(--botanical)]/8">
                       <Sparkles className="h-5 w-5 text-[color:var(--botanical)]/60" />
                     </span>
-                    <div className="flex-1">
+                    {/* The buy button stays a sibling of the link, not a child of it:
+                        an unreleased product still has a page worth reaching. */}
+                    <Link
+                      to="/products/$slug"
+                      params={{ slug: p.handle }}
+                      className="flex-1 self-stretch"
+                    >
                       <p className="eyebrow text-muted-foreground">Coming Soon</p>
-                      <h3 className="mt-2 text-lg text-foreground">{p.title}</h3>
+                      <h3 className="mt-2 text-lg text-foreground transition-colors sm:group-hover:text-[color:var(--burgundy)]">
+                        {p.title}
+                      </h3>
                       <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
                         {p.description}
                       </p>
-                    </div>
+                    </Link>
                     <AddToCart product={p} compact />
                   </article>
                 </Reveal>

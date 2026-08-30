@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { ChevronLeft, ChevronRight, Leaf } from "lucide-react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
@@ -158,36 +159,50 @@ function Arrow({
   );
 }
 
-/** Lifted out of `index.tsx` so the grid and the rail cannot drift apart. */
+/**
+ * Lifted out of `index.tsx` so the grid and the rail cannot drift apart.
+ *
+ * The image and the copy are one link to the product; the price and the buy button
+ * sit outside it, because a `<button>` inside an `<a>` is invalid and swallows the
+ * click that was meant for the cart. Every product links through `/products/$slug`
+ * as the rest of the site does — Soliderma's page redirects there — rather than this
+ * component knowing which product has a route of its own.
+ */
 function ProductCard({ product }: { product: Product }) {
   return (
-    <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card">
-      <div className="relative isolate flex h-36 items-center justify-center overflow-hidden bg-[color:var(--ivory)] sm:h-44">
-        <Blob
-          variant={3}
-          className="-bottom-16 left-1/2 h-48 w-64 -translate-x-1/2 -z-10"
-          color="var(--botanical)"
-          opacity={0.16}
-        />
-        {product.featuredImage ? (
-          <img
-            src={sizedImage(product.featuredImage.url, 600)}
-            alt={imageAlt(product.featuredImage.altText, product)}
-            loading="lazy"
-            className="h-32 w-auto object-contain drop-shadow-[0_14px_26px_rgba(0,0,0,0.16)] sm:h-40"
+    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card transition-colors sm:hover:border-[color:var(--gold)]">
+      <Link to="/products/$slug" params={{ slug: product.handle }} className="flex flex-1 flex-col">
+        <div className="relative isolate flex h-36 items-center justify-center overflow-hidden bg-[color:var(--ivory)] sm:h-44">
+          <Blob
+            variant={3}
+            className="-bottom-16 left-1/2 h-48 w-64 -translate-x-1/2 -z-10"
+            color="var(--botanical)"
+            opacity={0.16}
           />
-        ) : (
-          <Leaf className="h-9 w-9 text-[color:var(--botanical)]/40" />
-        )}
-      </div>
-      <div className="flex flex-1 flex-col p-5 sm:p-6">
-        <h3 className="text-xl text-foreground">{product.title}</h3>
-        <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-[color:var(--gold)]">
-          {productSubtitle(product)}
-        </p>
-        <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
-          {product.description}
-        </p>
+          {product.featuredImage ? (
+            <img
+              src={sizedImage(product.featuredImage.url, 600)}
+              alt={imageAlt(product.featuredImage.altText, product)}
+              loading="lazy"
+              className="h-32 w-auto object-contain drop-shadow-[0_14px_26px_rgba(0,0,0,0.16)] transition-transform duration-500 sm:h-40 sm:group-hover:scale-105"
+            />
+          ) : (
+            <Leaf className="h-9 w-9 text-[color:var(--botanical)]/40" />
+          )}
+        </div>
+        <div className="flex flex-1 flex-col px-5 pt-5 sm:px-6 sm:pt-6">
+          <h3 className="text-xl text-foreground transition-colors sm:group-hover:text-[color:var(--burgundy)]">
+            {product.title}
+          </h3>
+          <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-[color:var(--gold)]">
+            {productSubtitle(product)}
+          </p>
+          <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
+            {product.description}
+          </p>
+        </div>
+      </Link>
+      <div className="px-5 pb-5 sm:px-6 sm:pb-6">
         <div className="mt-5 border-t border-border pt-4">
           <p className="font-display text-xl text-foreground">{priceRangeLabel(product)}</p>
         </div>
