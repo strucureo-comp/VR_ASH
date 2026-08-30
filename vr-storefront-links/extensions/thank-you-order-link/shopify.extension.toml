@@ -1,0 +1,24 @@
+api_version = "2026-07"
+
+[[extensions]]
+name = "Order history link"
+handle = "thank-you-order-link"
+type = "ui_extension"
+uid = "2e28acb6-0f3c-140b-388e-966a7d28408cefdbbe0d"
+
+# Renders on the thank-you page shown after a completed checkout. There is no
+# target that can redirect the buyer, so this block offers a link instead.
+[[extensions.targeting]]
+module = "./src/ThankYou.jsx"
+target = "purchase.thank-you.block.render"
+
+# The storefront domain is a setting rather than a constant so that moving off
+# `vr-ash.vercel.app` onto the real domain is a change in the checkout editor,
+# not a redeploy of this extension.
+[extensions.settings]
+
+  [[extensions.settings.fields]]
+  key = "storefront_orders_url"
+  type = "single_line_text_field"
+  name = "Order history URL"
+  description = "Where the button sends the customer, e.g. https://vallalaarremedies.com/account/orders. Leave blank to use the built-in default."

@@ -26,10 +26,14 @@ import { Route as AccountAddressesRouteImport } from './routes/account.addresses
 import { Route as AccountCallbackRouteImport } from './routes/account.callback'
 import { Route as AccountLoginRouteImport } from './routes/account.login'
 import { Route as AccountLogoutRouteImport } from './routes/account.logout'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminEnquiriesRouteImport } from './routes/admin.enquiries'
+import { Route as AdminSharedRouteImport } from './routes/admin.shared'
 import { Route as ProductsIndexRouteImport } from './routes/products.index'
 import { Route as ProductsSlugRouteImport } from './routes/products.$slug'
 import { Route as AccountOrdersIndexRouteImport } from './routes/account.orders.index'
 import { Route as AccountOrdersIdRouteImport } from './routes/account.orders.$id'
+import { Route as AdminProductsIdRouteImport } from './routes/admin.products.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -116,6 +120,21 @@ const AccountLogoutRoute = AccountLogoutRouteImport.update({
   path: '/account/logout',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminEnquiriesRoute = AdminEnquiriesRouteImport.update({
+  id: '/admin/enquiries',
+  path: '/admin/enquiries',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminSharedRoute = AdminSharedRouteImport.update({
+  id: '/admin/shared',
+  path: '/admin/shared',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProductsIndexRoute = ProductsIndexRouteImport.update({
   id: '/products/',
   path: '/products/',
@@ -136,6 +155,11 @@ const AccountOrdersIdRoute = AccountOrdersIdRouteImport.update({
   path: '/account/orders/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminProductsIdRoute = AdminProductsIdRouteImport.update({
+  id: '/admin/products/$id',
+  path: '/admin/products/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -154,10 +178,14 @@ export interface FileRoutesByFullPath {
   '/account/callback': typeof AccountCallbackRoute
   '/account/login': typeof AccountLoginRoute
   '/account/logout': typeof AccountLogoutRoute
+  '/admin/enquiries': typeof AdminEnquiriesRoute
+  '/admin/shared': typeof AdminSharedRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/account/': typeof AccountIndexRoute
+  '/admin/': typeof AdminIndexRoute
   '/products/': typeof ProductsIndexRoute
   '/account/orders/$id': typeof AccountOrdersIdRoute
+  '/admin/products/$id': typeof AdminProductsIdRoute
   '/account/orders/': typeof AccountOrdersIndexRoute
 }
 export interface FileRoutesByTo {
@@ -177,10 +205,14 @@ export interface FileRoutesByTo {
   '/account/callback': typeof AccountCallbackRoute
   '/account/login': typeof AccountLoginRoute
   '/account/logout': typeof AccountLogoutRoute
+  '/admin/enquiries': typeof AdminEnquiriesRoute
+  '/admin/shared': typeof AdminSharedRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/account': typeof AccountIndexRoute
+  '/admin': typeof AdminIndexRoute
   '/products': typeof ProductsIndexRoute
   '/account/orders/$id': typeof AccountOrdersIdRoute
+  '/admin/products/$id': typeof AdminProductsIdRoute
   '/account/orders': typeof AccountOrdersIndexRoute
 }
 export interface FileRoutesById {
@@ -201,10 +233,14 @@ export interface FileRoutesById {
   '/account/callback': typeof AccountCallbackRoute
   '/account/login': typeof AccountLoginRoute
   '/account/logout': typeof AccountLogoutRoute
+  '/admin/enquiries': typeof AdminEnquiriesRoute
+  '/admin/shared': typeof AdminSharedRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/account/': typeof AccountIndexRoute
+  '/admin/': typeof AdminIndexRoute
   '/products/': typeof ProductsIndexRoute
   '/account/orders/$id': typeof AccountOrdersIdRoute
+  '/admin/products/$id': typeof AdminProductsIdRoute
   '/account/orders/': typeof AccountOrdersIndexRoute
 }
 export interface FileRouteTypes {
@@ -226,10 +262,14 @@ export interface FileRouteTypes {
     | '/account/callback'
     | '/account/login'
     | '/account/logout'
+    | '/admin/enquiries'
+    | '/admin/shared'
     | '/products/$slug'
     | '/account/'
+    | '/admin/'
     | '/products/'
     | '/account/orders/$id'
+    | '/admin/products/$id'
     | '/account/orders/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -249,10 +289,14 @@ export interface FileRouteTypes {
     | '/account/callback'
     | '/account/login'
     | '/account/logout'
+    | '/admin/enquiries'
+    | '/admin/shared'
     | '/products/$slug'
     | '/account'
+    | '/admin'
     | '/products'
     | '/account/orders/$id'
+    | '/admin/products/$id'
     | '/account/orders'
   id:
     | '__root__'
@@ -272,10 +316,14 @@ export interface FileRouteTypes {
     | '/account/callback'
     | '/account/login'
     | '/account/logout'
+    | '/admin/enquiries'
+    | '/admin/shared'
     | '/products/$slug'
     | '/account/'
+    | '/admin/'
     | '/products/'
     | '/account/orders/$id'
+    | '/admin/products/$id'
     | '/account/orders/'
   fileRoutesById: FileRoutesById
 }
@@ -296,10 +344,14 @@ export interface RootRouteChildren {
   AccountCallbackRoute: typeof AccountCallbackRoute
   AccountLoginRoute: typeof AccountLoginRoute
   AccountLogoutRoute: typeof AccountLogoutRoute
+  AdminEnquiriesRoute: typeof AdminEnquiriesRoute
+  AdminSharedRoute: typeof AdminSharedRoute
   ProductsSlugRoute: typeof ProductsSlugRoute
   AccountIndexRoute: typeof AccountIndexRoute
+  AdminIndexRoute: typeof AdminIndexRoute
   ProductsIndexRoute: typeof ProductsIndexRoute
   AccountOrdersIdRoute: typeof AccountOrdersIdRoute
+  AdminProductsIdRoute: typeof AdminProductsIdRoute
   AccountOrdersIndexRoute: typeof AccountOrdersIndexRoute
 }
 
@@ -424,6 +476,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AccountLogoutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/enquiries': {
+      id: '/admin/enquiries'
+      path: '/admin/enquiries'
+      fullPath: '/admin/enquiries'
+      preLoaderRoute: typeof AdminEnquiriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/shared': {
+      id: '/admin/shared'
+      path: '/admin/shared'
+      fullPath: '/admin/shared'
+      preLoaderRoute: typeof AdminSharedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/products/': {
       id: '/products/'
       path: '/products'
@@ -452,6 +525,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AccountOrdersIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/products/$id': {
+      id: '/admin/products/$id'
+      path: '/admin/products/$id'
+      fullPath: '/admin/products/$id'
+      preLoaderRoute: typeof AdminProductsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -472,10 +552,14 @@ const rootRouteChildren: RootRouteChildren = {
   AccountCallbackRoute: AccountCallbackRoute,
   AccountLoginRoute: AccountLoginRoute,
   AccountLogoutRoute: AccountLogoutRoute,
+  AdminEnquiriesRoute: AdminEnquiriesRoute,
+  AdminSharedRoute: AdminSharedRoute,
   ProductsSlugRoute: ProductsSlugRoute,
   AccountIndexRoute: AccountIndexRoute,
+  AdminIndexRoute: AdminIndexRoute,
   ProductsIndexRoute: ProductsIndexRoute,
   AccountOrdersIdRoute: AccountOrdersIdRoute,
+  AdminProductsIdRoute: AdminProductsIdRoute,
   AccountOrdersIndexRoute: AccountOrdersIndexRoute,
 }
 export const routeTree = rootRouteImport

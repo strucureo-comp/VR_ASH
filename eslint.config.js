@@ -6,7 +6,9 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist", ".output", ".vinxi"] },
+  // `vr-storefront-links` is a separate Shopify app with its own toolchain and
+  // its own generated type declarations; it is not part of the storefront build.
+  { ignores: ["dist", ".output", ".vinxi", "vr-storefront-links"] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],

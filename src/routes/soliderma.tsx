@@ -5,10 +5,25 @@ import { ChevronDown } from "lucide-react";
 import { Reveal } from "@/components/site/Reveal";
 import { Section, SectionLabel, Note } from "@/components/site/Section";
 import { AddToCart } from "@/components/site/AddToCart";
+import { MobileBuyStage } from "@/components/site/MobileBuyStage";
 import { NotifyMe } from "@/components/site/NotifyMe";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { formatMoney, isSolidermaHandle, variantLabel } from "@/lib/shopify/format";
+import {
+  formatMoney,
+  isSolidermaHandle,
+  priceRangeLabel,
+  variantLabel,
+} from "@/lib/shopify/format";
 import { productQuery, productsQuery } from "@/lib/shopify/queryOptions";
+import { contentId } from "@/lib/content/paths";
+import { productContentQuery } from "@/lib/content/queryOptions";
+import { iconRows, paragraphs, preferSaved } from "@/lib/content/render";
 import { BENEFITS, CONDITIONS, INGREDIENTS, STEPS } from "@/lib/site";
 import bottle from "@/assets/soliderma-bottle.png";
 import bottleBack from "@/assets/soliderma-bottle-back.png";
@@ -23,7 +38,16 @@ export const Route = createFileRoute("/soliderma")({
       context.queryClient.ensureQueryData(productsQuery(24)),
     ]);
     const product = exact ?? all.find((p) => isSolidermaHandle(p.handle)) ?? null;
-    return { product, others: all.filter((p) => !isSolidermaHandle(p.handle)).slice(0, 3) };
+    // Second round trip on purpose: the content is keyed on the product's numeric
+    // id, so there is nothing to ask for until the product has been resolved.
+    const content = product
+      ? await context.queryClient.ensureQueryData(productContentQuery(contentId(product.id)))
+      : null;
+    return {
+      product,
+      content,
+      others: all.filter((p) => !isSolidermaHandle(p.handle)).slice(0, 3),
+    };
   },
   head: () => ({
     meta: [
@@ -47,7 +71,14 @@ export const Route = createFileRoute("/soliderma")({
 });
 
 function Soliderma() {
-  const { product, others } = Route.useLoaderData();
+  const { product, content, others } = Route.useLoaderData();
+  // Saved copy wins; the arrays in `site.ts` are what a page renders until the
+  // record has been seeded from the admin panel.
+  const benefits = preferSaved(content?.benefits ?? [], BENEFITS);
+  const conditions = iconRows(content?.conditions ?? [], CONDITIONS);
+  const ingredients = preferSaved(content?.ingredients ?? [], INGREDIENTS);
+  const steps = preferSaved(content?.steps ?? [], STEPS);
+  const intro = paragraphs(content?.longDescription ?? "");
   const stageRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: stageRef,
@@ -71,8 +102,35 @@ function Soliderma() {
     <>
       <section className="bg-[color:var(--surface)] px-6">
         <div ref={stageRef} className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[0.85fr_1.15fr]">
+          {/* Phones only. The stage below pins the bottle under the header and
+              advances the panel from the name to the sizes, price and Add to
+              cart; the desktop stage that follows keeps its own scroll flip and
+              is untouched from `sm:` upward. */}
+          <MobileBuyStage
+            className="sm:hidden"
+            images={[
+              {
+                src: bottle,
+                alt: "Soliderma multi action wound healing spray bottle, front view",
+              },
+              {
+                src: bottleBack,
+                alt: "Soliderma spray bottle, back label with directions and ingredients",
+              },
+            ]}
+            title={<>Soliderma&trade;</>}
+            subtitle="Multi Action Wound Healing Spray"
+            price={product ? priceRangeLabel(product) : null}
+            sizes={
+              product?.variants.map((v) => variantLabel(v.title)).filter((label) => label !== "") ??
+              []
+            }
+          >
+            {product && <AddToCart product={product} />}
+          </MobileBuyStage>
+
           {/* Sticky product stage */}
-          <div className="pointer-events-none top-0 mx-auto flex h-[46vh] w-full items-center justify-center lg:sticky lg:h-screen">
+          <div className="pointer-events-none top-0 mx-auto hidden h-[46vh] w-full items-center justify-center sm:flex lg:sticky lg:h-screen">
             <motion.div
               style={{ scale: stageScale }}
               className="relative h-full w-full max-w-md [perspective:1200px]"
@@ -101,16 +159,28 @@ function Soliderma() {
           {/* Two content panels */}
           <div className="relative z-10">
             <div className="flex min-h-[60vh] flex-col justify-center py-10 lg:min-h-screen lg:py-0">
-              <p className="eyebrow text-[color:var(--gold)]">Product</p>
-              <h1 className="mt-4 text-[2rem] leading-tight text-foreground sm:text-4xl lg:text-5xl">
-                Soliderma&trade;
-              </h1>
-              <p className="mt-3 font-display text-xl text-[color:var(--burgundy)]">
-                Multi Action Wound Healing Spray
-              </p>
-              <p className="mt-5 max-w-lg text-[15px] leading-relaxed text-muted-foreground">
-                A herbal wound-care spray developed around an Ayurvedic proprietary formulation.
-              </p>
+              <div className="hidden sm:block">
+                <p className="eyebrow text-[color:var(--gold)]">Product</p>
+                <h1 className="mt-4 text-[2rem] leading-tight text-foreground sm:text-4xl lg:text-5xl">
+                  Soliderma&trade;
+                </h1>
+                <p className="mt-3 font-display text-xl text-[color:var(--burgundy)]">
+                  Multi Action Wound Healing Spray
+                </p>
+              </div>
+              {/* The long description replaces this line once one is written in the
+                  admin panel; the panel is scroll-pinned, so it stays a short read. */}
+              {intro.length > 0 ? (
+                <div className="mt-5 max-w-lg space-y-3 text-[15px] leading-relaxed text-muted-foreground">
+                  {intro.map((part) => (
+                    <p key={part}>{part}</p>
+                  ))}
+                </div>
+              ) : (
+                <p className="mt-5 max-w-lg text-[15px] leading-relaxed text-muted-foreground">
+                  A herbal wound-care spray developed around an Ayurvedic proprietary formulation.
+                </p>
+              )}
               <dl className="mt-8 grid max-w-md grid-cols-2 gap-6 text-sm">
                 <div>
                   <dt className="eyebrow text-muted-foreground">Form</dt>
@@ -122,7 +192,12 @@ function Soliderma() {
                 </div>
               </dl>
               <div className="mt-9 space-y-4">
-                {product && <AddToCart product={product} />}
+                {/* The phone stage already carries these controls. */}
+                {product && (
+                  <div className="hidden sm:block">
+                    <AddToCart product={product} />
+                  </div>
+                )}
                 <Link
                   to="/contact"
                   className="inline-flex min-h-12 items-center rounded-full border border-[color:var(--burgundy)] px-7 text-sm font-medium text-[color:var(--burgundy)]"
@@ -130,7 +205,11 @@ function Soliderma() {
                   Send an Enquiry
                 </Link>
               </div>
-              <motion.div style={{ opacity: cueOpacity }} className="mt-12">
+              {/* Hidden on phones: its fade is keyed to the desktop stage's scroll
+                  progress, which the taller phone layout consumes before the cue
+                  is ever on screen — and an invisible button is still tappable.
+                  The phone stage carries its own scroll cue instead. */}
+              <motion.div style={{ opacity: cueOpacity }} className="mt-12 hidden sm:block">
                 <Button
                   type="button"
                   variant="ghost"
@@ -233,7 +312,7 @@ function Soliderma() {
           <Reveal>
             <h2 className="text-3xl text-foreground">Key Benefits</h2>
             <ul className="mt-6 divide-y divide-border border-t border-border">
-              {BENEFITS.map((b) => (
+              {benefits.map((b) => (
                 <li key={b.title} className="py-4">
                   <p className="text-lg text-foreground">{b.title}</p>
                   <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{b.body}</p>
@@ -244,7 +323,7 @@ function Soliderma() {
           <Reveal delay={0.1}>
             <h2 className="text-3xl text-foreground">Suitable Wound Categories</h2>
             <ul className="mt-6 divide-y divide-border border-t border-border">
-              {CONDITIONS.map((c) => (
+              {conditions.map((c) => (
                 <li key={c.title} className="flex gap-4 py-4">
                   <span className="mt-1 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[color:var(--botanical)]/10">
                     <c.icon className="h-4 w-4 text-[color:var(--botanical)]" />
@@ -278,7 +357,7 @@ function Soliderma() {
               Selected Formulation Ingredients
             </h2>
             <ul className="mt-8 divide-y divide-primary-foreground/15 border-t border-primary-foreground/15">
-              {INGREDIENTS.map((i) => (
+              {ingredients.map((i) => (
                 <li key={i.name} className="grid grid-cols-[1fr_1.2fr_auto] gap-3 py-3 text-sm">
                   <span className="font-medium">{i.name}</span>
                   <span className="italic text-primary-foreground/65">{i.latin}</span>
@@ -312,7 +391,7 @@ function Soliderma() {
           </h2>
         </Reveal>
         <div className="mt-12 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
-          {STEPS.map((s, i) => (
+          {steps.map((s, i) => (
             <Reveal key={s.step} delay={i * 0.06} className="bg-card">
               <div className="h-full p-7">
                 <span className="font-display text-3xl text-[color:var(--gold)]">{s.step}</span>
@@ -322,12 +401,60 @@ function Soliderma() {
             </Reveal>
           ))}
         </div>
+        {/* Both are optional and only exist once someone writes them, so this whole
+            row is absent on a record that has neither. */}
+        {content && (content.directions !== "" || content.caution !== "") ? (
+          <div className="mt-10 grid gap-6 sm:grid-cols-2">
+            {content.directions !== "" ? (
+              <div className="rounded-lg border border-border bg-card p-7">
+                <h3 className="text-lg text-foreground">Directions for use</h3>
+                <p className="mt-3 text-sm leading-relaxed whitespace-pre-line text-muted-foreground">
+                  {content.directions}
+                </p>
+              </div>
+            ) : null}
+            {content.caution !== "" ? (
+              <div className="rounded-lg border border-[color:var(--burgundy)]/30 bg-card p-7">
+                <h3 className="text-lg text-foreground">Caution</h3>
+                <p className="mt-3 text-sm leading-relaxed whitespace-pre-line text-[color:var(--burgundy)]">
+                  {content.caution}
+                </p>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
         <Note>
           For significant, infected, deep, diabetic or otherwise serious wounds, please seek
           appropriate professional medical care. Product use should follow the approved
           instructions.
         </Note>
       </Section>
+
+      {/* Product-specific questions. The site-wide list stays on /faq. */}
+      {content && content.faqs.length > 0 ? (
+        <Section className="bg-[color:var(--surface)]">
+          <Reveal>
+            <SectionLabel index="04" label="Questions" />
+            <h2 className="mt-5 text-[1.75rem] leading-tight text-foreground sm:mt-6 sm:text-4xl">
+              About this product
+            </h2>
+          </Reveal>
+          <Reveal className="mx-auto mt-10 max-w-3xl" delay={0.06}>
+            <Accordion type="single" collapsible className="w-full">
+              {content.faqs.map((f, i) => (
+                <AccordionItem key={f.q} value={`item-${i}`}>
+                  <AccordionTrigger className="text-left font-display text-lg">
+                    {f.q}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
+                    {f.a}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </Reveal>
+        </Section>
+      ) : null}
     </>
   );
 }

@@ -1,9 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Reveal } from "@/components/site/Reveal";
 import { Section, SectionLabel, Note } from "@/components/site/Section";
+import { sharedContentQuery } from "@/lib/content/queryOptions";
+import { iconRows } from "@/lib/content/render";
 import { CERTIFICATIONS } from "@/lib/site";
 
 export const Route = createFileRoute("/certifications")({
+  // Read on the server, so the certificates are in the SSR HTML a crawler sees.
+  loader: async ({ context }) => ({
+    shared: await context.queryClient.ensureQueryData(sharedContentQuery()),
+  }),
   head: () => ({
     meta: [
       { title: "Our Science | Vallalaar Remedies" },
@@ -23,6 +29,9 @@ export const Route = createFileRoute("/certifications")({
 });
 
 function Certifications() {
+  const { shared } = Route.useLoaderData();
+  const certifications = iconRows(shared?.certifications ?? [], CERTIFICATIONS);
+
   return (
     <>
       <section className="bg-[color:var(--surface)] px-5 py-12 sm:px-6 sm:py-20">
@@ -55,7 +64,7 @@ function Certifications() {
           </p>
         </Reveal>
         <div className="mt-12 grid gap-6 sm:grid-cols-3">
-          {CERTIFICATIONS.map((d, i) => (
+          {certifications.map((d, i) => (
             <Reveal key={d.title} delay={i * 0.06}>
               <article className="h-full rounded-lg border border-border bg-card p-7">
                 <d.icon className="h-6 w-6 text-[color:var(--botanical)]" />

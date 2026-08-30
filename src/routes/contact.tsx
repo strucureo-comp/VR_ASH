@@ -1,12 +1,18 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { MapPin, Phone } from "lucide-react";
+import { Check, MapPin, MessageCircle, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { WA_ENQUIRY } from "@/lib/site";
+import { submitEnquiry } from "@/lib/content/api";
+import { contactFormSchema } from "@/lib/content/schema";
+import type { ContactForm } from "@/lib/content/types";
+import { WA_ENQUIRY, whatsappLink } from "@/lib/site";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -36,8 +42,50 @@ const ENQUIRIES = [
   "General Enquiries",
 ];
 
+const EMPTY: ContactForm = { name: "", email: "", phone: "", message: "", honeypot: "" };
+
+/**
+ * The enquiry is saved to the database first and WhatsApp is offered afterwards.
+ * The other way round loses the enquiry whenever somebody closes WhatsApp without
+ * sending, which is what this page used to do with every submission.
+ */
 function Contact() {
-  const [sent, setSent] = useState(false);
+  const [sent, setSent] = useState<ContactForm | null>(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ContactForm>({ resolver: zodResolver(contactFormSchema), defaultValues: EMPTY });
+
+  const send = useMutation({
+    mutationFn: async (values: ContactForm) =>
+      submitEnquiry({
+        data: {
+          kind: "contact",
+          name: values.name,
+          email: values.email,
+          phone: values.phone,
+          message: values.message,
+          product: "",
+          honeypot: values.honeypot,
+        },
+      }),
+    onSuccess: (result, values) => {
+      if (!result.ok) {
+        toast.error(result.error);
+        return;
+      }
+      setSent(values);
+      toast.success("Thank you — your enquiry has reached us.");
+    },
+    // A failed write must not look like a sent enquiry, so the form stays put and
+    // the two channels beside it become the way through.
+    onError: () => {
+      toast.error("We could not save your enquiry just now.", {
+        description: "Please try WhatsApp or the phone number beside this form.",
+      });
+    },
+  });
 
   return (
     <>
@@ -56,57 +104,122 @@ function Contact() {
 
       <section className="px-6 pb-24">
         <div className="mx-auto -mt-28 grid max-w-5xl gap-8 lg:grid-cols-[1.2fr_0.8fr]">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              setSent(true);
-              toast.success("Thank you — your enquiry has been sent.");
-            }}
-            className="rounded-lg border border-border bg-card p-8 shadow-xl sm:p-10"
-          >
-            <h2 className="font-display text-2xl text-foreground">Send an Enquiry</h2>
-            <div className="mt-6 space-y-5">
-              <div>
-                <Label htmlFor="name">
-                  Name <span className="text-[color:var(--burgundy)]">*</span>
-                </Label>
-                <Input id="name" required placeholder="Your name" className="mt-2" />
-              </div>
-              <div className="grid gap-5 sm:grid-cols-2">
-                <div>
-                  <Label htmlFor="phone">Phone</Label>
-                  <Input id="phone" type="tel" placeholder="94458 48148" className="mt-2" />
-                </div>
-                <div>
-                  <Label htmlFor="email">
-                    Email <span className="text-[color:var(--burgundy)]">*</span>
-                  </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    required
-                    placeholder="email@example.com"
-                    className="mt-2"
-                  />
-                </div>
-              </div>
-              <div>
-                <Label htmlFor="message">
-                  Message <span className="text-[color:var(--burgundy)]">*</span>
-                </Label>
-                <Textarea
-                  id="message"
-                  required
-                  rows={6}
-                  placeholder="Tell us about your enquiry"
-                  className="mt-2"
-                />
+          {sent ? (
+            <div className="rounded-lg border border-border bg-card p-8 shadow-xl sm:p-10">
+              <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-[color:var(--botanical)]/10">
+                <Check className="h-5 w-5 text-[color:var(--botanical)]" />
+              </span>
+              <h2 className="mt-5 font-display text-2xl text-foreground">
+                Thank you, {sent.name.split(" ")[0]}.
+              </h2>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                Your enquiry is with us and we will reply to {sent.email}. If you would rather have
+                an answer straight away, send the same message on WhatsApp.
+              </p>
+              <div className="mt-7 flex flex-wrap gap-3">
+                <a
+                  href={whatsappLink(
+                    `Hello Vallalaar Remedies, this is ${sent.name}. ${sent.message}`,
+                  )}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex min-h-12 items-center gap-2 rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground transition-colors sm:hover:bg-[color:var(--botanical-deep)]"
+                >
+                  <MessageCircle className="h-4 w-4" />
+                  Continue on WhatsApp
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setSent(null)}
+                  className="inline-flex min-h-12 items-center rounded-full border border-border px-6 text-sm text-muted-foreground transition-colors sm:hover:border-[color:var(--gold)] sm:hover:text-primary"
+                >
+                  Send another enquiry
+                </button>
               </div>
             </div>
-            <Button type="submit" size="lg" className="mt-8 rounded-full px-8">
-              {sent ? "Sent" : "Send an Enquiry"}
-            </Button>
-          </form>
+          ) : (
+            <form
+              onSubmit={handleSubmit((values) => send.mutate(values))}
+              noValidate
+              className="rounded-lg border border-border bg-card p-8 shadow-xl sm:p-10"
+            >
+              <h2 className="font-display text-2xl text-foreground">Send an Enquiry</h2>
+              <div className="mt-6 space-y-5">
+                <div>
+                  <Label htmlFor="name">
+                    Name <span className="text-[color:var(--burgundy)]">*</span>
+                  </Label>
+                  <Input
+                    id="name"
+                    autoComplete="name"
+                    placeholder="Your name"
+                    className="mt-2"
+                    aria-invalid={errors.name ? true : undefined}
+                    {...register("name")}
+                  />
+                  <FieldError message={errors.name?.message} />
+                </div>
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <div>
+                    <Label htmlFor="phone">Phone</Label>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      autoComplete="tel"
+                      placeholder="94458 48148"
+                      className="mt-2"
+                      aria-invalid={errors.phone ? true : undefined}
+                      {...register("phone")}
+                    />
+                    <FieldError message={errors.phone?.message} />
+                  </div>
+                  <div>
+                    <Label htmlFor="email">
+                      Email <span className="text-[color:var(--burgundy)]">*</span>
+                    </Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      autoComplete="email"
+                      placeholder="email@example.com"
+                      className="mt-2"
+                      aria-invalid={errors.email ? true : undefined}
+                      {...register("email")}
+                    />
+                    <FieldError message={errors.email?.message} />
+                  </div>
+                </div>
+                <div>
+                  <Label htmlFor="message">
+                    Message <span className="text-[color:var(--burgundy)]">*</span>
+                  </Label>
+                  <Textarea
+                    id="message"
+                    rows={6}
+                    placeholder="Tell us about your enquiry"
+                    className="mt-2"
+                    aria-invalid={errors.message ? true : undefined}
+                    {...register("message")}
+                  />
+                  <FieldError message={errors.message?.message} />
+                </div>
+                {/* Left empty by a person, filled by most bots. A filled one is
+                    answered with success and dropped server-side. */}
+                <div className="hidden" aria-hidden="true">
+                  <label htmlFor="company">Company</label>
+                  <input id="company" tabIndex={-1} autoComplete="off" {...register("honeypot")} />
+                </div>
+              </div>
+              <Button
+                type="submit"
+                size="lg"
+                disabled={send.isPending}
+                className="mt-8 rounded-full px-8"
+              >
+                {send.isPending ? "Sending…" : "Send an Enquiry"}
+              </Button>
+            </form>
+          )}
 
           <div className="rounded-lg border border-border bg-[color:var(--surface)] p-8">
             <h2 className="font-display text-2xl text-foreground">Vallalaar Remedies</h2>
@@ -144,5 +257,14 @@ function Contact() {
         </div>
       </section>
     </>
+  );
+}
+
+function FieldError({ message }: { message?: string | undefined }) {
+  if (!message) return null;
+  return (
+    <p role="alert" className="mt-1.5 text-xs text-[color:var(--burgundy)]">
+      {message}
+    </p>
   );
 }

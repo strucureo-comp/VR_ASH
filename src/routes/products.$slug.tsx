@@ -2,6 +2,17 @@ import { createFileRoute, Link, notFound, redirect } from "@tanstack/react-route
 import { Reveal } from "@/components/site/Reveal";
 import { Section, SectionLabel, Note } from "@/components/site/Section";
 import { AddToCart } from "@/components/site/AddToCart";
+import { MobileBuyStage } from "@/components/site/MobileBuyStage";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { resolveIcon } from "@/lib/content/icons";
+import { contentId } from "@/lib/content/paths";
+import { productContentQuery } from "@/lib/content/queryOptions";
+import { paragraphs } from "@/lib/content/render";
 import {
   formatMoney,
   imageAlt,
@@ -23,7 +34,17 @@ export const Route = createFileRoute("/products/$slug")({
       context.queryClient.ensureQueryData(productsQuery(24)),
     ]);
     if (!product) throw notFound();
-    return { product, others: all.filter((p) => p.handle !== product.handle).slice(0, 3) };
+    // Nothing is inherited from another product here: a record that does not exist
+    // simply leaves every section below absent. There is no fallback array to fall
+    // back to, and Soliderma's copy would be wrong for anything else.
+    const content = await context.queryClient.ensureQueryData(
+      productContentQuery(contentId(product.id)),
+    );
+    return {
+      product,
+      content,
+      others: all.filter((p) => p.handle !== product.handle).slice(0, 3),
+    };
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
@@ -71,8 +92,22 @@ function ProductNotFound() {
 }
 
 function ProductDetail() {
-  const { product, others } = Route.useLoaderData();
+  const { product, content, others } = Route.useLoaderData();
+  const story = paragraphs(content?.longDescription ?? "");
   const sizes = product.variants.map((v) => variantLabel(v.title)).filter((label) => label !== "");
+  // The phone stage turns a front pose into a back one, so it wants the first two
+  // gallery images in Shopify's own order. `featuredImage` is the only fallback
+  // when a product has no gallery at all.
+  const gallery =
+    product.images.length > 0
+      ? product.images
+      : product.featuredImage
+        ? [product.featuredImage]
+        : [];
+  const stageImages = gallery.slice(0, 2).map((img) => ({
+    src: sizedImage(img.url, 900),
+    alt: imageAlt(img.altText, product),
+  }));
 
   return (
     <>
@@ -82,8 +117,25 @@ function ProductDetail() {
             ← All products
           </Link>
         </Reveal>
+
+        {/* Phones only. A phone has one column, so the image is pinned and the
+            panel under it advances from the name to the sizes, price and Add to
+            cart. From `sm:` upward the two-column block below already shows both
+            at once and is left exactly as it was. */}
+        <MobileBuyStage
+          className="mt-6 sm:hidden"
+          images={stageImages}
+          fallbackLetter={product.title.charAt(0)}
+          title={product.title}
+          subtitle={product.productType || null}
+          price={priceRangeLabel(product)}
+          sizes={sizes}
+        >
+          <AddToCart product={product} />
+        </MobileBuyStage>
+
         <div className="mt-8 grid gap-12 lg:grid-cols-[0.9fr_1.1fr]">
-          <Reveal>
+          <Reveal className="hidden sm:block">
             <div className="flex h-80 items-center justify-center rounded-xl border border-border bg-[color:var(--ivory)] p-8 lg:h-[420px]">
               {product.featuredImage ? (
                 <img
@@ -99,15 +151,17 @@ function ProductDetail() {
             </div>
           </Reveal>
           <Reveal delay={0.08}>
-            <p className="eyebrow text-[color:var(--gold)]">Product</p>
-            <h1 className="mt-4 text-[2rem] leading-tight text-foreground sm:text-4xl lg:text-5xl">
-              {product.title}
-            </h1>
-            {product.productType && (
-              <p className="mt-3 font-display text-xl text-[color:var(--burgundy)]">
-                {product.productType}
-              </p>
-            )}
+            <div className="hidden sm:block">
+              <p className="eyebrow text-[color:var(--gold)]">Product</p>
+              <h1 className="mt-4 text-[2rem] leading-tight text-foreground sm:text-4xl lg:text-5xl">
+                {product.title}
+              </h1>
+              {product.productType && (
+                <p className="mt-3 font-display text-xl text-[color:var(--burgundy)]">
+                  {product.productType}
+                </p>
+              )}
+            </div>
             <p className="mt-5 max-w-lg text-[15px] leading-relaxed text-muted-foreground">
               {product.description}
             </p>
@@ -132,7 +186,10 @@ function ProductDetail() {
               </div>
             </dl>
             <div className="mt-9 space-y-4">
-              <AddToCart product={product} />
+              {/* The phone stage already carries these controls. */}
+              <div className="hidden sm:block">
+                <AddToCart product={product} />
+              </div>
               <Link
                 to="/contact"
                 className="inline-flex min-h-12 items-center rounded-full border border-[color:var(--burgundy)] px-7 text-sm font-medium text-[color:var(--burgundy)]"
@@ -143,6 +200,129 @@ function ProductDetail() {
           </Reveal>
         </div>
       </Section>
+
+      {/* Everything the admin panel holds about this product. Each block renders
+          only when it has rows, so a product with no record keeps the plain
+          template above and nothing here breaks. */}
+      {content ? (
+        <Section className="bg-[color:var(--surface)]">
+          {story.length > 0 ? (
+            <Reveal className="mt-14 first:mt-0">
+              <h2 className="text-3xl text-foreground">About this product</h2>
+              <div className="mt-5 max-w-3xl space-y-4 text-[15px] leading-relaxed text-muted-foreground">
+                {story.map((part) => (
+                  <p key={part}>{part}</p>
+                ))}
+              </div>
+            </Reveal>
+          ) : null}
+
+          {content.benefits.length > 0 ? (
+            <Reveal className="mt-14 first:mt-0">
+              <h2 className="text-3xl text-foreground">Key benefits</h2>
+              <ul className="mt-6 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2">
+                {content.benefits.map((b) => (
+                  <li key={b.title} className="bg-card p-6">
+                    <p className="text-lg text-foreground">{b.title}</p>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{b.body}</p>
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
+          ) : null}
+
+          {content.conditions.length > 0 ? (
+            <Reveal className="mt-14 first:mt-0">
+              <h2 className="text-3xl text-foreground">Where it is used</h2>
+              <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                {content.conditions.map((c) => {
+                  const Icon = resolveIcon(c.icon);
+                  return (
+                    <article
+                      key={c.title}
+                      className="flex h-full flex-col rounded-2xl border border-border bg-card p-6"
+                    >
+                      <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[color:var(--botanical)]/10">
+                        <Icon className="h-5 w-5 text-[color:var(--botanical)]" />
+                      </span>
+                      <h3 className="mt-5 text-lg leading-tight text-foreground">{c.title}</h3>
+                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{c.body}</p>
+                    </article>
+                  );
+                })}
+              </div>
+            </Reveal>
+          ) : null}
+          {content.ingredients.length > 0 ? (
+            <Reveal className="mt-14 first:mt-0">
+              <h2 className="text-3xl text-foreground">Formulation</h2>
+              <ul className="mt-6 divide-y divide-border border-t border-border">
+                {content.ingredients.map((i) => (
+                  <li key={i.name} className="grid grid-cols-[1fr_1.2fr_auto] gap-3 py-3 text-sm">
+                    <span className="font-medium text-foreground">{i.name}</span>
+                    <span className="text-muted-foreground italic">{i.latin}</span>
+                    <span className="text-muted-foreground">{i.part}</span>
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
+          ) : null}
+
+          {content.steps.length > 0 ? (
+            <Reveal className="mt-14 first:mt-0">
+              <h2 className="text-3xl text-foreground">How to use</h2>
+              <div className="mt-6 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
+                {content.steps.map((s) => (
+                  <div key={s.step} className="h-full bg-card p-6">
+                    <span className="font-display text-3xl text-[color:var(--gold)]">{s.step}</span>
+                    <h3 className="mt-4 text-lg text-foreground">{s.title}</h3>
+                    <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{s.body}</p>
+                  </div>
+                ))}
+              </div>
+            </Reveal>
+          ) : null}
+
+          {content.directions !== "" || content.caution !== "" ? (
+            <Reveal className="mt-14 grid gap-6 first:mt-0 sm:grid-cols-2">
+              {content.directions !== "" ? (
+                <div className="rounded-lg border border-border bg-card p-7">
+                  <h3 className="text-lg text-foreground">Directions for use</h3>
+                  <p className="mt-3 text-sm leading-relaxed whitespace-pre-line text-muted-foreground">
+                    {content.directions}
+                  </p>
+                </div>
+              ) : null}
+              {content.caution !== "" ? (
+                <div className="rounded-lg border border-[color:var(--burgundy)]/30 bg-card p-7">
+                  <h3 className="text-lg text-foreground">Caution</h3>
+                  <p className="mt-3 text-sm leading-relaxed whitespace-pre-line text-[color:var(--burgundy)]">
+                    {content.caution}
+                  </p>
+                </div>
+              ) : null}
+            </Reveal>
+          ) : null}
+
+          {content.faqs.length > 0 ? (
+            <Reveal className="mt-14 first:mt-0">
+              <h2 className="text-3xl text-foreground">Questions about this product</h2>
+              <Accordion type="single" collapsible className="mt-4 w-full max-w-3xl">
+                {content.faqs.map((f, i) => (
+                  <AccordionItem key={f.q} value={`item-${i}`}>
+                    <AccordionTrigger className="text-left font-display text-lg">
+                      {f.q}
+                    </AccordionTrigger>
+                    <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
+                      {f.a}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </Reveal>
+          ) : null}
+        </Section>
+      ) : null}
 
       <Section>
         {product.variants.length > 1 && (

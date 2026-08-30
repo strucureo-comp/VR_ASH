@@ -17,14 +17,16 @@ import { Reveal } from "@/components/site/Reveal";
 import { Section, SectionLabel, Note } from "@/components/site/Section";
 import { Blob } from "@/components/site/Blob";
 import { AddToCart } from "@/components/site/AddToCart";
+import { ProductRange } from "@/components/site/ProductRange";
 import { Stars } from "@/components/site/Stars";
-import { imageAlt, priceRangeLabel, productSubtitle, sizedImage } from "@/lib/shopify/format";
 import { featuredProductsQuery } from "@/lib/shopify/queryOptions";
+import { sharedContentQuery } from "@/lib/content/queryOptions";
+import { iconRows } from "@/lib/content/render";
 import {
   ABOUT_SNIPPET,
   CERTIFICATIONS,
   GUIDES,
-  METRICS,
+  metrics,
   PHONE_DISPLAY,
   PHONE_TEL,
   PRO_POINTS,
@@ -67,10 +69,18 @@ export const Route = createFileRoute("/")({
   loader: async ({ context }) => {
     // One source of truth: a product that is not yet sellable in Shopify (zero
     // stock / unpublished variants) renders in the "Coming Soon" tier below.
-    const products = await context.queryClient.ensureQueryData(featuredProductsQuery(6));
+    //
+    // The cap is generous rather than three, because past three the range renders
+    // as an auto-advancing rail — a fourth product added in Shopify has to reach
+    // the page for that to mean anything.
+    const [products, shared] = await Promise.all([
+      context.queryClient.ensureQueryData(featuredProductsQuery(12)),
+      context.queryClient.ensureQueryData(sharedContentQuery()),
+    ]);
     return {
-      featured: products.filter((p) => p.availableForSale).slice(0, 3),
+      featured: products.filter((p) => p.availableForSale).slice(0, 8),
       upcoming: products.filter((p) => !p.availableForSale).slice(0, 2),
+      shared,
     };
   },
   head: () => ({
@@ -100,7 +110,9 @@ export const Route = createFileRoute("/")({
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 function Home() {
-  const { featured, upcoming } = Route.useLoaderData();
+  const { featured, upcoming, shared } = Route.useLoaderData();
+  const certifications = iconRows(shared?.certifications ?? [], CERTIFICATIONS);
+  const metricsBar = metrics(certifications.length);
 
   return (
     <>
@@ -209,7 +221,7 @@ function Home() {
       {/* TRUST & CERTIFICATIONS — same list as /certifications. 3-up even on a phone. */}
       <div className="border-y border-border bg-[color:var(--surface)]">
         <div className="mx-auto grid max-w-6xl grid-cols-3 gap-3 px-5 py-8 sm:gap-6 sm:px-6 sm:py-12">
-          {CERTIFICATIONS.map((c, i) => (
+          {certifications.map((c, i) => (
             <Reveal key={c.title} delay={i * 0.06}>
               <Link
                 to="/certifications"
@@ -257,47 +269,7 @@ function Home() {
               Our catalogue is being updated. Please check back shortly.
             </p>
           ) : (
-            <div className="mt-8 grid gap-5 sm:mt-12 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
-              {featured.map((p, i) => (
-                <Reveal key={p.handle} delay={i * 0.06}>
-                  <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card">
-                    <div className="relative isolate flex h-36 items-center justify-center overflow-hidden bg-[color:var(--ivory)] sm:h-44">
-                      <Blob
-                        variant={3}
-                        className="-bottom-16 left-1/2 h-48 w-64 -translate-x-1/2 -z-10"
-                        color="var(--botanical)"
-                        opacity={0.16}
-                      />
-                      {p.featuredImage ? (
-                        <img
-                          src={sizedImage(p.featuredImage.url, 600)}
-                          alt={imageAlt(p.featuredImage.altText, p)}
-                          loading="lazy"
-                          className="h-32 w-auto object-contain drop-shadow-[0_14px_26px_rgba(0,0,0,0.16)] sm:h-40"
-                        />
-                      ) : (
-                        <Leaf className="h-9 w-9 text-[color:var(--botanical)]/40" />
-                      )}
-                    </div>
-                    <div className="flex flex-1 flex-col p-5 sm:p-6">
-                      <h3 className="text-xl text-foreground">{p.title}</h3>
-                      <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-[color:var(--gold)]">
-                        {productSubtitle(p)}
-                      </p>
-                      <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
-                        {p.description}
-                      </p>
-                      <div className="mt-5 border-t border-border pt-4">
-                        <p className="font-display text-xl text-foreground">{priceRangeLabel(p)}</p>
-                      </div>
-                      <div className="mt-4">
-                        <AddToCart product={p} compact />
-                      </div>
-                    </div>
-                  </article>
-                </Reveal>
-              ))}
-            </div>
+            <ProductRange products={featured} />
           )}
 
           {upcoming.length > 0 && (
@@ -412,7 +384,7 @@ function Home() {
         </div>
         {/* Two columns on a phone — a single column made these read as a long list. */}
         <div className="mx-auto mt-10 grid max-w-5xl grid-cols-2 border-t border-primary-foreground/15 sm:mt-14 lg:grid-cols-4 lg:border-b">
-          {METRICS.map((m, i) => (
+          {metricsBar.map((m, i) => (
             <Reveal
               key={m.label}
               delay={i * 0.06}

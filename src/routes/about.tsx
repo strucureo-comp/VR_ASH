@@ -3,10 +3,17 @@ import { Quote } from "lucide-react";
 import { Reveal } from "@/components/site/Reveal";
 import { Section, SectionLabel, Note } from "@/components/site/Section";
 import { Stars } from "@/components/site/Stars";
-import { ABOUT_SNIPPET, METRICS, TESTIMONIALS } from "@/lib/site";
+import { sharedContentQuery } from "@/lib/content/queryOptions";
+import { iconRows } from "@/lib/content/render";
+import { ABOUT_SNIPPET, CERTIFICATIONS, metrics, TESTIMONIALS } from "@/lib/site";
 import leaf from "@/assets/leaf-texture.jpg";
 
 export const Route = createFileRoute("/about")({
+  // Only for the certification count in the metrics bar, which /certifications
+  // and the home page take from the same node.
+  loader: async ({ context }) => ({
+    shared: await context.queryClient.ensureQueryData(sharedContentQuery()),
+  }),
   head: () => ({
     meta: [
       { title: "About Vallalaar Remedies | Ayurvedic Healthcare, Chennai" },
@@ -39,6 +46,9 @@ const APPROACH = [
 ];
 
 function About() {
+  const { shared } = Route.useLoaderData();
+  const metricsBar = metrics(iconRows(shared?.certifications ?? [], CERTIFICATIONS).length);
+
   return (
     <>
       <section className="relative overflow-hidden bg-[color:var(--surface)] px-5 py-12 sm:px-6 sm:py-20">
@@ -66,7 +76,7 @@ function About() {
             </p>
           </div>
           <dl className="mt-12 grid gap-8 border-t border-border pt-8 sm:grid-cols-4">
-            {METRICS.map((m) => (
+            {metricsBar.map((m) => (
               <div key={m.label}>
                 <dt className="font-display text-3xl text-[color:var(--burgundy)]">{m.value}</dt>
                 <dd className="mt-1 text-xs uppercase tracking-[0.14em] text-muted-foreground">

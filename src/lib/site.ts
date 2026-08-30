@@ -181,19 +181,80 @@ export const STEPS = [
 ];
 
 /**
+ * The site-wide FAQ, shown on /faq.
+ *
+ * Two answers are assembled from the lists above so they cannot drift from the
+ * pages they describe. Once /faq reads from the database this array becomes the
+ * seed for `content/shared/faqs` and the two answers freeze as literal text —
+ * self-updating counts are not worth a second source of truth.
+ */
+const CONDITION_LIST = CONDITIONS.map((c) => c.title.toLowerCase()).join(", ");
+const CERT_LIST = CERTIFICATIONS.map((c) => c.title).join(", ");
+
+export const FAQS = [
+  {
+    q: "What is Soliderma?",
+    a: "Soliderma is an Ayurvedic proprietary medicine presented as a multi-action wound healing spray.",
+  },
+  {
+    q: "What is Soliderma used for?",
+    a: `It is used as part of the care routine for ${CONDITION_LIST}. It supports a wound-care plan rather than replacing one.`,
+  },
+  {
+    q: "How should Soliderma be applied?",
+    a: "Use according to the product instructions and the guidance of a qualified healthcare professional.",
+  },
+  {
+    q: "Is Soliderma herbal?",
+    a: "The product packaging identifies Soliderma as a herbal product.",
+  },
+  {
+    q: "Where is Soliderma manufactured?",
+    a: "The supplied material identifies Kniss Laboratories (P) Ltd. as the manufacturer. Vallalaar Remedies markets the product.",
+  },
+  {
+    q: "What certifications does it hold?",
+    a: `${CERT_LIST}. Certificates and regulatory documentation are listed on the Our Science page and can be provided on request.`,
+  },
+  {
+    q: "What does Soliderma cost?",
+    a: "Live prices are shown on each product page and in the cart, per size. Shipping and any taxes are calculated at checkout.",
+  },
+  {
+    q: "Can I order Soliderma online?",
+    a: "Yes. Add the size you need to the cart and check out — payment is processed securely by our Shopify checkout, and you will receive an order confirmation by email.",
+  },
+  {
+    q: "Can clinics order in bulk?",
+    a: "Yes. A dedicated clinic / practitioner enquiry pathway is provided for bulk and professional requirements.",
+  },
+  {
+    q: "Can I use Soliderma without medical advice?",
+    a: "For significant, infected, deep, diabetic or otherwise serious wounds, users should seek appropriate professional medical care. Product use should follow the approved instructions.",
+  },
+];
+
+/**
  * Home-page marketing copy.
  *
  * NOTE: the metrics bar and the testimonials below are customer-supplied
  * claims. Keep them in sync with what can actually be evidenced (certificates
- * on file, consented patient quotes). The certification count is derived from
- * CERTIFICATIONS so it cannot contradict /certifications.
+ * on file, consented patient quotes).
  */
-export const METRICS = [
+const METRIC_CLAIMS = [
   { value: "10+", label: "Years of Trust" },
   { value: "5000+", label: "Doctors Trusted" },
   { value: "1M+", label: "Lives Touched" },
-  { value: String(CERTIFICATIONS.length), label: "Certifications" },
 ];
+
+/**
+ * The certification count is the one metric that is counted rather than claimed,
+ * so the pages that read `content/shared` pass the saved list's length in — the
+ * bar can then never disagree with what /certifications actually shows.
+ */
+export function metrics(certificationCount: number) {
+  return [...METRIC_CLAIMS, { value: String(certificationCount), label: "Certifications" }];
+}
 
 export const ABOUT_SNIPPET =
   "Vallalaar Remedies is a Chennai-based Ayurvedic company built around a single idea — that traditional herbal wound care deserves modern manufacturing discipline. Soliderma is produced for us by Kniss Laboratories (P) Ltd. in a WHO-GMP compliant facility, from a formulation refined through years of practitioner feedback, so families and clinicians get the same result every time.";

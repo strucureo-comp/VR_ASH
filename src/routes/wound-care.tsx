@@ -2,9 +2,29 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/site/Reveal";
 import { Section, SectionLabel, Note } from "@/components/site/Section";
+import { contentId } from "@/lib/content/paths";
+import { productContentQuery } from "@/lib/content/queryOptions";
+import { iconRows } from "@/lib/content/render";
+import { isSolidermaHandle } from "@/lib/shopify/format";
+import { productsQuery } from "@/lib/shopify/queryOptions";
 import { CONDITIONS, GUIDES } from "@/lib/site";
 
 export const Route = createFileRoute("/wound-care")({
+  /**
+   * The conditions here are Soliderma's own, edited on its admin page rather than
+   * duplicated for this route — which is why a page with no product of its own has
+   * to resolve one before it can read anything.
+   */
+  loader: async ({ context }) => {
+    const products = await context.queryClient.ensureQueryData(productsQuery(24));
+    const soliderma = products.find((product) => isSolidermaHandle(product.handle));
+    if (!soliderma) return { content: null };
+    return {
+      content: await context.queryClient.ensureQueryData(
+        productContentQuery(contentId(soliderma.id)),
+      ),
+    };
+  },
   head: () => ({
     meta: [
       { title: "Wellness Guide | Vallalaar Remedies" },
@@ -24,6 +44,9 @@ export const Route = createFileRoute("/wound-care")({
 });
 
 function WoundCare() {
+  const { content } = Route.useLoaderData();
+  const conditions = iconRows(content?.conditions ?? [], CONDITIONS);
+
   return (
     <>
       <section className="bg-[color:var(--botanical-deep)] px-5 py-12 text-primary-foreground sm:px-6 sm:py-20">
@@ -53,7 +76,7 @@ function WoundCare() {
           </p>
         </Reveal>
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {CONDITIONS.map((c, i) => (
+          {conditions.map((c, i) => (
             <Reveal key={c.title} delay={i * 0.05}>
               <article className="flex h-full flex-col rounded-2xl border border-border bg-card p-6">
                 <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[color:var(--botanical)]/10">
