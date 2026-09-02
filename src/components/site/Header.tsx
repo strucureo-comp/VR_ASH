@@ -81,7 +81,6 @@ export function Header() {
             <CartButton className="shrink-0" />
           </nav>
           <div className="flex items-center gap-2 lg:hidden">
-            <AccountButton onClick={() => setOpen(false)} className="h-10 w-10" />
             <CartButton onClick={() => setOpen(false)} className="px-3.5 py-2 text-xs" />
             <button
               type="button"
@@ -102,11 +101,18 @@ export function Header() {
                 to={item.to}
                 activeOptions={{ exact: item.to === "/" }}
                 onClick={() => setOpen(false)}
-                className="border-b border-border/60 py-3 text-sm text-foreground last:border-b-0 [&.active]:text-primary"
+                className="border-b border-border/60 py-3 text-sm text-foreground [&.active]:text-primary"
               >
                 {item.label}
               </Link>
             ))}
+            <div className="pt-3 pb-2">
+              <AccountButton
+                label
+                onClick={() => setOpen(false)}
+                className="h-10 w-full justify-center px-4"
+              />
+            </div>
           </nav>
         )}
       </div>

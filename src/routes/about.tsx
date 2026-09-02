@@ -57,7 +57,7 @@ function About() {
           alt=""
           aria-hidden="true"
           loading="lazy"
-          className="pointer-events-none absolute inset-y-0 right-0 h-full w-1/3 object-cover opacity-15"
+          className="pointer-events-none absolute inset-y-0 right-0 hidden h-full w-1/3 object-cover opacity-15 [mask-image:linear-gradient(to_left,black,transparent)] md:block"
         />
         <div className="relative mx-auto max-w-4xl">
           <p className="eyebrow text-[color:var(--gold)]">About Us</p>
