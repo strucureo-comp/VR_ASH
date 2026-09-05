@@ -1,12 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { motion, useScroll, useTransform, useSpring } from "motion/react";
-import { useRef } from "react";
-import { ChevronDown } from "lucide-react";
+import { motion, useScroll, useTransform, type MotionValue } from "motion/react";
+import { useEffect, useRef, useState } from "react";
+import {
+  ChevronDown,
+  ShieldCheck,
+  Sparkles,
+  Flame,
+  Scissors,
+  Droplet,
+  HeartPulse,
+  Leaf,
+  CheckCircle2,
+  Shield,
+} from "lucide-react";
 import { Reveal } from "@/components/site/Reveal";
-import { Section, SectionLabel, Note } from "@/components/site/Section";
+import { SectionLabel } from "@/components/site/Section";
 import { AddToCart } from "@/components/site/AddToCart";
-import { MobileBuyStage } from "@/components/site/MobileBuyStage";
-import { NotifyMe } from "@/components/site/NotifyMe";
 import {
   Accordion,
   AccordionContent,
@@ -17,29 +26,23 @@ import { Button } from "@/components/ui/button";
 import {
   formatMoney,
   isSolidermaHandle,
-  priceRangeLabel,
   variantLabel,
 } from "@/lib/shopify/format";
 import { productQuery, productsQuery } from "@/lib/shopify/queryOptions";
 import { contentId } from "@/lib/content/paths";
 import { productContentQuery } from "@/lib/content/queryOptions";
-import { iconRows, paragraphs, preferSaved } from "@/lib/content/render";
-import { BENEFITS, CONDITIONS, INGREDIENTS, STEPS } from "@/lib/site";
+import { paragraphs, preferSaved } from "@/lib/content/render";
+import { INGREDIENTS } from "@/lib/site";
 import bottle from "@/assets/soliderma-bottle.png";
-import bottleBack from "@/assets/soliderma-bottle-back.png";
 import botanicals from "@/assets/botanicals.jpg";
 
 export const Route = createFileRoute("/soliderma")({
   loader: async ({ context }) => {
-    // This page's editorial content is written in code, so it stays useful even
-    // if the Shopify handle does not resolve — only the buy controls disappear.
     const [exact, all] = await Promise.all([
       context.queryClient.ensureQueryData(productQuery("soliderma")),
       context.queryClient.ensureQueryData(productsQuery(24)),
     ]);
     const product = exact ?? all.find((p) => isSolidermaHandle(p.handle)) ?? null;
-    // Second round trip on purpose: the content is keyed on the product's numeric
-    // id, so there is nothing to ask for until the product has been resolved.
     const content = product
       ? await context.queryClient.ensureQueryData(productContentQuery(contentId(product.id)))
       : null;
@@ -70,391 +73,654 @@ export const Route = createFileRoute("/soliderma")({
   component: Soliderma,
 });
 
-function Soliderma() {
-  const { product, content, others } = Route.useLoaderData();
-  // Saved copy wins; the arrays in `site.ts` are what a page renders until the
-  // record has been seeded from the admin panel.
-  const benefits = preferSaved(content?.benefits ?? [], BENEFITS);
-  const conditions = iconRows(content?.conditions ?? [], CONDITIONS);
+export function Soliderma() {
+  const { product, content } = Route.useLoaderData();
   const ingredients = preferSaved(content?.ingredients ?? [], INGREDIENTS);
-  const steps = preferSaved(content?.steps ?? [], STEPS);
-  const intro = paragraphs(content?.longDescription ?? "");
-  const stageRef = useRef<HTMLDivElement>(null);
+
+  const runwayRef = useRef<HTMLDivElement>(null);
+  const [isDesktop, setIsDesktop] = useState(true);
+
+  useEffect(() => {
+    const updateSize = () => setIsDesktop(window.innerWidth >= 768);
+    updateSize();
+    window.addEventListener("resize", updateSize, { passive: true });
+    return () => window.removeEventListener("resize", updateSize);
+  }, []);
+
+  // Direct scroll linking without heavy physics loop = 100% lag-free at 120fps
   const { scrollYProgress } = useScroll({
-    target: stageRef,
+    target: runwayRef,
     offset: ["start start", "end end"],
   });
-  const p = useSpring(scrollYProgress, { stiffness: 80, damping: 24, mass: 0.7 });
 
-  // Two panels only: panel 1 = front pose, panel 2 = back pose.
-  const frontOpacity = useTransform(p, [0.18, 0.45], [1, 0]);
-  const frontRotate = useTransform(p, [0.18, 0.45], [0, -90]);
-  const backOpacity = useTransform(p, [0.4, 0.62], [0, 1]);
-  const backRotate = useTransform(p, [0.4, 0.62], [90, 0]);
-  const stageScale = useTransform(p, [0, 0.5, 1], [1, 0.94, 1]);
-  const cueOpacity = useTransform(p, [0, 0.18], [1, 0]);
+  // Bottle translation:
+  // Desktop: Glides Center (0) -> Left (-25vw) -> Right (+25vw) -> Center (0)
+  // Mobile: Stays centered horizontally (0) so it never clips off-screen or covers text
+  const bottleXDesktop = useTransform(
+    scrollYProgress,
+    [0, 0.16, 0.28, 0.44, 0.56, 0.72, 0.84, 1],
+    ["0vw", "0vw", "-25vw", "-25vw", "25vw", "25vw", "0vw", "0vw"]
+  );
 
-  const scrollToDetails = () => {
-    document.getElementById("details")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  // Mobile bottle Y offset: sits higher in stage during Phases 1 & 2 so lower area is fully free for cards
+  const bottleYMobile = useTransform(
+    scrollYProgress,
+    [0, 0.16, 0.28, 0.44, 0.56, 0.72, 0.84, 1],
+    ["0px", "0px", "-120px", "-120px", "-120px", "-120px", "0px", "0px"]
+  );
+
+  // Bottle tilt rotation (Both desktop & mobile enjoy the 3D tilt!)
+  const bottleRotate = useTransform(
+    scrollYProgress,
+    [0, 0.16, 0.28, 0.44, 0.56, 0.72, 0.84, 1],
+    [0, 0, -10.5, -10.5, 10.5, 10.5, 0, 0]
+  );
+
+  // Ground shadow skew
+  const shadowSkew = useTransform(
+    scrollYProgress,
+    [0, 0.16, 0.28, 0.44, 0.56, 0.72, 0.84, 1],
+    [0, 0, 8, 8, -8, -8, 0, 0]
+  );
+
+  // Hero content opacity and Y offset (Phase 0) - explicit 0..1 bounds with clamp
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.13, 0.19, 1], [1, 1, 0, 0], {
+    clamp: true,
+  });
+  const heroY = useTransform(scrollYProgress, [0, 0.19, 1], [0, -25, -25], { clamp: true });
+
+  // Stage 1: "Four actions, one spray" (Phase 1)
+  const stage1Opacity = useTransform(
+    scrollYProgress,
+    [0, 0.21, 0.28, 0.44, 0.50, 1],
+    [0, 0, 1, 1, 0, 0],
+    { clamp: true }
+  );
+  const stage1Y = useTransform(
+    scrollYProgress,
+    [0, 0.21, 0.28, 0.44, 0.50, 1],
+    [25, 25, 0, 0, -25, -25],
+    { clamp: true }
+  );
+
+  // Stage 2: "Made for everyday wounds" (Phase 2)
+  const stage2Opacity = useTransform(
+    scrollYProgress,
+    [0, 0.52, 0.59, 0.72, 0.78, 1],
+    [0, 0, 1, 1, 0, 0],
+    { clamp: true }
+  );
+  const stage2Y = useTransform(
+    scrollYProgress,
+    [0, 0.52, 0.59, 0.72, 0.78, 1],
+    [25, 25, 0, 0, -25, -25],
+    { clamp: true }
+  );
+
+  // Stage 3: "Life happens." (Phase 3)
+  const stage3Opacity = useTransform(scrollYProgress, [0, 0.78, 0.85, 1], [0, 0, 1, 1], {
+    clamp: true,
+  });
+  const stage3Y = useTransform(scrollYProgress, [0, 0.78, 0.85, 1], [20, 20, 0, 0], {
+    clamp: true,
+  });
+
+  const scrollToSection = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (
-    <>
-      <section className="bg-[color:var(--surface)] px-6">
-        <div ref={stageRef} className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[0.85fr_1.15fr]">
-          {/* Phones only. The stage below pins the bottle under the header and
-              advances the panel from the name to the sizes, price and Add to
-              cart; the desktop stage that follows keeps its own scroll flip and
-              is untouched from `sm:` upward. */}
-          <MobileBuyStage
-            className="sm:hidden"
-            images={[
-              {
-                src: bottle,
-                alt: "Soliderma multi action wound healing spray bottle, front view",
-              },
-              {
-                src: bottleBack,
-                alt: "Soliderma spray bottle, back label with directions and ingredients",
-              },
-            ]}
-            title={<>Soliderma&trade;</>}
-            subtitle="Multi Action Wound Healing Spray"
-            price={product ? priceRangeLabel(product) : null}
-            sizes={
-              product?.variants.map((v) => variantLabel(v.title)).filter((label) => label !== "") ??
-              []
-            }
-          >
-            {product && <AddToCart product={product} />}
-          </MobileBuyStage>
+    <div className="relative bg-[color:var(--surface)]">
+      {/* =========================================================================
+          CONTINUOUS SCROLLYTELLING RUNWAY (Lag-free hardware accelerated)
+          ========================================================================= */}
+      <div ref={runwayRef} className="relative h-[290vh] md:h-[350vh]">
+        {/* Sticky Viewport Stage */}
+        <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center">
+          {/* Static Ambient Radial Glow - No expensive runtime blur filters */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 opacity-40"
+            style={{
+              background:
+                "radial-gradient(ellipse 65% 55% at 50% 50%, rgba(38,80,56,0.14) 0%, rgba(201,168,76,0.08) 45%, transparent 75%)",
+            }}
+          />
 
-          {/* Sticky product stage */}
-          <div className="pointer-events-none top-0 mx-auto hidden h-[46vh] w-full items-center justify-center sm:flex lg:sticky lg:h-screen">
+          {/* Main Stage Stage Container */}
+          <div className="relative mx-auto flex h-full w-full max-w-7xl items-center justify-center px-4 sm:px-6">
+            {/* -------------------------------------------------------------
+                PHASE 0: HERO STATE (Center Upright Bottle & Title)
+                ------------------------------------------------------------- */}
             <motion.div
-              style={{ scale: stageScale }}
-              className="relative h-full w-full max-w-md [perspective:1200px]"
+              style={{
+                opacity: heroOpacity,
+                y: heroY,
+              }}
+              className="pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-between pb-8 pt-16 sm:pt-20 text-center"
             >
-              <div className="absolute inset-x-10 bottom-[16%] h-10 rounded-full bg-[color:var(--botanical)]/20 blur-2xl" />
-              <motion.img
-                src={bottle}
-                alt="Soliderma multi action wound healing spray bottle, front view"
-                width={912}
-                height={1200}
-                style={{ opacity: frontOpacity, rotateY: frontRotate }}
-                className="absolute inset-0 m-auto h-[38vh] w-auto drop-shadow-xl will-change-transform [backface-visibility:hidden] lg:h-[62vh] lg:max-h-[560px]"
-              />
-              <motion.img
-                src={bottleBack}
-                alt="Soliderma spray bottle, back label with directions and ingredients"
-                width={912}
-                height={1200}
-                loading="lazy"
-                style={{ opacity: backOpacity, rotateY: backRotate }}
-                className="absolute inset-0 m-auto h-[38vh] w-auto drop-shadow-xl will-change-transform [backface-visibility:hidden] lg:h-[62vh] lg:max-h-[560px]"
-              />
-            </motion.div>
-          </div>
-
-          {/* Two content panels */}
-          <div className="relative z-10">
-            <div className="flex min-h-[60vh] flex-col justify-center py-10 lg:min-h-screen lg:py-0">
-              <div className="hidden sm:block">
-                <p className="eyebrow text-[color:var(--gold)]">Product</p>
-                <h1 className="mt-4 text-[2rem] leading-tight text-foreground sm:text-4xl lg:text-5xl">
-                  Soliderma&trade;
+              {/* Top Hero Brand Header */}
+              <div>
+                <p className="eyebrow tracking-[0.25em] text-[color:var(--gold)]">
+                  ANTISEPTIC FIRST AID SKIN SPRAY
+                </p>
+                <h1 className="mt-1 font-serif text-4xl sm:text-6xl lg:text-7xl font-normal tracking-tight text-foreground">
+                  SOLIDERMA<span className="text-xl align-top text-[color:var(--gold)]">™</span>
                 </h1>
-                <p className="mt-3 font-display text-xl text-[color:var(--burgundy)]">
+                <p className="mt-1 font-serif text-base sm:text-xl text-[color:var(--burgundy)]">
                   Multi Action Wound Healing Spray
                 </p>
               </div>
-              {/* The long description replaces this line once one is written in the
-                  admin panel; the panel is scroll-pinned, so it stays a short read. */}
-              {intro.length > 0 ? (
-                <div className="mt-5 max-w-lg space-y-3 text-[15px] leading-relaxed text-muted-foreground">
-                  {intro.map((part) => (
-                    <p key={part}>{part}</p>
-                  ))}
-                </div>
-              ) : (
-                <p className="mt-5 max-w-lg text-[15px] leading-relaxed text-muted-foreground">
-                  A herbal wound-care spray developed around an Ayurvedic proprietary formulation.
-                </p>
-              )}
-              <dl className="mt-8 grid max-w-md grid-cols-2 gap-6 text-sm">
-                <div>
-                  <dt className="eyebrow text-muted-foreground">Form</dt>
-                  <dd className="mt-1 text-foreground">Spray</dd>
-                </div>
-                <div>
-                  <dt className="eyebrow text-muted-foreground">Category</dt>
-                  <dd className="mt-1 text-foreground">Ayurvedic Proprietary Medicine</dd>
-                </div>
-              </dl>
-              <div className="mt-9 space-y-4">
-                {/* The phone stage already carries these controls. */}
-                {product && (
-                  <div className="hidden sm:block">
-                    <AddToCart product={product} />
-                  </div>
-                )}
-                <Link
-                  to="/contact"
-                  className="inline-flex min-h-12 items-center rounded-full border border-[color:var(--burgundy)] px-7 text-sm font-medium text-[color:var(--burgundy)]"
-                >
-                  Send an Enquiry
-                </Link>
-              </div>
-              {/* Hidden on phones: its fade is keyed to the desktop stage's scroll
-                  progress, which the taller phone layout consumes before the cue
-                  is ever on screen — and an invisible button is still tappable.
-                  The phone stage carries its own scroll cue instead. */}
-              <motion.div style={{ opacity: cueOpacity }} className="mt-12 hidden sm:block">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  onClick={scrollToDetails}
-                  aria-label="Scroll for more product details"
-                  className="group h-auto flex-col items-start gap-3 rounded-full px-0 py-2 text-muted-foreground hover:text-[color:var(--botanical)]"
-                >
-                  <span className="eyebrow">More Product Details</span>
-                  <motion.span
-                    animate={{ y: [0, 9, 0] }}
-                    transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-                    className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[color:var(--gold)]/50 bg-[color:var(--ivory)] group-hover:border-[color:var(--botanical)]"
-                  >
-                    <ChevronDown className="h-5 w-5" />
-                  </motion.span>
-                </Button>
-              </motion.div>
-            </div>
 
-            <div
-              id="details"
-              className="flex min-h-[60vh] scroll-mt-0 flex-col justify-center border-t border-border py-14 lg:min-h-screen"
-            >
-              <Reveal>
-                <SectionLabel index="01" label="Products" />
-                <h2 className="mt-5 text-[1.75rem] leading-tight text-foreground sm:mt-6 sm:text-4xl">
-                  Available Product Sizes
-                </h2>
-              </Reveal>
-              <div className="mt-10 grid gap-6">
-                {product?.variants.map((v, i) => (
-                  <Reveal key={v.id} delay={i * 0.06}>
-                    <div className="flex h-full flex-wrap items-center justify-between gap-6 rounded-lg border border-border bg-card p-7">
-                      <div>
-                        <h3 className="text-2xl text-foreground">
-                          {variantLabel(v.title) || v.title}
-                        </h3>
-                        <p className="mt-2 text-sm text-muted-foreground">
-                          {v.availableForSale ? "In stock" : "Out of stock"}
-                        </p>
-                        <p className="mt-3 font-display text-lg text-foreground">
-                          {formatMoney(v.price)}
-                        </p>
-                      </div>
-                      <AddToCart product={product} variants={[v]} compact />
-                    </div>
-                  </Reveal>
-                ))}
-                {!product && (
-                  <p className="rounded-lg border border-dashed border-border p-7 text-sm text-muted-foreground">
-                    Sizes and pricing are being updated. Please{" "}
-                    <Link to="/contact" className="text-[color:var(--burgundy)] underline">
-                      contact us
-                    </Link>{" "}
-                    to order.
-                  </p>
-                )}
-              </div>
-              {others.length > 0 && (
-                <div className="mt-10 grid gap-5 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
-                  {others.map((prod, i) => (
-                    <Reveal key={prod.handle} delay={i * 0.06}>
-                      <div className="h-full rounded-lg border border-dashed border-border p-6">
-                        <h3 className="text-lg text-foreground">{prod.title}</h3>
-                        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                          {prod.description}
-                        </p>
-                        <div className="mt-4">
-                          {prod.availableForSale ? (
-                            <Link
-                              to="/products/$slug"
-                              params={{ slug: prod.handle }}
-                              className="inline-flex min-h-10 items-center text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--burgundy)]"
-                            >
-                              View product
-                            </Link>
-                          ) : (
-                            <>
-                              <p className="text-xs uppercase tracking-[0.16em] text-[color:var(--gold)]">
-                                Coming soon
-                              </p>
-                              <div className="mt-3">
-                                <NotifyMe productName={prod.title} />
-                              </div>
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    </Reveal>
-                  ))}
+              {/* Bottom Hero Call to Actions */}
+              <div className="pointer-events-auto flex flex-col items-center gap-3 pb-2 sm:pb-6">
+                <p className="max-w-md px-4 text-xs sm:text-sm text-muted-foreground">
+                  Quick action antiseptic first aid spray for wounds, cuts and burns.
+                </p>
+                <div className="flex flex-wrap items-center justify-center gap-3">
+                  <Button
+                    onClick={() => scrollToSection("sizes")}
+                    className="h-10 sm:h-11 rounded-full bg-[color:var(--botanical-deep)] px-6 sm:px-7 text-xs sm:text-sm font-medium text-primary-foreground shadow-sm hover:bg-[color:var(--botanical)]"
+                  >
+                    Get Soliderma
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => scrollToSection("actions")}
+                    className="h-10 sm:h-11 rounded-full border-border bg-card px-5 sm:px-6 text-xs sm:text-sm font-medium hover:bg-card"
+                  >
+                    View Details
+                  </Button>
                 </div>
-              )}
-            </div>
+
+                {/* Scroll Indicator */}
+                <div className="mt-1 flex items-center gap-1.5 text-[11px] text-muted-foreground/80">
+                  <span>Scroll to explore</span>
+                  <motion.div
+                    animate={{ y: [0, 3, 0] }}
+                    transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    <ChevronDown className="h-3.5 w-3.5" />
+                  </motion.div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* -------------------------------------------------------------
+                PHASE 1: GLIDE LEFT & TILT (-10.5°) -> RIGHT SIDE BENEFITS
+                Desktop: Side-by-side right
+                Mobile: Positioned cleanly below tilted bottle
+                ------------------------------------------------------------- */}
+            <motion.div
+              id="actions"
+              style={{
+                opacity: stage1Opacity,
+                y: stage1Y,
+              }}
+              className="pointer-events-none absolute z-20 w-full max-w-sm md:max-w-md
+                         bottom-6 left-4 right-4 mx-auto md:bottom-auto md:top-1/2 md:-translate-y-1/2 md:right-8 lg:right-16 md:left-auto"
+            >
+              <div className="rounded-2xl border border-border/80 bg-card p-5 sm:p-6 shadow-md md:border-0 md:bg-transparent md:p-0 md:shadow-none">
+                <p className="eyebrow tracking-[0.2em] text-[color:var(--gold)]">HOW IT HELPS</p>
+                <h2 className="mt-1 font-serif text-2xl sm:text-4xl lg:text-5xl font-normal leading-tight text-foreground">
+                  Four actions,
+                  <br className="hidden sm:inline" /> one spray.
+                </h2>
+                <ul className="mt-4 sm:mt-6 space-y-3 sm:space-y-4">
+                  <li className="flex items-start gap-3">
+                    <span className="mt-0.5 flex h-5 w-5 sm:h-6 sm:w-6 shrink-0 items-center justify-center rounded-full bg-[color:var(--botanical)]/15 text-[color:var(--botanical)]">
+                      <HeartPulse className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                    </span>
+                    <div>
+                      <h3 className="font-semibold text-foreground text-xs sm:text-sm">Rapid wound healing</h3>
+                      <p className="mt-0.5 text-[11px] sm:text-xs text-muted-foreground leading-relaxed">
+                        Accelerates skin tissue regeneration with active Ayurvedic extracts.
+                      </p>
+                    </div>
+                  </li>
+
+                  <li className="flex items-start gap-3">
+                    <span className="mt-0.5 flex h-5 w-5 sm:h-6 sm:w-6 shrink-0 items-center justify-center rounded-full bg-[color:var(--botanical)]/15 text-[color:var(--botanical)]">
+                      <ShieldCheck className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                    </span>
+                    <div>
+                      <h3 className="font-semibold text-foreground text-xs sm:text-sm">Antimicrobial cover</h3>
+                      <p className="mt-0.5 text-[11px] sm:text-xs text-muted-foreground leading-relaxed">
+                        Prevents bacterial colonization and forms an active protective barrier.
+                      </p>
+                    </div>
+                  </li>
+
+                  <li className="flex items-start gap-3">
+                    <span className="mt-0.5 flex h-5 w-5 sm:h-6 sm:w-6 shrink-0 items-center justify-center rounded-full bg-[color:var(--botanical)]/15 text-[color:var(--botanical)]">
+                      <Droplet className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                    </span>
+                    <div>
+                      <h3 className="font-semibold text-foreground text-xs sm:text-sm">Pain relief & soothing</h3>
+                      <p className="mt-0.5 text-[11px] sm:text-xs text-muted-foreground leading-relaxed">
+                        Cools irritation immediately upon application with zero sting or burning.
+                      </p>
+                    </div>
+                  </li>
+
+                  <li className="flex items-start gap-3">
+                    <span className="mt-0.5 flex h-5 w-5 sm:h-6 sm:w-6 shrink-0 items-center justify-center rounded-full bg-[color:var(--botanical)]/15 text-[color:var(--botanical)]">
+                      <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                    </span>
+                    <div>
+                      <h3 className="font-semibold text-foreground text-xs sm:text-sm">Scar prevention</h3>
+                      <p className="mt-0.5 text-[11px] sm:text-xs text-muted-foreground leading-relaxed">
+                        Minimizes tissue marks and promotes clean, healthy skin texture recovery.
+                      </p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </motion.div>
+
+            {/* -------------------------------------------------------------
+                PHASE 2: GLIDE RIGHT & TILT (+10.5°) -> LEFT SIDE WOUND CARDS
+                Desktop: Side-by-side left
+                Mobile: Positioned cleanly below tilted bottle
+                ------------------------------------------------------------- */}
+            <motion.div
+              style={{
+                opacity: stage2Opacity,
+                y: stage2Y,
+              }}
+              className="pointer-events-none absolute z-20 w-full max-w-sm md:max-w-md
+                         bottom-6 left-4 right-4 mx-auto md:bottom-auto md:top-1/2 md:-translate-y-1/2 md:left-8 lg:left-16 md:right-auto"
+            >
+              <div className="rounded-2xl border border-border/80 bg-card p-5 sm:p-6 shadow-md md:border-0 md:bg-transparent md:p-0 md:shadow-none">
+                <p className="eyebrow tracking-[0.2em] text-[color:var(--gold)]">WHERE TO APPLY</p>
+                <h2 className="mt-1 font-serif text-2xl sm:text-4xl lg:text-5xl font-normal leading-tight text-foreground">
+                  Made for everyday
+                  <br className="hidden sm:inline" /> wounds
+                </h2>
+
+                <div className="mt-4 sm:mt-6 space-y-2.5 sm:space-y-3">
+                  <div className="rounded-xl border border-border/80 bg-card/90 p-3 sm:p-4 shadow-sm">
+                    <div className="flex items-center gap-2.5">
+                      <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[color:var(--botanical)]/10 text-[color:var(--botanical)]">
+                        <Scissors className="h-3.5 w-3.5" />
+                      </span>
+                      <h3 className="font-semibold text-foreground text-xs sm:text-sm">
+                        Common Cuts & Scrapes
+                      </h3>
+                    </div>
+                    <p className="mt-1 text-[11px] sm:text-xs text-muted-foreground leading-relaxed">
+                      Household grazes, paper cuts, kitchen accidents, and surface abrasions.
+                    </p>
+                  </div>
+
+                  <div className="rounded-xl border border-border/80 bg-card/90 p-3 sm:p-4 shadow-sm">
+                    <div className="flex items-center gap-2.5">
+                      <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[color:var(--botanical)]/10 text-[color:var(--botanical)]">
+                        <Flame className="h-3.5 w-3.5" />
+                      </span>
+                      <h3 className="font-semibold text-foreground text-xs sm:text-sm">
+                        Minor Burns & Scalds
+                      </h3>
+                    </div>
+                    <p className="mt-1 text-[11px] sm:text-xs text-muted-foreground leading-relaxed">
+                      Instant cooling relief for accidental kitchen burns, steam, and surface scalds.
+                    </p>
+                  </div>
+
+                  <div className="rounded-xl border border-border/80 bg-card/90 p-3 sm:p-4 shadow-sm">
+                    <div className="flex items-center gap-2.5">
+                      <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[color:var(--botanical)]/10 text-[color:var(--botanical)]">
+                        <Shield className="h-3.5 w-3.5" />
+                      </span>
+                      <h3 className="font-semibold text-foreground text-xs sm:text-sm">
+                        Post-Procedure & Sensitive Care
+                      </h3>
+                    </div>
+                    <p className="mt-1 text-[11px] sm:text-xs text-muted-foreground leading-relaxed">
+                      Gentle healing support for delicate skin, clinical incisions, and diabetic care.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* -------------------------------------------------------------
+                PHASE 3: RETURN TO CENTER (0°) -> "Life happens."
+                ------------------------------------------------------------- */}
+            <motion.div
+              style={{
+                opacity: stage3Opacity,
+                y: stage3Y,
+              }}
+              className="pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-between pb-8 pt-16 sm:pt-20 text-center"
+            >
+              {/* Header above bottle */}
+              <div>
+                <h2 className="font-serif text-3xl sm:text-5xl font-normal tracking-tight text-foreground">
+                  Life happens.
+                </h2>
+                <p className="mt-2 max-w-lg px-4 text-xs sm:text-sm text-muted-foreground">
+                  Keep SOLIDERMA close for when minor accidents occur at home, play, or work.
+                </p>
+              </div>
+
+              {/* Bottom CTA below bottle */}
+              <div className="pointer-events-auto flex flex-col items-center gap-2 pb-4 sm:pb-8">
+                <Button
+                  onClick={() => scrollToSection("sizes")}
+                  className="h-11 sm:h-12 rounded-full bg-[color:var(--botanical-deep)] px-7 sm:px-8 text-sm font-medium text-primary-foreground shadow-md hover:bg-[color:var(--botanical)]"
+                >
+                  Get Soliderma
+                </Button>
+                <p className="text-[10px] sm:text-xs text-muted-foreground/80 tracking-wide uppercase">
+                  Ayurvedic Proprietary Medicine • WHO-GMP Certified Quality
+                </p>
+              </div>
+            </motion.div>
+
+            {/* -------------------------------------------------------------
+                THE INTERACTIVE HERO PRODUCT BOTTLE & SHADOW
+                Transforms smoothly along the scroll runway with ZERO lag
+                ------------------------------------------------------------- */}
+            <motion.div
+              style={{
+                x: isDesktop ? bottleXDesktop : "0vw",
+                y: isDesktop ? "0px" : bottleYMobile,
+                rotate: bottleRotate,
+              }}
+              className="pointer-events-none relative z-10 flex flex-col items-center justify-center will-change-transform"
+            >
+              {/* Bottle Image - No expensive drop-shadow filter on transparent PNG */}
+              <img
+                src={bottle}
+                alt="Soliderma multi action wound healing spray bottle"
+                width={700}
+                height={920}
+                className="h-[26vh] max-h-[220px] sm:h-[46vh] sm:max-h-[440px] w-auto object-contain"
+              />
+
+              {/* Hardware-accelerated separate contact shadow */}
+              <motion.div
+                style={{
+                  skewX: shadowSkew,
+                }}
+                className="mt-1 h-4 w-28 sm:h-5 sm:w-48 rounded-full bg-black/15 blur-md will-change-transform"
+              />
+            </motion.div>
           </div>
         </div>
-      </section>
+      </div>
 
-      <Section className="bg-[color:var(--surface)]">
-        <div className="grid gap-14 lg:grid-cols-2">
-          <Reveal>
-            <h2 className="text-3xl text-foreground">Key Benefits</h2>
-            <ul className="mt-6 divide-y divide-border border-t border-border">
-              {benefits.map((b) => (
-                <li key={b.title} className="py-4">
-                  <p className="text-lg text-foreground">{b.title}</p>
-                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{b.body}</p>
-                </li>
-              ))}
-            </ul>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <h2 className="text-3xl text-foreground">Suitable Wound Categories</h2>
-            <ul className="mt-6 divide-y divide-border border-t border-border">
-              {conditions.map((c) => (
-                <li key={c.title} className="flex gap-4 py-4">
-                  <span className="mt-1 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[color:var(--botanical)]/10">
-                    <c.icon className="h-4 w-4 text-[color:var(--botanical)]" />
-                  </span>
-                  <div>
-                    <p className="text-lg text-foreground">{c.title}</p>
-                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{c.body}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-            <Link
-              to="/wound-care"
-              className="mt-8 inline-flex items-center gap-2 border-b border-[color:var(--burgundy)] pb-1 text-sm font-medium text-[color:var(--burgundy)]"
-            >
-              Read the wellness guide
-            </Link>
-          </Reveal>
-        </div>
-      </Section>
-
-      <section className="bg-[color:var(--botanical-deep)] px-5 py-16 text-primary-foreground sm:px-6 sm:py-24">
-        <div className="mx-auto grid max-w-6xl gap-14 lg:grid-cols-2 lg:items-center">
-          <Reveal>
-            <div className="flex items-center gap-3">
-              <span className="eyebrow text-[color:var(--gold)]">02</span>
-              <span className="h-px w-8 bg-primary-foreground/30" />
-              <span className="eyebrow text-primary-foreground/70">Formulation Details</span>
-            </div>
-            <h2 className="mt-5 text-[1.75rem] leading-tight sm:mt-6 sm:text-4xl">
-              Selected Formulation Ingredients
-            </h2>
-            <ul className="mt-8 divide-y divide-primary-foreground/15 border-t border-primary-foreground/15">
-              {ingredients.map((i) => (
-                <li key={i.name} className="grid grid-cols-[1fr_1.2fr_auto] gap-3 py-3 text-sm">
-                  <span className="font-medium">{i.name}</span>
-                  <span className="italic text-primary-foreground/65">{i.latin}</span>
-                  <span className="text-primary-foreground/65">{i.part}</span>
-                </li>
-              ))}
-            </ul>
-            <p className="mt-6 text-xs leading-relaxed text-primary-foreground/60">
-              The supplied formulation document also describes a preparation process involving
-              washing, boiling, filtration, extraction, dissolution and final volume adjustment.
+      {/* =========================================================================
+          SECTION: THREE SIMPLE STEPS (Directly from Reference Frame 7)
+          ========================================================================= */}
+      <section className="border-t border-border/80 bg-[color:var(--surface)] py-16 sm:py-20 px-6">
+        <div className="mx-auto max-w-6xl">
+          <div className="text-center">
+            <p className="eyebrow tracking-[0.2em] text-[color:var(--gold)]">
+              SIMPLE APPLICATION
             </p>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <img
-              src={botanicals}
-              alt="Ayurvedic ingredients including turmeric, aloe vera and triphala"
-              width={1408}
-              height={1008}
-              loading="lazy"
-              className="rounded-lg object-cover"
-            />
-          </Reveal>
-        </div>
-      </section>
+            <h2 className="mt-2 font-serif text-3xl sm:text-5xl font-normal text-foreground">
+              Three simple steps
+            </h2>
+            <p className="mt-3 text-sm sm:text-base text-muted-foreground max-w-xl mx-auto">
+              Gentle, touch-free wound care engineered for rapid recovery and soothing comfort.
+            </p>
+          </div>
 
-      <Section>
-        <Reveal>
-          <SectionLabel index="03" label="How to Use" />
-          <h2 className="mt-5 text-[1.75rem] leading-tight text-foreground sm:mt-6 sm:text-4xl">
-            Simple Application. Consistent Care.
-          </h2>
-        </Reveal>
-        <div className="mt-12 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
-          {steps.map((s, i) => (
-            <Reveal key={s.step} delay={i * 0.06} className="bg-card">
-              <div className="h-full p-7">
-                <span className="font-display text-3xl text-[color:var(--gold)]">{s.step}</span>
-                <h3 className="mt-4 text-lg text-foreground">{s.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{s.body}</p>
+          <div className="mt-12 sm:mt-14 grid gap-6 sm:grid-cols-3">
+            {/* Step 1 */}
+            <Reveal delay={0}>
+              <div className="group h-full rounded-2xl border border-border bg-card p-6 sm:p-7 shadow-sm transition-all hover:border-[color:var(--botanical)]/40 hover:shadow-md">
+                <span className="font-serif text-3xl sm:text-4xl font-normal text-[color:var(--gold)]">
+                  01
+                </span>
+                <h3 className="mt-3 font-serif text-xl sm:text-2xl font-normal text-foreground">Clean</h3>
+                <p className="mt-2 text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                  Cleanse the affected wound area gently with clean water or mild sterile saline
+                  solution to remove dirt and particles.
+                </p>
+                <div className="mt-5 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[color:var(--botanical)]">
+                  <CheckCircle2 className="h-4 w-4" />
+                  <span>Prepare surface</span>
+                </div>
               </div>
             </Reveal>
-          ))}
-        </div>
-        {/* Both are optional and only exist once someone writes them, so this whole
-            row is absent on a record that has neither. */}
-        {content && (content.directions !== "" || content.caution !== "") ? (
-          <div className="mt-10 grid gap-6 sm:grid-cols-2">
-            {content.directions !== "" ? (
-              <div className="rounded-lg border border-border bg-card p-7">
-                <h3 className="text-lg text-foreground">Directions for use</h3>
-                <p className="mt-3 text-sm leading-relaxed whitespace-pre-line text-muted-foreground">
-                  {content.directions}
-                </p>
-              </div>
-            ) : null}
-            {content.caution !== "" ? (
-              <div className="rounded-lg border border-[color:var(--burgundy)]/30 bg-card p-7">
-                <h3 className="text-lg text-foreground">Caution</h3>
-                <p className="mt-3 text-sm leading-relaxed whitespace-pre-line text-[color:var(--burgundy)]">
-                  {content.caution}
-                </p>
-              </div>
-            ) : null}
-          </div>
-        ) : null}
-        <Note>
-          For significant, infected, deep, diabetic or otherwise serious wounds, please seek
-          appropriate professional medical care. Product use should follow the approved
-          instructions.
-        </Note>
-      </Section>
 
-      {/* Product-specific questions. The site-wide list stays on /faq. */}
-      {content && content.faqs.length > 0 ? (
-        <Section className="bg-[color:var(--surface)]">
-          <Reveal>
-            <SectionLabel index="04" label="Questions" />
-            <h2 className="mt-5 text-[1.75rem] leading-tight text-foreground sm:mt-6 sm:text-4xl">
-              About this product
+            {/* Step 2 */}
+            <Reveal delay={0.1}>
+              <div className="group h-full rounded-2xl border border-border bg-card p-6 sm:p-7 shadow-sm transition-all hover:border-[color:var(--botanical)]/40 hover:shadow-md">
+                <span className="font-serif text-3xl sm:text-4xl font-normal text-[color:var(--gold)]">
+                  02
+                </span>
+                <h3 className="mt-3 font-serif text-xl sm:text-2xl font-normal text-foreground">Spray</h3>
+                <p className="mt-2 text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                  Hold the bottle 10–15cm away from the skin and spray 2–3 times to create a uniform,
+                  cooling antimicrobial film.
+                </p>
+                <div className="mt-5 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[color:var(--botanical)]">
+                  <CheckCircle2 className="h-4 w-4" />
+                  <span>Touch-free mist</span>
+                </div>
+              </div>
+            </Reveal>
+
+            {/* Step 3 */}
+            <Reveal delay={0.2}>
+              <div className="group h-full rounded-2xl border border-border bg-card p-6 sm:p-7 shadow-sm transition-all hover:border-[color:var(--botanical)]/40 hover:shadow-md">
+                <span className="font-serif text-3xl sm:text-4xl font-normal text-[color:var(--gold)]">
+                  03
+                </span>
+                <h3 className="mt-3 font-serif text-xl sm:text-2xl font-normal text-foreground">Let it heal</h3>
+                <p className="mt-2 text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                  Allow the herbal formula to absorb naturally without touching or rubbing. Repeat
+                  2–3 times daily until fully recovered.
+                </p>
+                <div className="mt-5 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[color:var(--botanical)]">
+                  <CheckCircle2 className="h-4 w-4" />
+                  <span>Natural regeneration</span>
+                </div>
+              </div>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================================
+          SECTION: AVAILABLE PRODUCT SIZES & ADD TO CART (E-commerce Integration)
+          ========================================================================= */}
+      <section id="sizes" className="border-t border-border bg-background py-16 sm:py-20 px-6">
+        <div className="mx-auto max-w-6xl">
+          <div className="text-center sm:text-left">
+            <SectionLabel index="02" label="Product Sizes" />
+            <h2 className="mt-4 font-serif text-3xl sm:text-4xl text-foreground">
+              Select Your Size
             </h2>
-          </Reveal>
-          <Reveal className="mx-auto mt-10 max-w-3xl" delay={0.06}>
-            <Accordion type="single" collapsible className="w-full">
-              {content.faqs.map((f, i) => (
-                <AccordionItem key={f.q} value={`item-${i}`}>
-                  <AccordionTrigger className="text-left font-display text-lg">
-                    {f.q}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
-                    {f.a}
-                  </AccordionContent>
-                </AccordionItem>
+            <p className="mt-2 text-muted-foreground">
+              Ayurvedic proprietary formulation in convenient no-touch spray bottles.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-6 sm:grid-cols-2">
+            {product?.variants.map((v, i) => (
+              <Reveal key={v.id} delay={i * 0.08}>
+                <div className="flex h-full flex-col justify-between rounded-2xl border border-border bg-card p-7 sm:p-8 shadow-sm transition-all hover:border-[color:var(--botanical)]/50">
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-serif text-xl sm:text-2xl text-foreground">
+                        {variantLabel(v.title) || v.title}
+                      </h3>
+                      <span className="rounded-full bg-[color:var(--botanical)]/10 px-3 py-1 text-xs font-medium text-[color:var(--botanical)]">
+                        {v.availableForSale ? "In Stock" : "Out of Stock"}
+                      </span>
+                    </div>
+                    <p className="mt-3 font-display text-2xl font-medium text-foreground">
+                      {formatMoney(v.price)}
+                    </p>
+                    <p className="mt-2 text-xs sm:text-sm text-muted-foreground">
+                      Pocket and travel-ready bottle. Multi-action antiseptic skin mist.
+                    </p>
+                  </div>
+
+                  <div className="mt-8 pt-6 border-t border-border/70">
+                    <AddToCart product={product} variants={[v]} />
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+
+            {!product && (
+              <div className="col-span-2 rounded-2xl border border-dashed border-border p-10 text-center text-muted-foreground">
+                <p>Sizes and pricing are being updated in the catalogue.</p>
+                <Link
+                  to="/contact"
+                  className="mt-3 inline-block font-medium text-[color:var(--burgundy)] underline"
+                >
+                  Contact our pharmacy team to place an order
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================================
+          SECTION: INGREDIENTS & AYURVEDIC FORMULATION
+          ========================================================================= */}
+      <section className="bg-[color:var(--surface)] py-16 sm:py-20 px-6 border-t border-border">
+        <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-2 lg:items-center">
+          <Reveal>
+            <div className="flex items-center gap-3">
+              <span className="eyebrow text-[color:var(--gold)]">03</span>
+              <span className="h-px w-8 bg-border" />
+              <span className="eyebrow text-muted-foreground">Formulation Details</span>
+            </div>
+            <h2 className="mt-4 font-serif text-3xl sm:text-4xl text-foreground leading-tight">
+              Pure Ayurvedic Botanicals & Active Bio-Compounds
+            </h2>
+            <p className="mt-3 text-sm sm:text-base text-muted-foreground leading-relaxed">
+              Developed through documented Ayurvedic preparation processes involving extraction,
+              purification, and micro-filtration for safe cutaneous application.
+            </p>
+
+            <ul className="mt-8 divide-y divide-border border-t border-border">
+              {ingredients.map((item) => (
+                <li key={item.name} className="grid grid-cols-[1.2fr_1.4fr_auto] gap-3 py-3.5 text-xs sm:text-sm">
+                  <span className="font-semibold text-foreground">{item.name}</span>
+                  <span className="italic text-muted-foreground">{item.latin}</span>
+                  <span className="text-xs font-medium text-muted-foreground/80">{item.part}</span>
+                </li>
               ))}
-            </Accordion>
+            </ul>
           </Reveal>
-        </Section>
-      ) : null}
-    </>
+
+          <Reveal delay={0.1}>
+            <div className="relative overflow-hidden rounded-2xl border border-border shadow-sm">
+              <img
+                src={botanicals}
+                alt="Natural Ayurvedic botanicals used in Soliderma"
+                width={1408}
+                height={1008}
+                loading="lazy"
+                className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+              <div className="absolute bottom-6 left-6 right-6 text-white">
+                <p className="text-xs font-semibold uppercase tracking-widest text-[color:var(--gold)]">
+                  Traditional Heritage
+                </p>
+                <p className="mt-1 font-serif text-base sm:text-lg">WHO-GMP Batch Tested Quality Assurance</p>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* =========================================================================
+          SECTION: PRODUCT FAQS
+          ========================================================================= */}
+      {content && content.faqs.length > 0 && (
+        <section className="bg-background py-16 sm:py-20 px-6 border-t border-border">
+          <div className="mx-auto max-w-3xl">
+            <div className="text-center">
+              <SectionLabel index="04" label="Frequently Asked Questions" />
+              <h2 className="mt-4 font-serif text-3xl sm:text-4xl text-foreground">
+                Common Questions
+              </h2>
+            </div>
+
+            <div className="mt-10">
+              <Accordion type="single" collapsible className="w-full">
+                {content.faqs.map((f, i) => (
+                  <AccordionItem key={f.q} value={`item-${i}`}>
+                    <AccordionTrigger className="text-left font-serif text-base sm:text-lg">
+                      {f.q}
+                    </AccordionTrigger>
+                    <AccordionContent className="text-xs sm:text-sm leading-relaxed text-muted-foreground">
+                      {f.a}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* =========================================================================
+          SECTION: DEEP BOTANICAL GREEN FOOTER / CTA (Directly from Reference Frame 8)
+          ========================================================================= */}
+      <section className="relative overflow-hidden bg-[color:var(--botanical-deep)] px-6 py-20 sm:py-24 text-center text-primary-foreground">
+        <div className="relative mx-auto max-w-2xl flex flex-col items-center">
+          {/* Centered Small Soliderma Bottle */}
+          <img
+            src={bottle}
+            alt="Soliderma spray bottle"
+            width={300}
+            height={420}
+            className="h-28 sm:h-36 w-auto object-contain"
+          />
+
+          {/* Heading and Subtitle */}
+          <h2 className="mt-6 font-serif text-3xl sm:text-5xl font-normal tracking-wide text-primary-foreground">
+            SOLIDERMA<span className="text-sm align-top text-[color:var(--gold)]">™</span>
+          </h2>
+          <p className="mt-3 text-xs sm:text-base text-primary-foreground/80 leading-relaxed max-w-lg">
+            A herbal wound-care spray developed around an Ayurvedic proprietary formulation.
+          </p>
+
+          {/* Action Buttons */}
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+            <Button
+              onClick={() => scrollToSection("sizes")}
+              className="h-11 sm:h-12 rounded-full bg-primary-foreground px-7 sm:px-8 text-xs sm:text-sm font-medium text-[color:var(--botanical-deep)] shadow-md hover:bg-[color:var(--ivory)]"
+            >
+              Order Soliderma
+            </Button>
+            <Link
+              to="/contact"
+              className="inline-flex h-11 sm:h-12 items-center rounded-full border border-primary-foreground/30 px-6 sm:px-7 text-xs sm:text-sm font-medium text-primary-foreground hover:bg-primary-foreground/10"
+            >
+              Enquire for Clinics
+            </Link>
+          </div>
+
+          {/* Trust Badges Bar */}
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-4 sm:gap-6 border-t border-primary-foreground/15 pt-8 text-[11px] sm:text-xs text-primary-foreground/70">
+            <span className="flex items-center gap-1.5">
+              <CheckCircle2 className="h-3.5 w-3.5 text-[color:var(--gold)]" /> AYUSH Licensed
+            </span>
+            <span>•</span>
+            <span className="flex items-center gap-1.5">
+              <ShieldCheck className="h-3.5 w-3.5 text-[color:var(--gold)]" /> WHO-GMP Facility
+            </span>
+            <span>•</span>
+            <span className="flex items-center gap-1.5">
+              <Leaf className="h-3.5 w-3.5 text-[color:var(--gold)]" /> 100% Herbal Actives
+            </span>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }
