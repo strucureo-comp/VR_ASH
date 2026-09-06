@@ -33,7 +33,7 @@ import {
   WA_CLINIC,
   WA_ENQUIRY,
 } from "@/lib/site";
-import ingredientsMacro from "@/assets/ingredients-macro.jpg";
+import hero from "@/assets/hero.jpeg";
 import forestHero from "@/assets/forest-hero.jpg";
 
 const HERO_BADGES = [
@@ -117,37 +117,23 @@ function Home() {
     <>
       {/* 01 HERO — Full botanical background with elegant overlay */}
       <section className="relative isolate overflow-hidden">
-        {/* Hero Background Image */}
+        {/* Hero Background Image from src/assets/hero.jpeg */}
         <img
-          src={ingredientsMacro}
-          alt="Turmeric root, aloe vera and dried herbs backdrop"
+          src={hero}
+          alt="Ayurvedic herbs, mortar and pestle background"
           width={1920}
           height={1080}
-          className="absolute inset-0 -z-20 h-full w-full object-cover object-center"
+          className="absolute inset-0 -z-20 h-full w-full object-cover object-[center_right] sm:object-center"
         />
 
-        {/* Layered Botanical Wash Overlay for clean readability */}
+        {/* Soft Botanical Wash Overlay for pristine text readability while revealing Ayurvedic artistry */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 -z-10 bg-gradient-to-b from-[color:var(--ivory)]/92 via-[color:var(--ivory)]/82 to-[color:var(--ivory)]"
+          className="absolute inset-0 -z-10 bg-gradient-to-b from-[color:var(--ivory)]/75 via-[color:var(--ivory)]/50 to-[color:var(--ivory)]/95"
         />
         <div
           aria-hidden="true"
-          className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_85%_65%_at_50%_45%,rgba(247,244,235,0.92)_0%,rgba(247,244,235,0.72)_55%,transparent_100%)]"
-        />
-
-        {/* Decorative ambient color washes */}
-        <Blob
-          variant={1}
-          className="-left-24 -top-8 h-[320px] w-[320px] -z-10 blur-2xl sm:-left-40 sm:top-10 sm:h-[620px] sm:w-[620px] sm:blur-3xl"
-          color="var(--botanical)"
-          opacity={0.18}
-        />
-        <Blob
-          variant={3}
-          className="-right-40 top-24 hidden h-[560px] w-[560px] -z-10 blur-3xl sm:block"
-          color="var(--gold)"
-          opacity={0.2}
+          className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_60%_at_50%_40%,rgba(247,244,235,0.70)_0%,rgba(247,244,235,0.30)_65%,transparent_100%)]"
         />
 
         <motion.div
