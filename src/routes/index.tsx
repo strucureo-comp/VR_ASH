@@ -115,27 +115,46 @@ function Home() {
 
   return (
     <>
-      {/* 01 HERO — brand-level: copy first, a botanical still, mobile-first spacing */}
-      <section className="relative isolate overflow-hidden bg-[color:var(--ivory)]">
-        {/* Decorative washes. Kept cheap on phones: one small blob, the rest from sm up. */}
+      {/* 01 HERO — Full botanical background with elegant overlay */}
+      <section className="relative isolate overflow-hidden">
+        {/* Hero Background Image */}
+        <img
+          src={ingredientsMacro}
+          alt="Turmeric root, aloe vera and dried herbs backdrop"
+          width={1920}
+          height={1080}
+          className="absolute inset-0 -z-20 h-full w-full object-cover object-center"
+        />
+
+        {/* Layered Botanical Wash Overlay for clean readability */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 -z-10 bg-gradient-to-b from-[color:var(--ivory)]/92 via-[color:var(--ivory)]/82 to-[color:var(--ivory)]"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_85%_65%_at_50%_45%,rgba(247,244,235,0.92)_0%,rgba(247,244,235,0.72)_55%,transparent_100%)]"
+        />
+
+        {/* Decorative ambient color washes */}
         <Blob
           variant={1}
           className="-left-24 -top-8 h-[320px] w-[320px] -z-10 blur-2xl sm:-left-40 sm:top-10 sm:h-[620px] sm:w-[620px] sm:blur-3xl"
           color="var(--botanical)"
-          opacity={0.2}
+          opacity={0.18}
         />
         <Blob
           variant={3}
           className="-right-40 top-24 hidden h-[560px] w-[560px] -z-10 blur-3xl sm:block"
           color="var(--gold)"
-          opacity={0.22}
+          opacity={0.2}
         />
 
         <motion.div
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: EASE }}
-          className="mx-auto max-w-4xl px-5 pt-12 text-center sm:px-6 sm:pt-20"
+          className="mx-auto max-w-4xl px-5 pt-16 pb-16 text-center sm:px-6 sm:pt-24 sm:pb-24 lg:pt-28 lg:pb-28"
         >
           <div className="flex items-center justify-center gap-2 sm:gap-3">
             <span className="h-px w-5 bg-[color:var(--gold)] sm:w-8" />
@@ -152,13 +171,11 @@ function Home() {
             Safe, Effective, Researched. Backed by nature. Trusted by professionals.
           </p>
 
-          {/* Stacked full-width taps on a phone; an inline pair from sm up.
-              Shopping is the primary action now that checkout is real — WhatsApp
-              is the secondary, enquiry-only channel. */}
+          {/* Stacked full-width taps on a phone; an inline pair from sm up. */}
           <div className="mt-7 flex flex-col gap-3 sm:mt-9 sm:flex-row sm:justify-center">
             <Link
               to="/products"
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[color:var(--botanical-deep)] px-7 text-sm font-semibold text-primary-foreground transition-transform duration-300 sm:hover:-translate-y-0.5"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[color:var(--botanical-deep)] px-7 text-sm font-semibold text-primary-foreground shadow-sm transition-transform duration-300 sm:hover:-translate-y-0.5"
             >
               Explore Products <ArrowRight className="h-4 w-4" />
             </Link>
@@ -166,7 +183,7 @@ function Home() {
               href={WA_ENQUIRY}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[color:var(--botanical)]/45 bg-card px-7 text-sm font-medium text-[color:var(--botanical-deep)] transition-colors sm:hover:border-[color:var(--botanical)]"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[color:var(--botanical)]/45 bg-card/90 px-7 text-sm font-medium text-[color:var(--botanical-deep)] shadow-sm backdrop-blur-sm transition-colors sm:hover:border-[color:var(--botanical)]"
             >
               <MessageCircle className="h-4 w-4" />
               Chat on WhatsApp
@@ -177,7 +194,7 @@ function Home() {
             {HERO_BADGES.map((b) => (
               <li
                 key={b.label}
-                className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--gold)]/40 bg-card/70 px-3 py-1.5"
+                className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--gold)]/40 bg-card/85 px-3 py-1.5 shadow-sm backdrop-blur-sm"
               >
                 <b.icon className="h-3.5 w-3.5 shrink-0 text-[color:var(--botanical)]" />
                 <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground sm:text-[11px] sm:tracking-[0.16em]">
@@ -186,33 +203,14 @@ function Home() {
               </li>
             ))}
           </ul>
-        </motion.div>
 
-        {/* Brand still — the herbs behind the range, not one product. */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, ease: EASE, delay: 0.12 }}
-          className="mx-auto mt-10 max-w-5xl px-5 pb-14 sm:mt-14 sm:px-6 sm:pb-20"
-        >
-          <div className="relative overflow-hidden rounded-2xl sm:rounded-[2rem]">
-            <img
-              src={ingredientsMacro}
-              alt="Turmeric root, aloe vera and dried herbs used in our formulations"
-              width={1200}
-              height={900}
-              className="h-[210px] w-full object-cover sm:h-[320px] lg:h-[400px]"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--botanical-deep)]/80 via-[color:var(--botanical-deep)]/15 to-transparent" />
-            <div className="absolute inset-x-0 bottom-0 p-5 sm:p-8">
-              <p className="font-display text-lg leading-tight text-[color:var(--ivory)] sm:text-2xl">
-                Ayurvedic formulations, modern quality discipline
-              </p>
-              <p className="mt-2 max-w-md text-xs leading-relaxed text-[color:var(--ivory)]/75 sm:text-sm">
-                Documented herbs, WHO-GMP manufacturing and batch testing behind every product we
-                market.
-              </p>
-            </div>
+          <div className="mt-9 sm:mt-11">
+            <p className="font-display text-base text-foreground/90 sm:text-xl">
+              Ayurvedic formulations, modern quality discipline
+            </p>
+            <p className="mx-auto mt-1 max-w-md text-xs leading-relaxed text-muted-foreground sm:text-sm">
+              Documented herbs, WHO-GMP manufacturing and batch testing behind every product we market.
+            </p>
           </div>
         </motion.div>
       </section>
