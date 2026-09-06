@@ -411,7 +411,35 @@ function Home() {
         </div>
       </section>
 
-      {/* 02 OUR RANGE */}
+      {/* 02 WHY CHOOSE US */}
+      <Section className="border-b border-border/70">
+        <Reveal className="text-center">
+          <div className="flex justify-center">
+            <SectionLabel index="02" label="Why Choose Us" />
+          </div>
+          <h2 className="mt-5 text-[1.75rem] leading-tight text-foreground sm:mt-6 sm:text-4xl">
+            Why Thousands Trust Us
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground sm:mt-4 sm:text-[15px]">
+            Pure Ayurvedic formulations manufactured under WHO-GMP conditions, backed by science and clinical practice.
+          </p>
+        </Reveal>
+        <div className="mt-8 grid gap-4 sm:mt-12 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
+          {PILLARS.map((f, i) => (
+            <Reveal key={f.title} delay={i * 0.06}>
+              <div className="h-full rounded-2xl border border-border bg-card p-5 transition-transform duration-300 sm:p-7 sm:hover:-translate-y-1">
+                <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[color:var(--botanical)]/10 sm:h-12 sm:w-12">
+                  <f.icon className="h-5 w-5 text-[color:var(--botanical)]" />
+                </span>
+                <h3 className="mt-4 text-lg text-foreground sm:mt-5 sm:text-xl">{f.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{f.body}</p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </Section>
+
+      {/* 03 OUR RANGE / PRODUCT */}
       <section
         id="products"
         className="relative isolate overflow-hidden bg-[color:var(--surface)] px-5 py-10 sm:px-6 sm:py-14"
@@ -425,7 +453,7 @@ function Home() {
         <div className="mx-auto max-w-6xl">
           <Reveal className="text-center">
             <div className="flex justify-center">
-              <SectionLabel index="01" label="Our Range" />
+              <SectionLabel index="03" label="Our Range" />
             </div>
             <h2 className="mt-5 text-[1.75rem] leading-tight text-foreground sm:mt-6 sm:text-4xl">
               Find your care product
@@ -472,31 +500,6 @@ function Home() {
         </div>
       </section>
 
-      {/* 03 WHY CHOOSE US */}
-      <Section>
-        <Reveal className="text-center">
-          <div className="flex justify-center">
-            <SectionLabel index="02" label="Why Choose Us" />
-          </div>
-          <h2 className="mt-5 text-[1.75rem] leading-tight text-foreground sm:mt-6 sm:text-4xl">
-            Why Thousands Trust Us
-          </h2>
-        </Reveal>
-        <div className="mt-8 grid gap-4 sm:mt-12 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
-          {PILLARS.map((f, i) => (
-            <Reveal key={f.title} delay={i * 0.06}>
-              <div className="h-full rounded-2xl border border-border bg-card p-5 transition-transform duration-300 sm:p-7 sm:hover:-translate-y-1">
-                <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[color:var(--botanical)]/10 sm:h-12 sm:w-12">
-                  <f.icon className="h-5 w-5 text-[color:var(--botanical)]" />
-                </span>
-                <h3 className="mt-4 text-lg text-foreground sm:mt-5 sm:text-xl">{f.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{f.body}</p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </Section>
-
       {/* 04 TESTIMONIALS */}
       <section
         id="testimonials"
@@ -504,7 +507,7 @@ function Home() {
       >
         <div className="mx-auto max-w-6xl">
           <Reveal>
-            <SectionLabel index="03" label="Testimonials" />
+            <SectionLabel index="04" label="Testimonials" />
             <h2 className="mt-5 text-[1.75rem] leading-tight text-foreground sm:mt-6 sm:text-4xl">
               Real Stories. Real Results.
             </h2>
