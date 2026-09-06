@@ -128,7 +128,7 @@ function Home() {
   return (
     <>
       {/* 01 HERO — 2-Column Ayurvedic Hero: Left Content with Background, Right Product */}
-      <section className="relative isolate overflow-hidden bg-[color:var(--surface)]">
+      <section className="relative isolate flex flex-col justify-between overflow-hidden bg-[color:var(--surface)] lg:min-h-[calc(100vh-5.5rem)]">
         {/* Hero Background Image from src/assets/hero.jpeg */}
         <img
           src={hero}
@@ -148,8 +148,8 @@ function Home() {
           className="absolute inset-0 -z-10 bg-gradient-to-b from-[color:var(--ivory)]/30 via-transparent to-[color:var(--ivory)]/60"
         />
 
-        <div className="mx-auto max-w-7xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20 lg:pt-20 lg:pb-24">
-          <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-8">
+        <div className="mx-auto flex w-full max-w-7xl flex-1 items-center px-5 pt-6 pb-4 sm:px-6 sm:pt-8 sm:pb-6 lg:pt-8 lg:pb-6">
+          <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-8">
             {/* LEFT COLUMN: Value Proposition, 4 Feature Badges & CTA */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -163,20 +163,20 @@ function Home() {
               </div>
 
               {/* Main Headline */}
-              <h1 className="mt-4 font-serif text-[2.5rem] font-bold leading-[1.08] tracking-tight text-foreground sm:text-[3.5rem] lg:text-[4.25rem]">
+              <h1 className="mt-3.5 font-serif text-[2.4rem] font-bold leading-[1.08] tracking-tight text-foreground sm:text-[3.2rem] lg:text-[4rem]">
                 <span className="block text-[color:var(--burgundy)]">Faster Healing.</span>
                 <span className="block">Gentle Care.</span>
               </h1>
 
               {/* Description Subtitle */}
-              <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+              <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
                 Soliderma is an ayurvedic multi-action wound healing spray designed for faster, cleaner and safer healing. Trusted care for you and your family.
               </p>
 
               {/* 4 Feature Highlights Grid */}
-              <div className="mt-7 grid grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-4 w-full max-w-xl">
-                <div className="flex flex-col items-center sm:items-start text-center sm:text-left gap-2">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[color:var(--botanical)]/25 bg-card/90 shadow-sm text-[color:var(--botanical)]">
+              <div className="mt-6 grid grid-cols-2 gap-3.5 sm:grid-cols-4 sm:gap-4 w-full max-w-xl">
+                <div className="flex flex-col items-center sm:items-start text-center sm:text-left gap-1.5">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--botanical)]/25 bg-card/90 shadow-sm text-[color:var(--botanical)]">
                     <Leaf className="h-4 w-4" />
                   </span>
                   <span className="text-xs font-semibold text-foreground leading-tight">
@@ -184,8 +184,8 @@ function Home() {
                   </span>
                 </div>
 
-                <div className="flex flex-col items-center sm:items-start text-center sm:text-left gap-2">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[color:var(--botanical)]/25 bg-card/90 shadow-sm text-[color:var(--botanical)]">
+                <div className="flex flex-col items-center sm:items-start text-center sm:text-left gap-1.5">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--botanical)]/25 bg-card/90 shadow-sm text-[color:var(--botanical)]">
                     <ShieldCheck className="h-4 w-4" />
                   </span>
                   <span className="text-xs font-semibold text-foreground leading-tight">
@@ -193,8 +193,8 @@ function Home() {
                   </span>
                 </div>
 
-                <div className="flex flex-col items-center sm:items-start text-center sm:text-left gap-2">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[color:var(--botanical)]/25 bg-card/90 shadow-sm text-[color:var(--botanical)]">
+                <div className="flex flex-col items-center sm:items-start text-center sm:text-left gap-1.5">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--botanical)]/25 bg-card/90 shadow-sm text-[color:var(--botanical)]">
                     <Droplet className="h-4 w-4" />
                   </span>
                   <span className="text-xs font-semibold text-foreground leading-tight">
@@ -202,8 +202,8 @@ function Home() {
                   </span>
                 </div>
 
-                <div className="flex flex-col items-center sm:items-start text-center sm:text-left gap-2">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[color:var(--botanical)]/25 bg-card/90 shadow-sm text-[color:var(--botanical)]">
+                <div className="flex flex-col items-center sm:items-start text-center sm:text-left gap-1.5">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--botanical)]/25 bg-card/90 shadow-sm text-[color:var(--botanical)]">
                     <Stethoscope className="h-4 w-4" />
                   </span>
                   <span className="text-xs font-semibold text-foreground leading-tight">
@@ -213,10 +213,10 @@ function Home() {
               </div>
 
               {/* Action Buttons */}
-              <div className="mt-8 flex flex-wrap items-center gap-3.5 w-full sm:w-auto">
+              <div className="mt-7 flex flex-wrap items-center gap-3 w-full sm:w-auto">
                 <Link
                   to="/soliderma"
-                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[color:var(--burgundy)] hover:bg-[color:var(--burgundy)]/90 px-8 text-sm font-semibold text-white shadow-md transition-transform duration-300 hover:-translate-y-0.5"
+                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[color:var(--burgundy)] hover:bg-[color:var(--burgundy)]/90 px-7 text-sm font-semibold text-white shadow-md transition-transform duration-300 hover:-translate-y-0.5"
                 >
                   Buy Now <ArrowRight className="h-4 w-4" />
                 </Link>
@@ -225,7 +225,7 @@ function Home() {
                   href={WA_ENQUIRY}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[color:var(--burgundy)]/30 bg-card/90 hover:bg-card px-7 text-sm font-semibold text-[color:var(--burgundy)] shadow-sm backdrop-blur-sm transition-colors"
+                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[color:var(--burgundy)]/30 bg-card/90 hover:bg-card px-6 text-sm font-semibold text-[color:var(--burgundy)] shadow-sm backdrop-blur-sm transition-colors"
                 >
                   <MessageCircle className="h-4 w-4" />
                   Talk to a Care Expert
@@ -251,26 +251,26 @@ function Home() {
                     alt={bottleAlt}
                     width={700}
                     height={920}
-                    className="h-[320px] sm:h-[400px] lg:h-[450px] w-auto object-contain drop-shadow-[0_16px_32px_rgba(0,0,0,0.18)] transition-transform duration-500"
+                    className="h-[290px] sm:h-[360px] lg:h-[430px] xl:h-[460px] w-auto object-contain drop-shadow-[0_16px_32px_rgba(0,0,0,0.18)] transition-transform duration-500"
                   />
-                  <div className="-mt-1 mx-auto h-3.5 w-24 sm:w-32 rounded-full bg-black/15 blur-md" />
+                  <div className="-mt-1 mx-auto h-3 w-24 sm:w-28 rounded-full bg-black/15 blur-sm" />
                 </Link>
               </div>
 
               {/* Beside Bottle: CLEAN. SPRAY. HEAL. & 3 Key Benefits */}
-              <div className="flex flex-col items-start gap-4 max-w-[220px]">
+              <div className="flex flex-col items-start gap-3.5 max-w-[220px]">
                 <div>
-                  <h3 className="font-serif text-xl sm:text-2xl font-bold tracking-tight text-[color:var(--botanical)] leading-tight">
+                  <h3 className="font-serif text-lg sm:text-xl font-bold tracking-tight text-[color:var(--botanical)] leading-tight">
                     CLEAN.<br />
                     SPRAY.<br />
                     HEAL.
                   </h3>
                 </div>
 
-                <ul className="space-y-3">
+                <ul className="space-y-2.5">
                   <li className="flex items-center gap-2.5">
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[color:var(--botanical)]/30 bg-card/90 text-[color:var(--botanical)]">
-                      <Leaf className="h-3 w-3" />
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[color:var(--botanical)]/30 bg-card/90 text-[color:var(--botanical)]">
+                      <Leaf className="h-2.5 w-2.5" />
                     </span>
                     <span className="text-xs sm:text-sm font-medium text-foreground leading-snug">
                       Helps prevent infection
@@ -278,8 +278,8 @@ function Home() {
                   </li>
 
                   <li className="flex items-center gap-2.5">
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[color:var(--botanical)]/30 bg-card/90 text-[color:var(--botanical)]">
-                      <ShieldCheck className="h-3 w-3" />
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[color:var(--botanical)]/30 bg-card/90 text-[color:var(--botanical)]">
+                      <ShieldCheck className="h-2.5 w-2.5" />
                     </span>
                     <span className="text-xs sm:text-sm font-medium text-foreground leading-snug">
                       Supports natural healing
@@ -287,8 +287,8 @@ function Home() {
                   </li>
 
                   <li className="flex items-center gap-2.5">
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[color:var(--botanical)]/30 bg-card/90 text-[color:var(--botanical)]">
-                      <Droplet className="h-3 w-3" />
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[color:var(--botanical)]/30 bg-card/90 text-[color:var(--botanical)]">
+                      <Droplet className="h-2.5 w-2.5" />
                     </span>
                     <span className="text-xs sm:text-sm font-medium text-foreground leading-snug">
                       Touch-free application
@@ -299,68 +299,68 @@ function Home() {
             </motion.div>
           </div>
         </div>
-      </section>
 
-      {/* TRUST & CERTIFICATIONS STRIP (Matching reference bottom strip) */}
-      <div className="border-y border-border/80 bg-card/95 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-5 py-4 sm:px-6">
-          <div className="flex flex-wrap items-center gap-6 sm:gap-10">
-            <div className="flex items-center gap-2.5">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--gold)]/40 bg-[color:var(--ivory)] text-[color:var(--botanical)]">
-                <ShieldCheck className="h-4 w-4" />
-              </span>
-              <div>
-                <p className="text-xs font-bold uppercase tracking-wider text-foreground">WHO-GMP</p>
-                <p className="text-[10px] text-muted-foreground">Manufacturing</p>
+        {/* TRUST & CERTIFICATIONS STRIP (Docked seamlessly at bottom of Hero) */}
+        <div className="mt-auto w-full border-t border-border/70 bg-card/85 backdrop-blur-md">
+          <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-3 sm:px-6">
+            <div className="flex flex-wrap items-center gap-5 sm:gap-8">
+              <div className="flex items-center gap-2">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[color:var(--gold)]/40 bg-[color:var(--ivory)] text-[color:var(--botanical)]">
+                  <ShieldCheck className="h-3.5 w-3.5" />
+                </span>
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-foreground">WHO-GMP</p>
+                  <p className="text-[9.5px] text-muted-foreground">Manufacturing</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[color:var(--gold)]/40 bg-[color:var(--ivory)] text-[color:var(--botanical)]">
+                  <Leaf className="h-3.5 w-3.5" />
+                </span>
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-foreground">AYUSH</p>
+                  <p className="text-[9.5px] text-muted-foreground">Compliant</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[color:var(--gold)]/40 bg-[color:var(--ivory)] text-[color:var(--botanical)]">
+                  <BadgeCheck className="h-3.5 w-3.5" />
+                </span>
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-foreground">ISO 9001:2015</p>
+                  <p className="text-[9.5px] text-muted-foreground">Certified</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[color:var(--gold)]/40 bg-[color:var(--ivory)] text-[color:var(--botanical)]">
+                  <FlaskConical className="h-3.5 w-3.5" />
+                </span>
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-foreground">Batch Tested</p>
+                  <p className="text-[9.5px] text-muted-foreground">for Quality</p>
+                </div>
               </div>
             </div>
 
-            <div className="flex items-center gap-2.5">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--gold)]/40 bg-[color:var(--ivory)] text-[color:var(--botanical)]">
-                <Leaf className="h-4 w-4" />
-              </span>
-              <div>
-                <p className="text-xs font-bold uppercase tracking-wider text-foreground">AYUSH</p>
-                <p className="text-[10px] text-muted-foreground">Compliant</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2.5">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--gold)]/40 bg-[color:var(--ivory)] text-[color:var(--botanical)]">
-                <BadgeCheck className="h-4 w-4" />
-              </span>
-              <div>
-                <p className="text-xs font-bold uppercase tracking-wider text-foreground">ISO 9001:2015</p>
-                <p className="text-[10px] text-muted-foreground">Certified</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2.5">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--gold)]/40 bg-[color:var(--ivory)] text-[color:var(--botanical)]">
-                <FlaskConical className="h-4 w-4" />
-              </span>
-              <div>
-                <p className="text-xs font-bold uppercase tracking-wider text-foreground">Batch Tested</p>
-                <p className="text-[10px] text-muted-foreground">for Quality</p>
-              </div>
-            </div>
+            <Link
+              to="/about"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-[color:var(--botanical)] hover:text-[color:var(--botanical-deep)] transition-colors"
+            >
+              <Leaf className="h-3.5 w-3.5" />
+              <span>Ayurveda for a Healthier Tomorrow</span>
+              <ArrowRight className="h-3 w-3" />
+            </Link>
           </div>
-
-          <Link
-            to="/about"
-            className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-[color:var(--botanical)] hover:text-[color:var(--botanical-deep)] transition-colors"
-          >
-            <Leaf className="h-4 w-4" />
-            <span>Ayurveda for a Healthier Tomorrow</span>
-            <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
         </div>
-      </div>
+      </section>
 
       {/* 02 OUR RANGE */}
       <section
         id="products"
-        className="relative isolate overflow-hidden bg-[color:var(--surface)] px-5 py-16 sm:px-6 sm:py-24"
+        className="relative isolate overflow-hidden bg-[color:var(--surface)] px-5 py-10 sm:px-6 sm:py-14"
       >
         <Blob
           variant={1}
