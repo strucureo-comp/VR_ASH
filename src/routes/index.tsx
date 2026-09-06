@@ -138,14 +138,14 @@ function Home() {
           className="absolute inset-0 -z-20 h-full w-full object-cover object-[center_right] sm:object-center"
         />
 
-        {/* Soft Botanical Wash Overlay allowing herbs and background light to illuminate through */}
+        {/* Subtle translucent wash so hero.jpeg is richly visible with crisp text contrast */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 -z-10 bg-gradient-to-r from-[color:var(--ivory)]/95 via-[color:var(--ivory)]/85 to-[color:var(--ivory)]/40"
+          className="absolute inset-0 -z-10 bg-gradient-to-r from-[color:var(--ivory)]/65 via-[color:var(--ivory)]/25 to-transparent"
         />
         <div
           aria-hidden="true"
-          className="absolute inset-0 -z-10 bg-gradient-to-b from-[color:var(--ivory)]/60 via-transparent to-[color:var(--ivory)]/90"
+          className="absolute inset-0 -z-10 bg-gradient-to-b from-[color:var(--ivory)]/30 via-transparent to-[color:var(--ivory)]/60"
         />
 
         <div className="mx-auto max-w-7xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20 lg:pt-20 lg:pb-24">
