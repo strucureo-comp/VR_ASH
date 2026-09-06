@@ -25,7 +25,9 @@ import {
 import { Button } from "@/components/ui/button";
 import {
   formatMoney,
+  imageAlt,
   isSolidermaHandle,
+  sizedImage,
   variantLabel,
 } from "@/lib/shopify/format";
 import { productQuery, productsQuery } from "@/lib/shopify/queryOptions";
@@ -76,6 +78,17 @@ export const Route = createFileRoute("/soliderma")({
 export function Soliderma() {
   const { product, content } = Route.useLoaderData();
   const ingredients = preferSaved(content?.ingredients ?? [], INGREDIENTS);
+
+  // Use the merchant's live Shopify product image everywhere
+  const bottleSrc = product?.featuredImage
+    ? sizedImage(product.featuredImage.url, 1200)
+    : bottle;
+  const smallBottleSrc = product?.featuredImage
+    ? sizedImage(product.featuredImage.url, 400)
+    : bottle;
+  const bottleAlt = product
+    ? imageAlt(product.featuredImage?.altText ?? null, product)
+    : "Soliderma multi action wound healing spray bottle";
 
   const runwayRef = useRef<HTMLDivElement>(null);
   const [isDesktop, setIsDesktop] = useState(true);
@@ -430,13 +443,13 @@ export function Soliderma() {
               }}
               className="pointer-events-none relative z-10 flex flex-col items-center justify-center will-change-transform"
             >
-              {/* Bottle Image - No expensive drop-shadow filter on transparent PNG */}
+              {/* Bottle Image - Uses Shopify product image */}
               <img
-                src={bottle}
-                alt="Soliderma multi action wound healing spray bottle"
+                src={bottleSrc}
+                alt={bottleAlt}
                 width={700}
                 height={920}
-                className="h-[28vh] max-h-[250px] sm:h-[50vh] sm:max-h-[480px] lg:max-h-[520px] w-auto object-contain"
+                className="h-[28vh] max-h-[250px] sm:h-[50vh] sm:max-h-[480px] lg:max-h-[520px] w-auto object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.12)]"
               />
 
               {/* Hardware-accelerated separate contact shadow */}
@@ -674,11 +687,11 @@ export function Soliderma() {
         <div className="relative mx-auto max-w-2xl flex flex-col items-center">
           {/* Centered Small Soliderma Bottle */}
           <img
-            src={bottle}
-            alt="Soliderma spray bottle"
+            src={smallBottleSrc}
+            alt={bottleAlt}
             width={300}
             height={420}
-            className="h-28 sm:h-36 w-auto object-contain"
+            className="h-28 sm:h-36 w-auto object-contain drop-shadow-md"
           />
 
           {/* Heading and Subtitle */}
