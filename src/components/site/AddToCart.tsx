@@ -110,3 +110,55 @@ export function AddToCart({
     </div>
   );
 }
+
+/**
+ * Compact Add to Cart button designed for product cards in grids and rails.
+ */
+export function CardAddToCart({ product }: { product: Product }) {
+  const { add, loading } = useCart();
+  const [added, setAdded] = useState(false);
+
+  if (!product.availableForSale) return null;
+
+  const firstVariant = product.variants.find((v) => v.availableForSale) ?? product.variants[0];
+  if (!firstVariant) return null;
+
+  const onAdd = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    await add(firstVariant.id, 1);
+    setAdded(true);
+    window.setTimeout(() => setAdded(false), 1800);
+    toast.success(`${product.title} added to cart`, {
+      description: "Open cart to review and checkout.",
+    });
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={onAdd}
+      disabled={loading || !firstVariant.availableForSale}
+      aria-label={`Add ${product.title} to cart`}
+      className={`inline-flex items-center justify-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all duration-300 shadow-sm ${
+        added
+          ? "bg-[color:var(--botanical)] text-white"
+          : "bg-primary text-primary-foreground hover:bg-[color:var(--botanical-deep)] active:scale-95"
+      }`}
+    >
+      {loading ? (
+        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+      ) : added ? (
+        <>
+          <Check className="h-3.5 w-3.5" />
+          <span>Added</span>
+        </>
+      ) : (
+        <>
+          <ShoppingBag className="h-3.5 w-3.5" />
+          <span>Add to Cart</span>
+        </>
+      )}
+    </button>
+  );
+}

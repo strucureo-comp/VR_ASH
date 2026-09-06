@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import { Blob } from "@/components/site/Blob";
 import { Reveal } from "@/components/site/Reveal";
+import { CardAddToCart } from "@/components/site/AddToCart";
 import { imageAlt, priceRangeLabel, productSubtitle, sizedImage } from "@/lib/shopify/format";
 import type { Product } from "@/lib/shopify/types";
 
@@ -169,45 +170,56 @@ function Arrow({
  */
 function ProductCard({ product }: { product: Product }) {
   return (
-    <Link
-      to="/products/$slug"
-      params={{ slug: product.handle }}
-      className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all duration-300 sm:hover:border-[color:var(--gold)] sm:hover:shadow-md"
-    >
-      <div className="relative isolate flex h-36 items-center justify-center overflow-hidden bg-[color:var(--ivory)] sm:h-44">
-        <Blob
-          variant={3}
-          className="-bottom-16 left-1/2 h-48 w-64 -translate-x-1/2 -z-10"
-          color="var(--botanical)"
-          opacity={0.16}
-        />
-        {product.featuredImage ? (
-          <img
-            src={sizedImage(product.featuredImage.url, 600)}
-            alt={imageAlt(product.featuredImage.altText, product)}
-            loading="lazy"
-            className="h-32 w-auto object-contain drop-shadow-[0_14px_26px_rgba(0,0,0,0.16)] transition-transform duration-500 sm:h-40 sm:group-hover:scale-105"
+    <div className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all duration-300 sm:hover:border-[color:var(--gold)] sm:hover:shadow-md">
+      <Link
+        to="/products/$slug"
+        params={{ slug: product.handle }}
+        className="block cursor-pointer"
+      >
+        <div className="relative isolate flex h-40 sm:h-48 items-center justify-center overflow-hidden bg-[color:var(--ivory)]">
+          <Blob
+            variant={3}
+            className="-bottom-16 left-1/2 h-48 w-64 -translate-x-1/2 -z-10"
+            color="var(--botanical)"
+            opacity={0.16}
           />
-        ) : (
-          <Leaf className="h-9 w-9 text-[color:var(--botanical)]/40" />
-        )}
-      </div>
+          {product.featuredImage ? (
+            <img
+              src={sizedImage(product.featuredImage.url, 600)}
+              alt={imageAlt(product.featuredImage.altText, product)}
+              loading="lazy"
+              className="h-32 w-auto object-contain drop-shadow-[0_14px_26px_rgba(0,0,0,0.16)] transition-transform duration-500 sm:h-40 sm:group-hover:scale-105"
+            />
+          ) : (
+            <Leaf className="h-9 w-9 text-[color:var(--botanical)]/40" />
+          )}
+        </div>
+      </Link>
+
       <div className="flex flex-1 flex-col px-5 pt-5 sm:px-6 sm:pt-6">
-        <h3 className="text-xl text-foreground transition-colors sm:group-hover:text-[color:var(--burgundy)]">
-          {product.title}
-        </h3>
+        <Link
+          to="/products/$slug"
+          params={{ slug: product.handle }}
+          className="block group-hover:text-[color:var(--burgundy)] transition-colors"
+        >
+          <h3 className="text-xl text-foreground font-serif transition-colors group-hover:text-[color:var(--burgundy)]">
+            {product.title}
+          </h3>
+        </Link>
         <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-[color:var(--gold)]">
           {productSubtitle(product)}
         </p>
-        <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
+        <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground line-clamp-2">
           {product.description}
         </p>
       </div>
+
       <div className="px-5 pb-5 sm:px-6 sm:pb-6">
-        <div className="mt-4 border-t border-border pt-4">
-          <p className="font-display text-xl text-foreground">{priceRangeLabel(product)}</p>
+        <div className="mt-4 border-t border-border pt-4 flex items-center justify-between gap-3">
+          <p className="font-display text-xl font-bold text-foreground">{priceRangeLabel(product)}</p>
+          <CardAddToCart product={product} />
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
