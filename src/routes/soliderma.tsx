@@ -94,12 +94,12 @@ export function Soliderma() {
   });
 
   // Bottle translation:
-  // Desktop: Gentle shift left (-160px) -> right (+160px) -> Center (0) so product stays close to text with no large gaps
+  // Desktop: Gentle shift left (-200px) -> right (+200px) -> Center (0) for comfortable breathing room
   // Mobile: Stays centered horizontally (0)
   const bottleXDesktop = useTransform(
     scrollYProgress,
     [0, 0.16, 0.28, 0.44, 0.56, 0.72, 0.84, 1],
-    ["0px", "0px", "-160px", "-160px", "160px", "160px", "0px", "0px"]
+    ["0px", "0px", "-200px", "-200px", "200px", "200px", "0px", "0px"]
   );
 
   // Mobile bottle Y offset: sits slightly higher in stage during Phases 1 & 2 so lower area is free for cards
@@ -188,7 +188,7 @@ export function Soliderma() {
           />
 
           {/* Main Stage Stage Container */}
-          <div className="relative mx-auto flex h-full w-full max-w-5xl items-center justify-center px-4 sm:px-6">
+          <div className="relative mx-auto flex h-full w-full max-w-6xl items-center justify-center px-4 sm:px-6">
             {/* -------------------------------------------------------------
                 PHASE 0: HERO STATE (Center Upright Bottle & Title)
                 ------------------------------------------------------------- */}
@@ -248,7 +248,7 @@ export function Soliderma() {
 
             {/* -------------------------------------------------------------
                 PHASE 1: GENTLE SHIFT LEFT & SUBTLE TILT (-6°) -> RIGHT SIDE BENEFITS
-                Desktop: Side-by-side next to bottle (tight 80px gap, no empty void)
+                Desktop: Side-by-side next to bottle with comfortable breathing room
                 Mobile: Positioned cleanly below tilted bottle
                 ------------------------------------------------------------- */}
             <motion.div
@@ -258,7 +258,7 @@ export function Soliderma() {
                 y: stage1Y,
               }}
               className="pointer-events-none absolute z-20 w-full max-w-sm md:max-w-md lg:max-w-lg
-                         bottom-6 left-4 right-4 mx-auto md:bottom-auto md:top-1/2 md:-translate-y-1/2 md:left-[calc(50%+28px)] md:right-auto"
+                         bottom-6 left-4 right-4 mx-auto md:bottom-auto md:top-1/2 md:-translate-y-1/2 md:left-[calc(50%+48px)] md:right-auto"
             >
               <div className="rounded-2xl border border-border/80 bg-card p-5 sm:p-6 shadow-md md:border-0 md:bg-transparent md:p-0 md:shadow-none">
                 <p className="eyebrow tracking-[0.2em] text-[color:var(--gold)]">HOW IT HELPS</p>
@@ -320,7 +320,7 @@ export function Soliderma() {
 
             {/* -------------------------------------------------------------
                 PHASE 2: GENTLE SHIFT RIGHT & SUBTLE TILT (+6°) -> LEFT SIDE WOUND CARDS
-                Desktop: Side-by-side next to bottle (tight 80px gap, no empty void)
+                Desktop: Side-by-side next to bottle with comfortable breathing room
                 Mobile: Positioned cleanly below tilted bottle
                 ------------------------------------------------------------- */}
             <motion.div
@@ -329,7 +329,7 @@ export function Soliderma() {
                 y: stage2Y,
               }}
               className="pointer-events-none absolute z-20 w-full max-w-sm md:max-w-md lg:max-w-lg
-                         bottom-6 left-4 right-4 mx-auto md:bottom-auto md:top-1/2 md:-translate-y-1/2 md:right-[calc(50%+28px)] md:left-auto"
+                         bottom-6 left-4 right-4 mx-auto md:bottom-auto md:top-1/2 md:-translate-y-1/2 md:right-[calc(50%+48px)] md:left-auto"
             >
               <div className="rounded-2xl border border-border/80 bg-card p-5 sm:p-6 shadow-md md:border-0 md:bg-transparent md:p-0 md:shadow-none">
                 <p className="eyebrow tracking-[0.2em] text-[color:var(--gold)]">WHERE TO APPLY</p>
