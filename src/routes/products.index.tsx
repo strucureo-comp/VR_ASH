@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/site/Reveal";
 import { Section, SectionLabel, Note } from "@/components/site/Section";
 import { imageAlt, priceRangeLabel, sizedImage, variantLabel } from "@/lib/shopify/format";
@@ -93,10 +92,6 @@ function ProductsIndex() {
                     <p className="mt-1 font-display text-xl text-foreground">
                       {p.availableForSale ? priceRangeLabel(p) : "Coming soon"}
                     </p>
-                    <span className="mt-5 inline-flex items-center gap-2 text-xs uppercase tracking-[0.16em] text-[color:var(--gold)]">
-                      {p.availableForSale ? "View product" : "Notify me"}
-                      <ArrowRight className="h-3.5 w-3.5 transition-transform sm:group-hover:translate-x-1" />
-                    </span>
                   </div>
                 </Link>
               </Reveal>

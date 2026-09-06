@@ -2,7 +2,6 @@ import { Link } from "@tanstack/react-router";
 import { ChevronLeft, ChevronRight, Leaf } from "lucide-react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
-import { AddToCart } from "@/components/site/AddToCart";
 import { Blob } from "@/components/site/Blob";
 import { Reveal } from "@/components/site/Reveal";
 import { imageAlt, priceRangeLabel, productSubtitle, sizedImage } from "@/lib/shopify/format";
@@ -170,46 +169,45 @@ function Arrow({
  */
 function ProductCard({ product }: { product: Product }) {
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card transition-colors sm:hover:border-[color:var(--gold)]">
-      <Link to="/products/$slug" params={{ slug: product.handle }} className="flex flex-1 flex-col">
-        <div className="relative isolate flex h-36 items-center justify-center overflow-hidden bg-[color:var(--ivory)] sm:h-44">
-          <Blob
-            variant={3}
-            className="-bottom-16 left-1/2 h-48 w-64 -translate-x-1/2 -z-10"
-            color="var(--botanical)"
-            opacity={0.16}
+    <Link
+      to="/products/$slug"
+      params={{ slug: product.handle }}
+      className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all duration-300 sm:hover:border-[color:var(--gold)] sm:hover:shadow-md"
+    >
+      <div className="relative isolate flex h-36 items-center justify-center overflow-hidden bg-[color:var(--ivory)] sm:h-44">
+        <Blob
+          variant={3}
+          className="-bottom-16 left-1/2 h-48 w-64 -translate-x-1/2 -z-10"
+          color="var(--botanical)"
+          opacity={0.16}
+        />
+        {product.featuredImage ? (
+          <img
+            src={sizedImage(product.featuredImage.url, 600)}
+            alt={imageAlt(product.featuredImage.altText, product)}
+            loading="lazy"
+            className="h-32 w-auto object-contain drop-shadow-[0_14px_26px_rgba(0,0,0,0.16)] transition-transform duration-500 sm:h-40 sm:group-hover:scale-105"
           />
-          {product.featuredImage ? (
-            <img
-              src={sizedImage(product.featuredImage.url, 600)}
-              alt={imageAlt(product.featuredImage.altText, product)}
-              loading="lazy"
-              className="h-32 w-auto object-contain drop-shadow-[0_14px_26px_rgba(0,0,0,0.16)] transition-transform duration-500 sm:h-40 sm:group-hover:scale-105"
-            />
-          ) : (
-            <Leaf className="h-9 w-9 text-[color:var(--botanical)]/40" />
-          )}
-        </div>
-        <div className="flex flex-1 flex-col px-5 pt-5 sm:px-6 sm:pt-6">
-          <h3 className="text-xl text-foreground transition-colors sm:group-hover:text-[color:var(--burgundy)]">
-            {product.title}
-          </h3>
-          <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-[color:var(--gold)]">
-            {productSubtitle(product)}
-          </p>
-          <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
-            {product.description}
-          </p>
-        </div>
-      </Link>
+        ) : (
+          <Leaf className="h-9 w-9 text-[color:var(--botanical)]/40" />
+        )}
+      </div>
+      <div className="flex flex-1 flex-col px-5 pt-5 sm:px-6 sm:pt-6">
+        <h3 className="text-xl text-foreground transition-colors sm:group-hover:text-[color:var(--burgundy)]">
+          {product.title}
+        </h3>
+        <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-[color:var(--gold)]">
+          {productSubtitle(product)}
+        </p>
+        <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
+          {product.description}
+        </p>
+      </div>
       <div className="px-5 pb-5 sm:px-6 sm:pb-6">
-        <div className="mt-5 border-t border-border pt-4">
+        <div className="mt-4 border-t border-border pt-4">
           <p className="font-display text-xl text-foreground">{priceRangeLabel(product)}</p>
         </div>
-        <div className="mt-4">
-          <AddToCart product={product} compact />
-        </div>
       </div>
-    </article>
+    </Link>
   );
 }

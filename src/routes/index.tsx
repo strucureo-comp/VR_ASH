@@ -16,7 +16,6 @@ import {
 import { Reveal } from "@/components/site/Reveal";
 import { Section, SectionLabel, Note } from "@/components/site/Section";
 import { Blob } from "@/components/site/Blob";
-import { AddToCart } from "@/components/site/AddToCart";
 import { ProductRange } from "@/components/site/ProductRange";
 import { Stars } from "@/components/site/Stars";
 import { featuredProductsQuery } from "@/lib/shopify/queryOptions";
@@ -276,17 +275,15 @@ function Home() {
             <div className="mt-5 grid gap-5 sm:mt-6 sm:grid-cols-2 sm:gap-6">
               {upcoming.map((p, i) => (
                 <Reveal key={p.handle} delay={i * 0.06}>
-                  <article className="group flex h-full flex-col items-start gap-4 rounded-2xl border border-dashed border-border p-5 transition-colors sm:flex-row sm:items-center sm:p-7 sm:hover:border-[color:var(--gold)]">
+                  <Link
+                    to="/products/$slug"
+                    params={{ slug: p.handle }}
+                    className="group flex h-full flex-col items-start gap-4 rounded-2xl border border-dashed border-border p-5 transition-colors sm:flex-row sm:items-center sm:p-7 sm:hover:border-[color:var(--gold)]"
+                  >
                     <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[color:var(--botanical)]/8">
                       <Sparkles className="h-5 w-5 text-[color:var(--botanical)]/60" />
                     </span>
-                    {/* The buy button stays a sibling of the link, not a child of it:
-                        an unreleased product still has a page worth reaching. */}
-                    <Link
-                      to="/products/$slug"
-                      params={{ slug: p.handle }}
-                      className="flex-1 self-stretch"
-                    >
+                    <div className="flex-1 self-stretch">
                       <p className="eyebrow text-muted-foreground">Coming Soon</p>
                       <h3 className="mt-2 text-lg text-foreground transition-colors sm:group-hover:text-[color:var(--burgundy)]">
                         {p.title}
@@ -294,9 +291,8 @@ function Home() {
                       <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
                         {p.description}
                       </p>
-                    </Link>
-                    <AddToCart product={p} compact />
-                  </article>
+                    </div>
+                  </Link>
                 </Reveal>
               ))}
             </div>
