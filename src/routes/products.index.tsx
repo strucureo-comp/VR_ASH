@@ -2,7 +2,14 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Reveal } from "@/components/site/Reveal";
 import { Section, SectionLabel, Note } from "@/components/site/Section";
 import { CardAddToCart } from "@/components/site/AddToCart";
-import { imageAlt, priceRangeLabel, sizedImage, variantLabel } from "@/lib/shopify/format";
+import {
+  imageAlt,
+  isSolidermaHandle,
+  priceRangeLabel,
+  productSubtitle,
+  sizedImage,
+  variantLabel,
+} from "@/lib/shopify/format";
 import { productsQuery } from "@/lib/shopify/queryOptions";
 
 export const Route = createFileRoute("/products/")({
@@ -49,19 +56,32 @@ function ProductsIndex() {
           Our catalogue is being updated. Please check back shortly.
         </p>
       ) : (
-        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div
+          className={`mt-14 grid gap-6 ${
+            products.length === 1
+              ? "max-w-md mx-auto"
+              : products.length === 2
+                ? "max-w-3xl mx-auto sm:grid-cols-2"
+                : "sm:grid-cols-2 lg:grid-cols-3"
+          }`}
+        >
           {products.map((p, i) => {
-            const sizes = p.variants
-              .map((v) => variantLabel(v.title))
-              .filter((label) => label !== "")
-              .join(" · ");
+            const isSoliderma = isSolidermaHandle(p.handle);
+            const cardLinkProps = isSoliderma
+              ? { to: "/soliderma" as const }
+              : { to: "/products/$slug" as const, params: { slug: p.handle } };
+
+            const sizes =
+              p.variants
+                .map((v) => variantLabel(v.title))
+                .filter((label) => label !== "")
+                .join(" · ") || (isSoliderma ? "50ml Spray" : "");
 
             return (
               <Reveal key={p.handle} delay={i * 0.06}>
                 <div className="group flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:border-[color:var(--gold)] hover:shadow-md">
                   <Link
-                    to="/products/$slug"
-                    params={{ slug: p.handle }}
+                    {...cardLinkProps}
                     className="block cursor-pointer"
                   >
                     <div className="flex h-56 items-center justify-center bg-[color:var(--ivory)] p-6 transition-colors group-hover:bg-[color:var(--ivory)]/80">
@@ -82,8 +102,7 @@ function ProductsIndex() {
 
                   <div className="flex flex-1 flex-col p-6">
                     <Link
-                      to="/products/$slug"
-                      params={{ slug: p.handle }}
+                      {...cardLinkProps}
                       className="block group-hover:text-[color:var(--burgundy)] transition-colors"
                     >
                       <h2 className="text-2xl text-foreground font-medium transition-colors group-hover:text-[color:var(--burgundy)]">
@@ -91,9 +110,9 @@ function ProductsIndex() {
                       </h2>
                     </Link>
 
-                    {p.productType && (
-                      <p className="mt-1 text-sm text-[color:var(--burgundy)]">{p.productType}</p>
-                    )}
+                    <p className="mt-1 text-sm text-[color:var(--burgundy)] font-medium">
+                      {productSubtitle(p)}
+                    </p>
 
                     <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground line-clamp-3">
                       {p.description}
@@ -102,7 +121,7 @@ function ProductsIndex() {
                     <div className="mt-5 pt-4 border-t border-border flex items-center justify-between gap-3">
                       <div>
                         {sizes && (
-                          <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+                          <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground font-medium">
                             {sizes}
                           </p>
                         )}

@@ -78,12 +78,14 @@ export const Route = createFileRoute("/soliderma")({
 interface DesktopScrollytellingProps {
   bottleSrc: string;
   bottleAlt: string;
+  startingPrice: string;
   scrollToSection: (id: string) => void;
 }
 
 function DesktopScrollytelling({
   bottleSrc,
   bottleAlt,
+  startingPrice,
   scrollToSection,
 }: DesktopScrollytellingProps) {
   const runwayRef = useRef<HTMLDivElement>(null);
@@ -192,7 +194,7 @@ function DesktopScrollytelling({
                   onClick={() => scrollToSection("sizes")}
                   className="h-10 sm:h-11 rounded-full bg-[color:var(--botanical-deep)] px-6 sm:px-7 text-xs sm:text-sm font-medium text-primary-foreground shadow-sm hover:bg-[color:var(--botanical)]"
                 >
-                  Get Soliderma
+                  Get Soliderma · {startingPrice}
                 </Button>
                 <Button
                   variant="outline"
@@ -363,6 +365,10 @@ function DesktopScrollytelling({
             </div>
 
             <div className="pointer-events-auto flex flex-col items-center gap-2 pb-4 sm:pb-8">
+              <div className="flex items-baseline gap-2 mb-1">
+                <span className="text-xs uppercase tracking-wider text-muted-foreground font-medium">Starting at</span>
+                <span className="font-serif text-2xl font-bold text-foreground">{startingPrice}</span>
+              </div>
               <Button
                 onClick={() => scrollToSection("sizes")}
                 className="h-11 sm:h-12 rounded-full bg-[color:var(--botanical-deep)] px-7 sm:px-8 text-sm font-medium text-primary-foreground shadow-md hover:bg-[color:var(--botanical)]"
@@ -746,9 +752,9 @@ export function Soliderma() {
     ? imageAlt(product.featuredImage?.altText ?? null, product)
     : "Soliderma multi action wound healing spray bottle";
 
-  const startingPrice = product?.priceRange?.minVariantPrice
-    ? formatMoney(product.priceRange.minVariantPrice)
-    : "₹395";
+  const startingPrice = product?.priceRange?.min
+    ? formatMoney(product.priceRange.min)
+    : "₹500";
 
   const scrollToSection = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -763,6 +769,7 @@ export function Soliderma() {
         <DesktopScrollytelling
           bottleSrc={bottleSrc}
           bottleAlt={bottleAlt}
+          startingPrice={startingPrice}
           scrollToSection={scrollToSection}
         />
       </div>
@@ -869,33 +876,43 @@ export function Soliderma() {
             </p>
           </div>
 
-          <div className="mt-10 grid gap-6 sm:grid-cols-2">
-            {product?.variants.map((v, i) => (
-              <Reveal key={v.id} delay={i * 0.08}>
-                <div className="flex h-full flex-col justify-between rounded-2xl border border-border bg-card p-7 sm:p-8 shadow-sm transition-all hover:border-[color:var(--botanical)]/50">
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <h3 className="font-serif text-xl sm:text-2xl text-foreground">
-                        {variantLabel(v.title) || v.title}
-                      </h3>
-                      <span className="rounded-full bg-[color:var(--botanical)]/10 px-3 py-1 text-xs font-medium text-[color:var(--botanical)]">
-                        {v.availableForSale ? "In Stock" : "Out of Stock"}
-                      </span>
-                    </div>
-                    <p className="mt-3 font-display text-2xl font-medium text-foreground">
-                      {formatMoney(v.price)}
-                    </p>
-                    <p className="mt-2 text-xs sm:text-sm text-muted-foreground">
-                      Pocket and travel-ready bottle. Multi-action antiseptic skin mist.
-                    </p>
-                  </div>
+          <div
+            className={`mt-10 grid gap-6 ${
+              (product?.variants.length ?? 0) <= 1 ? "max-w-xl mx-auto" : "sm:grid-cols-2"
+            }`}
+          >
+            {product?.variants.map((v, i) => {
+              const displayTitle =
+                variantLabel(v.title) ||
+                (isSolidermaHandle(product.handle) ? "50ml Spray Bottle" : "Standard Pack");
 
-                  <div className="mt-8 pt-6 border-t border-border/70">
-                    <AddToCart product={product} variants={[v]} />
+              return (
+                <Reveal key={v.id} delay={i * 0.08}>
+                  <div className="flex h-full flex-col justify-between rounded-2xl border border-border bg-card p-7 sm:p-8 shadow-sm transition-all hover:border-[color:var(--botanical)]/50">
+                    <div>
+                      <div className="flex items-center justify-between gap-3">
+                        <h3 className="font-serif text-xl sm:text-2xl text-foreground">
+                          {displayTitle}
+                        </h3>
+                        <span className="shrink-0 rounded-full bg-[color:var(--botanical)]/10 px-3 py-1 text-xs font-medium text-[color:var(--botanical)]">
+                          {v.availableForSale ? "In Stock" : "Out of Stock"}
+                        </span>
+                      </div>
+                      <p className="mt-3 font-display text-2xl font-semibold text-foreground">
+                        {formatMoney(v.price)}
+                      </p>
+                      <p className="mt-2 text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                        {product.description || "Pocket and travel-ready bottle. Multi-action antiseptic skin mist."}
+                      </p>
+                    </div>
+
+                    <div className="mt-8 pt-6 border-t border-border/70">
+                      <AddToCart product={product} variants={[v]} />
+                    </div>
                   </div>
-                </div>
-              </Reveal>
-            ))}
+                </Reveal>
+              );
+            })}
 
             {!product && (
               <div className="col-span-2 rounded-2xl border border-dashed border-border p-10 text-center text-muted-foreground">

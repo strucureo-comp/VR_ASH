@@ -18,6 +18,7 @@ import {
   imageAlt,
   isSolidermaHandle,
   priceRangeLabel,
+  productSubtitle,
   sizedImage,
   variantLabel,
 } from "@/lib/shopify/format";
@@ -95,6 +96,12 @@ function ProductDetail() {
   const { product, content, others } = Route.useLoaderData();
   const story = paragraphs(content?.longDescription ?? "");
   const sizes = product.variants.map((v) => variantLabel(v.title)).filter((label) => label !== "");
+  const displaySizes =
+    sizes.length > 0
+      ? sizes
+      : isSolidermaHandle(product.handle)
+        ? ["50ml Spray Bottle"]
+        : [];
   // The phone stage turns a front pose into a back one, so it wants the first two
   // gallery images in Shopify's own order. `featuredImage` is the only fallback
   // when a product has no gallery at all.
@@ -127,9 +134,9 @@ function ProductDetail() {
           images={stageImages}
           fallbackLetter={product.title.charAt(0)}
           title={product.title}
-          subtitle={product.productType || null}
+          subtitle={productSubtitle(product)}
           price={priceRangeLabel(product)}
-          sizes={sizes}
+          sizes={displaySizes}
         >
           <AddToCart product={product} />
         </MobileBuyStage>
@@ -156,20 +163,18 @@ function ProductDetail() {
               <h1 className="mt-4 text-[2rem] leading-tight text-foreground sm:text-4xl lg:text-5xl">
                 {product.title}
               </h1>
-              {product.productType && (
-                <p className="mt-3 font-display text-xl text-[color:var(--burgundy)]">
-                  {product.productType}
-                </p>
-              )}
+              <p className="mt-3 font-display text-xl text-[color:var(--burgundy)] font-medium">
+                {productSubtitle(product)}
+              </p>
             </div>
             <p className="mt-5 max-w-lg text-[15px] leading-relaxed text-muted-foreground">
               {product.description}
             </p>
             <dl className="mt-8 grid max-w-md grid-cols-2 gap-6 text-sm">
-              {sizes.length > 0 && (
+              {displaySizes.length > 0 && (
                 <div>
                   <dt className="eyebrow text-muted-foreground">Sizes</dt>
-                  <dd className="mt-1 text-foreground">{sizes.join(" · ")}</dd>
+                  <dd className="mt-1 text-foreground">{displaySizes.join(" · ")}</dd>
                 </div>
               )}
               <div>
@@ -335,7 +340,10 @@ function ProductDetail() {
               {product.variants.map((v, i) => (
                 <Reveal key={v.id} delay={i * 0.06}>
                   <div className="h-full rounded-lg border border-border bg-card p-7">
-                    <h3 className="text-2xl text-foreground">{variantLabel(v.title) || v.title}</h3>
+                    <h3 className="text-2xl text-foreground">
+                      {variantLabel(v.title) ||
+                        (isSolidermaHandle(product.handle) ? "50ml Spray Bottle" : "Standard Pack")}
+                    </h3>
                     <p className="mt-2 text-sm text-muted-foreground">
                       {v.availableForSale ? "In stock" : "Out of stock"}
                     </p>

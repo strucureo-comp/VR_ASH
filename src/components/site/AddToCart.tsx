@@ -56,7 +56,7 @@ export function AddToCart({
       {choices.length > 1 && (
         <div className="flex flex-wrap gap-2">
           {choices.map((v) => {
-            const vLabel = variantLabel(v.title) || v.title;
+            const vLabel = variantLabel(v.title) || "Standard";
             return (
               <button
                 key={v.id}

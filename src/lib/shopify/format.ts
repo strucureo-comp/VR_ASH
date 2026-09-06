@@ -29,7 +29,10 @@ export function variantLabel(title: string): string {
 }
 
 export function productSubtitle(product: Product): string {
-  return product.productType.trim();
+  const type = product.productType?.trim();
+  if (type) return type;
+  if (isSolidermaHandle(product.handle)) return "Ayurvedic Wound Care";
+  return product.tags?.[0]?.trim() || "Ayurvedic Medicine";
 }
 
 /**

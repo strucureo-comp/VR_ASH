@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Blob } from "@/components/site/Blob";
 import { Reveal } from "@/components/site/Reveal";
 import { CardAddToCart } from "@/components/site/AddToCart";
-import { imageAlt, priceRangeLabel, productSubtitle, sizedImage } from "@/lib/shopify/format";
+import { imageAlt, isSolidermaHandle, priceRangeLabel, productSubtitle, sizedImage } from "@/lib/shopify/format";
 import type { Product } from "@/lib/shopify/types";
 
 /**
@@ -169,11 +169,15 @@ function Arrow({
  * component knowing which product has a route of its own.
  */
 function ProductCard({ product }: { product: Product }) {
+  const isSoliderma = isSolidermaHandle(product.handle);
+  const cardLinkProps = isSoliderma
+    ? { to: "/soliderma" as const }
+    : { to: "/products/$slug" as const, params: { slug: product.handle } };
+
   return (
     <div className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all duration-300 sm:hover:border-[color:var(--gold)] sm:hover:shadow-md">
       <Link
-        to="/products/$slug"
-        params={{ slug: product.handle }}
+        {...cardLinkProps}
         className="block cursor-pointer"
       >
         <div className="relative isolate flex h-40 sm:h-48 items-center justify-center overflow-hidden bg-[color:var(--ivory)]">
@@ -198,15 +202,14 @@ function ProductCard({ product }: { product: Product }) {
 
       <div className="flex flex-1 flex-col px-5 pt-5 sm:px-6 sm:pt-6">
         <Link
-          to="/products/$slug"
-          params={{ slug: product.handle }}
+          {...cardLinkProps}
           className="block group-hover:text-[color:var(--burgundy)] transition-colors"
         >
           <h3 className="text-xl text-foreground font-serif transition-colors group-hover:text-[color:var(--burgundy)]">
             {product.title}
           </h3>
         </Link>
-        <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-[color:var(--gold)]">
+        <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-[color:var(--gold)] font-medium">
           {productSubtitle(product)}
         </p>
         <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground line-clamp-2">
@@ -216,7 +219,12 @@ function ProductCard({ product }: { product: Product }) {
 
       <div className="px-5 pb-5 sm:px-6 sm:pb-6">
         <div className="mt-4 border-t border-border pt-4 flex items-center justify-between gap-3">
-          <p className="font-display text-xl font-bold text-foreground">{priceRangeLabel(product)}</p>
+          <div>
+            {isSoliderma && (
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">50ml Bottle</p>
+            )}
+            <p className="font-display text-xl font-bold text-foreground">{priceRangeLabel(product)}</p>
+          </div>
           <CardAddToCart product={product} />
         </div>
       </div>
