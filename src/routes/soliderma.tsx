@@ -553,58 +553,58 @@ function MobileScrollytelling({
               =============================================================== */}
           <motion.div
             style={{ opacity: stage1Opacity, y: stage1Y }}
-            className="pointer-events-none absolute z-20 top-1/2 -translate-y-1/2 left-[38%] right-2.5 max-w-[250px]"
+            className="pointer-events-none absolute z-20 top-1/2 -translate-y-1/2 left-[36%] right-3 max-w-[280px]"
           >
-            <div className="rounded-xl border border-border/70 bg-card/95 p-3.5 shadow-sm backdrop-blur-sm">
-              <p className="eyebrow tracking-[0.18em] text-[color:var(--gold)] text-[9.5px]">HOW IT HELPS</p>
-              <h2 className="mt-0.5 font-serif text-base sm:text-lg font-normal leading-tight text-foreground">
+            <div className="rounded-2xl border border-border/70 bg-card/95 p-4 sm:p-5 shadow-md backdrop-blur-sm">
+              <p className="eyebrow tracking-[0.18em] text-[color:var(--gold)] text-[10.5px] font-bold">HOW IT HELPS</p>
+              <h2 className="mt-1 font-serif text-lg sm:text-xl font-normal leading-tight text-foreground">
                 Four actions,<br />one spray.
               </h2>
               
-              <ul className="mt-2.5 space-y-2">
-                <li className="flex items-start gap-2">
-                  <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[color:var(--botanical)]/15 text-[color:var(--botanical)]">
-                    <HeartPulse className="h-2.5 w-2.5" />
+              <ul className="mt-3 space-y-2.5">
+                <li className="flex items-start gap-2.5">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[color:var(--botanical)]/15 text-[color:var(--botanical)]">
+                    <HeartPulse className="h-3 w-3" />
                   </span>
                   <div>
-                    <h3 className="font-semibold text-foreground text-[10.5px] leading-tight">Rapid wound healing</h3>
-                    <p className="mt-0.5 text-[8.5px] text-muted-foreground leading-snug">
+                    <h3 className="font-semibold text-foreground text-xs sm:text-[13px] leading-tight">Rapid wound healing</h3>
+                    <p className="mt-0.5 text-[10px] sm:text-[11px] text-muted-foreground leading-snug">
                       Accelerates tissue recovery with active extracts.
                     </p>
                   </div>
                 </li>
 
-                <li className="flex items-start gap-2">
-                  <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[color:var(--botanical)]/15 text-[color:var(--botanical)]">
-                    <ShieldCheck className="h-2.5 w-2.5" />
+                <li className="flex items-start gap-2.5">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[color:var(--botanical)]/15 text-[color:var(--botanical)]">
+                    <ShieldCheck className="h-3 w-3" />
                   </span>
                   <div>
-                    <h3 className="font-semibold text-foreground text-[10.5px] leading-tight">Antimicrobial cover</h3>
-                    <p className="mt-0.5 text-[8.5px] text-muted-foreground leading-snug">
+                    <h3 className="font-semibold text-foreground text-xs sm:text-[13px] leading-tight">Antimicrobial cover</h3>
+                    <p className="mt-0.5 text-[10px] sm:text-[11px] text-muted-foreground leading-snug">
                       Forms an active protective herbal shield.
                     </p>
                   </div>
                 </li>
 
-                <li className="flex items-start gap-2">
-                  <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[color:var(--botanical)]/15 text-[color:var(--botanical)]">
-                    <Droplet className="h-2.5 w-2.5" />
+                <li className="flex items-start gap-2.5">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[color:var(--botanical)]/15 text-[color:var(--botanical)]">
+                    <Droplet className="h-3 w-3" />
                   </span>
                   <div>
-                    <h3 className="font-semibold text-foreground text-[10.5px] leading-tight">Pain relief & soothing</h3>
-                    <p className="mt-0.5 text-[8.5px] text-muted-foreground leading-snug">
+                    <h3 className="font-semibold text-foreground text-xs sm:text-[13px] leading-tight">Pain relief & soothing</h3>
+                    <p className="mt-0.5 text-[10px] sm:text-[11px] text-muted-foreground leading-snug">
                       Cools irritation with zero sting or burn.
                     </p>
                   </div>
                 </li>
 
-                <li className="flex items-start gap-2">
-                  <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[color:var(--botanical)]/15 text-[color:var(--botanical)]">
-                    <Sparkles className="h-2.5 w-2.5" />
+                <li className="flex items-start gap-2.5">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[color:var(--botanical)]/15 text-[color:var(--botanical)]">
+                    <Sparkles className="h-3 w-3" />
                   </span>
                   <div>
-                    <h3 className="font-semibold text-foreground text-[10.5px] leading-tight">Scar prevention</h3>
-                    <p className="mt-0.5 text-[8.5px] text-muted-foreground leading-snug">
+                    <h3 className="font-semibold text-foreground text-xs sm:text-[13px] leading-tight">Scar prevention</h3>
+                    <p className="mt-0.5 text-[10px] sm:text-[11px] text-muted-foreground leading-snug">
                       Promotes clean, healthy skin recovery.
                     </p>
                   </div>
@@ -619,47 +619,47 @@ function MobileScrollytelling({
               =============================================================== */}
           <motion.div
             style={{ opacity: stage2Opacity, y: stage2Y }}
-            className="pointer-events-none absolute z-20 top-1/2 -translate-y-1/2 left-2.5 right-[38%] max-w-[250px]"
+            className="pointer-events-none absolute z-20 top-1/2 -translate-y-1/2 left-3 right-[36%] max-w-[280px]"
           >
-            <div className="rounded-xl border border-border/70 bg-card/95 p-3.5 shadow-sm backdrop-blur-sm">
-              <p className="eyebrow tracking-[0.18em] text-[color:var(--gold)] text-[9.5px]">WHERE TO APPLY</p>
-              <h2 className="mt-0.5 font-serif text-base sm:text-lg font-normal leading-tight text-foreground">
+            <div className="rounded-2xl border border-border/70 bg-card/95 p-4 sm:p-5 shadow-md backdrop-blur-sm">
+              <p className="eyebrow tracking-[0.18em] text-[color:var(--gold)] text-[10.5px] font-bold">WHERE TO APPLY</p>
+              <h2 className="mt-1 font-serif text-lg sm:text-xl font-normal leading-tight text-foreground">
                 Made for everyday wounds
               </h2>
 
-              <div className="mt-2.5 space-y-1.5">
-                <div className="rounded-lg border border-border/60 bg-muted/30 p-2">
-                  <div className="flex items-center gap-1.5">
-                    <span className="flex h-4 w-4 items-center justify-center rounded bg-[color:var(--botanical)]/10 text-[color:var(--botanical)]">
-                      <Scissors className="h-2.5 w-2.5" />
+              <div className="mt-3 space-y-2">
+                <div className="rounded-xl border border-border/60 bg-muted/30 p-2.5">
+                  <div className="flex items-center gap-2">
+                    <span className="flex h-5 w-5 items-center justify-center rounded bg-[color:var(--botanical)]/10 text-[color:var(--botanical)]">
+                      <Scissors className="h-3 w-3" />
                     </span>
-                    <h3 className="font-semibold text-foreground text-[10px]">Cuts & Scrapes</h3>
+                    <h3 className="font-semibold text-foreground text-xs sm:text-[13px]">Cuts & Scrapes</h3>
                   </div>
-                  <p className="mt-0.5 text-[8.5px] text-muted-foreground leading-snug">
+                  <p className="mt-1 text-[10px] sm:text-[11px] text-muted-foreground leading-snug">
                     Grazes, paper cuts, kitchen accidents & abrasions.
                   </p>
                 </div>
 
-                <div className="rounded-lg border border-border/60 bg-muted/30 p-2">
-                  <div className="flex items-center gap-1.5">
-                    <span className="flex h-4 w-4 items-center justify-center rounded bg-[color:var(--botanical)]/10 text-[color:var(--botanical)]">
-                      <Flame className="h-2.5 w-2.5" />
+                <div className="rounded-xl border border-border/60 bg-muted/30 p-2.5">
+                  <div className="flex items-center gap-2">
+                    <span className="flex h-5 w-5 items-center justify-center rounded bg-[color:var(--botanical)]/10 text-[color:var(--botanical)]">
+                      <Flame className="h-3 w-3" />
                     </span>
-                    <h3 className="font-semibold text-foreground text-[10px]">Burns & Scalds</h3>
+                    <h3 className="font-semibold text-foreground text-xs sm:text-[13px]">Burns & Scalds</h3>
                   </div>
-                  <p className="mt-0.5 text-[8.5px] text-muted-foreground leading-snug">
+                  <p className="mt-1 text-[10px] sm:text-[11px] text-muted-foreground leading-snug">
                     Instant cooling relief for steam & accidental burns.
                   </p>
                 </div>
 
-                <div className="rounded-lg border border-border/60 bg-muted/30 p-2">
-                  <div className="flex items-center gap-1.5">
-                    <span className="flex h-4 w-4 items-center justify-center rounded bg-[color:var(--botanical)]/10 text-[color:var(--botanical)]">
-                      <Shield className="h-2.5 w-2.5" />
+                <div className="rounded-xl border border-border/60 bg-muted/30 p-2.5">
+                  <div className="flex items-center gap-2">
+                    <span className="flex h-5 w-5 items-center justify-center rounded bg-[color:var(--botanical)]/10 text-[color:var(--botanical)]">
+                      <Shield className="h-3 w-3" />
                     </span>
-                    <h3 className="font-semibold text-foreground text-[10px]">Delicate & Sensitive</h3>
+                    <h3 className="font-semibold text-foreground text-xs sm:text-[13px]">Delicate & Sensitive</h3>
                   </div>
-                  <p className="mt-0.5 text-[8.5px] text-muted-foreground leading-snug">
+                  <p className="mt-1 text-[10px] sm:text-[11px] text-muted-foreground leading-snug">
                     Gentle healing support for delicate skin care.
                   </p>
                 </div>
@@ -673,31 +673,31 @@ function MobileScrollytelling({
               =============================================================== */}
           <motion.div
             style={{ opacity: stage3Opacity, y: stage3Y }}
-            className="pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-between pb-8 pt-24 text-center px-4"
+            className="pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-between pb-8 pt-20 text-center px-4"
           >
             {/* Top Heading */}
             <div>
-              <h2 className="font-serif text-2xl font-normal tracking-tight text-foreground">
+              <h2 className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-foreground">
                 Life happens.
               </h2>
-              <p className="mt-1 max-w-[260px] text-xs text-muted-foreground leading-snug">
+              <p className="mt-1 max-w-[280px] text-xs sm:text-sm text-muted-foreground leading-snug">
                 Keep SOLIDERMA close for when minor accidents occur.
               </p>
             </div>
 
             {/* Bottom Callout Card - matching user's reference image */}
-            <div className="pointer-events-auto w-full max-w-[300px] rounded-2xl border border-border/80 bg-card/95 p-3.5 shadow-lg backdrop-blur-sm flex flex-col items-center gap-2">
+            <div className="pointer-events-auto w-full max-w-[320px] rounded-2xl border border-border/80 bg-card/95 p-4 shadow-lg backdrop-blur-sm flex flex-col items-center gap-2.5">
               <div className="flex items-baseline justify-between w-full px-1">
-                <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">Starting at</span>
-                <span className="font-serif text-base font-bold text-foreground">{startingPrice}</span>
+                <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">Starting at</span>
+                <span className="font-serif text-lg font-bold text-foreground">{startingPrice}</span>
               </div>
               <Button
                 onClick={() => scrollToSection("sizes")}
-                className="w-full h-9 rounded-full bg-[color:var(--botanical-deep)] text-xs font-semibold tracking-wide text-primary-foreground shadow-sm hover:bg-[color:var(--botanical)]"
+                className="w-full h-10 rounded-full bg-[color:var(--botanical-deep)] text-xs sm:text-sm font-semibold tracking-wide text-primary-foreground shadow-sm hover:bg-[color:var(--botanical)]"
               >
                 Get Soliderma
               </Button>
-              <p className="text-[9px] text-muted-foreground/80 tracking-wide uppercase">
+              <p className="text-[9.5px] text-muted-foreground/80 tracking-wide uppercase">
                 Ayurvedic Proprietary Medicine • WHO-GMP Certified
               </p>
             </div>
@@ -719,10 +719,10 @@ function MobileScrollytelling({
               alt={bottleAlt}
               width={700}
               height={920}
-              className="h-[30vh] max-h-[235px] w-auto object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.12)]"
+              className="h-[38vh] max-h-[330px] w-auto object-contain drop-shadow-[0_16px_32px_rgba(0,0,0,0.16)]"
             />
             {/* Separate contact shadow */}
-            <div className="-mt-1 h-3 w-20 rounded-full bg-black/12 blur-sm" />
+            <div className="-mt-1 h-3.5 w-28 rounded-full bg-black/15 blur-sm" />
           </motion.div>
 
         </div>
