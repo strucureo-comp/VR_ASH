@@ -115,25 +115,25 @@ export function Soliderma() {
     ["0px", "0px", "-200px", "-200px", "200px", "200px", "0px", "0px"]
   );
 
-  // Mobile bottle Y offset: sits slightly higher in stage during Phases 1 & 2 so lower area is free for cards
+  // Mobile bottle Y offset: product goes strictly straight down as user scrolls
   const bottleYMobile = useTransform(
     scrollYProgress,
     [0, 0.16, 0.28, 0.44, 0.56, 0.72, 0.84, 1],
-    ["0px", "0px", "-100px", "-100px", "-100px", "-100px", "0px", "0px"]
+    ["-70px", "-70px", "-35px", "-20px", "10px", "20px", "0px", "0px"]
   );
 
-  // Bottle tilt rotation (Natural, subtle tilt - not tipping over)
+  // Bottle tilt rotation: Desktop enjoys subtle tilt (-6° / +6°); Mobile is strictly upright (0°)
   const bottleRotate = useTransform(
     scrollYProgress,
     [0, 0.16, 0.28, 0.44, 0.56, 0.72, 0.84, 1],
-    [0, 0, -6, -6, 6, 6, 0, 0]
+    isDesktop ? [0, 0, -6, -6, 6, 6, 0, 0] : [0, 0, 0, 0, 0, 0, 0, 0]
   );
 
-  // Ground shadow skew
+  // Ground shadow skew: Desktop has subtle skew; Mobile is strictly horizontal (0°)
   const shadowSkew = useTransform(
     scrollYProgress,
     [0, 0.16, 0.28, 0.44, 0.56, 0.72, 0.84, 1],
-    [0, 0, 4, 4, -4, -4, 0, 0]
+    isDesktop ? [0, 0, 4, 4, -4, -4, 0, 0] : [0, 0, 0, 0, 0, 0, 0, 0]
   );
 
   // Hero content opacity and Y offset (Phase 0) - explicit 0..1 bounds with clamp
@@ -152,7 +152,14 @@ export function Soliderma() {
   const stage1Y = useTransform(
     scrollYProgress,
     [0, 0.21, 0.28, 0.44, 0.50, 1],
-    [25, 25, 0, 0, -25, -25],
+    isDesktop ? [25, 25, 0, 0, -25, -25] : [0, 0, 0, 0, 0, 0],
+    { clamp: true }
+  );
+  // Mobile: Stage 1 text comes in and goes to the LEFT
+  const stage1X = useTransform(
+    scrollYProgress,
+    [0, 0.21, 0.28, 0.44, 0.50, 1],
+    isDesktop ? [0, 0, 0, 0, 0, 0] : [-70, -70, 0, 0, -70, -70],
     { clamp: true }
   );
 
@@ -166,7 +173,14 @@ export function Soliderma() {
   const stage2Y = useTransform(
     scrollYProgress,
     [0, 0.52, 0.59, 0.72, 0.78, 1],
-    [25, 25, 0, 0, -25, -25],
+    isDesktop ? [25, 25, 0, 0, -25, -25] : [0, 0, 0, 0, 0, 0],
+    { clamp: true }
+  );
+  // Mobile: Stage 2 text comes in and goes to the RIGHT
+  const stage2X = useTransform(
+    scrollYProgress,
+    [0, 0.52, 0.59, 0.72, 0.78, 1],
+    isDesktop ? [0, 0, 0, 0, 0, 0] : [70, 70, 0, 0, 70, 70],
     { clamp: true }
   );
 
@@ -269,6 +283,7 @@ export function Soliderma() {
               style={{
                 opacity: stage1Opacity,
                 y: stage1Y,
+                x: stage1X,
               }}
               className="pointer-events-none absolute z-20 w-full max-w-sm md:max-w-md lg:max-w-lg
                          bottom-6 left-4 right-4 mx-auto md:bottom-auto md:top-1/2 md:-translate-y-1/2 md:left-[calc(50%+48px)] md:right-auto"
@@ -340,6 +355,7 @@ export function Soliderma() {
               style={{
                 opacity: stage2Opacity,
                 y: stage2Y,
+                x: stage2X,
               }}
               className="pointer-events-none absolute z-20 w-full max-w-sm md:max-w-md lg:max-w-lg
                          bottom-6 left-4 right-4 mx-auto md:bottom-auto md:top-1/2 md:-translate-y-1/2 md:right-[calc(50%+48px)] md:left-auto"
