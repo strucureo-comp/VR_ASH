@@ -138,19 +138,19 @@ function Home() {
           className="absolute inset-0 -z-20 h-full w-full object-cover object-[center_right] sm:object-center"
         />
 
-        {/* Subtle translucent wash so hero.jpeg is richly visible with crisp text contrast */}
+        {/* Subtle translucent wash so hero.jpeg is richly visible with crisp text contrast on mobile & desktop */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 -z-10 bg-gradient-to-r from-[color:var(--ivory)]/65 via-[color:var(--ivory)]/25 to-transparent"
+          className="absolute inset-0 -z-10 bg-gradient-to-r from-[color:var(--ivory)]/95 via-[color:var(--ivory)]/85 to-[color:var(--ivory)]/70 sm:from-[color:var(--ivory)]/65 sm:via-[color:var(--ivory)]/25 sm:to-transparent"
         />
         <div
           aria-hidden="true"
-          className="absolute inset-0 -z-10 bg-gradient-to-b from-[color:var(--ivory)]/30 via-transparent to-[color:var(--ivory)]/60"
+          className="absolute inset-0 -z-10 bg-gradient-to-b from-[color:var(--ivory)]/70 via-transparent to-[color:var(--ivory)]/80 sm:from-[color:var(--ivory)]/30 sm:to-[color:var(--ivory)]/60"
         />
 
-        <div className="mx-auto flex w-full max-w-7xl flex-1 items-center px-5 pt-6 pb-4 sm:px-6 sm:pt-8 sm:pb-6 lg:pt-8 lg:pb-6">
-          <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-8">
-            {/* LEFT COLUMN: Value Proposition, 4 Feature Badges & CTA */}
+        <div className="mx-auto flex w-full max-w-7xl flex-1 items-center px-4 pt-5 pb-4 sm:px-6 sm:pt-8 sm:pb-6 lg:pt-8 lg:pb-6">
+          <div className="grid w-full grid-cols-1 items-center gap-6 lg:grid-cols-12 lg:gap-8">
+            {/* LEFT COLUMN: Value Proposition, Mobile Product stage, 4 Feature Badges & CTA */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -158,87 +158,141 @@ function Home() {
               className="flex flex-col items-start text-left lg:col-span-7"
             >
               {/* Category Pill Badge */}
-              <div className="inline-flex items-center gap-2 rounded-full bg-[color:var(--botanical)]/12 px-3.5 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-[color:var(--botanical)]">
+              <div className="inline-flex items-center gap-2 rounded-full bg-[color:var(--botanical)]/12 px-3 py-0.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.16em] text-[color:var(--botanical)]">
                 <span>Ayurvedic Wound Care</span>
               </div>
 
               {/* Main Headline */}
-              <h1 className="mt-3.5 font-serif text-[2.4rem] font-bold leading-[1.08] tracking-tight text-foreground sm:text-[3.2rem] lg:text-[4rem]">
+              <h1 className="mt-2.5 sm:mt-3.5 font-serif text-[2.1rem] font-bold leading-[1.08] tracking-tight text-foreground sm:text-[3.2rem] lg:text-[4rem]">
                 <span className="block text-[color:var(--burgundy)]">Faster Healing.</span>
                 <span className="block">Gentle Care.</span>
               </h1>
 
               {/* Description Subtitle */}
-              <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+              <p className="mt-2 sm:mt-3 max-w-xl text-xs sm:text-base leading-relaxed text-foreground/80">
                 Soliderma is an ayurvedic multi-action wound healing spray designed for faster, cleaner and safer healing. Trusted care for you and your family.
               </p>
 
-              {/* 4 Feature Highlights Grid */}
-              <div className="mt-6 grid grid-cols-2 gap-3.5 sm:grid-cols-4 sm:gap-4 w-full max-w-xl">
-                <div className="flex flex-col items-center sm:items-start text-center sm:text-left gap-1.5">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--botanical)]/25 bg-card/90 shadow-sm text-[color:var(--botanical)]">
-                    <Leaf className="h-4 w-4" />
-                  </span>
-                  <span className="text-xs font-semibold text-foreground leading-tight">
-                    Ayurvedic<br className="hidden sm:inline" /> Formula
-                  </span>
-                </div>
+              {/* MOBILE ONLY: Product Bottle & Key Benefits Side-by-Side */}
+              <div className="flex w-full items-center justify-center gap-4 sm:gap-6 lg:hidden my-3 py-1">
+                <Link
+                  to="/soliderma"
+                  className="group relative flex flex-col items-center shrink-0 cursor-pointer transition-transform duration-300 hover:scale-105"
+                >
+                  <img
+                    src={bottleSrc}
+                    alt={bottleAlt}
+                    width={350}
+                    height={460}
+                    className="h-[175px] sm:h-[230px] w-auto object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.18)]"
+                  />
+                  <div className="-mt-1 mx-auto h-2 w-16 sm:w-20 rounded-full bg-black/15 blur-sm" />
+                </Link>
 
-                <div className="flex flex-col items-center sm:items-start text-center sm:text-left gap-1.5">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--botanical)]/25 bg-card/90 shadow-sm text-[color:var(--botanical)]">
-                    <ShieldCheck className="h-4 w-4" />
-                  </span>
-                  <span className="text-xs font-semibold text-foreground leading-tight">
-                    Safe &<br className="hidden sm:inline" /> Gentle
-                  </span>
-                </div>
+                <div className="flex flex-col items-start gap-2 max-w-[200px]">
+                  <h3 className="font-serif text-sm sm:text-base font-bold tracking-tight text-[color:var(--botanical)] leading-tight">
+                    CLEAN.<br />
+                    SPRAY.<br />
+                    HEAL.
+                  </h3>
 
-                <div className="flex flex-col items-center sm:items-start text-center sm:text-left gap-1.5">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--botanical)]/25 bg-card/90 shadow-sm text-[color:var(--botanical)]">
-                    <Droplet className="h-4 w-4" />
-                  </span>
-                  <span className="text-xs font-semibold text-foreground leading-tight">
-                    Easy<br className="hidden sm:inline" /> Application
-                  </span>
-                </div>
+                  <ul className="space-y-1.5">
+                    <li className="flex items-center gap-2">
+                      <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-[color:var(--botanical)]/30 bg-card/90 text-[color:var(--botanical)]">
+                        <Leaf className="h-2 w-2" />
+                      </span>
+                      <span className="text-[11px] sm:text-xs font-medium text-foreground leading-tight">
+                        Helps prevent infection
+                      </span>
+                    </li>
 
-                <div className="flex flex-col items-center sm:items-start text-center sm:text-left gap-1.5">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--botanical)]/25 bg-card/90 shadow-sm text-[color:var(--botanical)]">
-                    <Stethoscope className="h-4 w-4" />
-                  </span>
-                  <span className="text-xs font-semibold text-foreground leading-tight">
-                    Trusted<br className="hidden sm:inline" /> by Doctors
-                  </span>
+                    <li className="flex items-center gap-2">
+                      <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-[color:var(--botanical)]/30 bg-card/90 text-[color:var(--botanical)]">
+                        <ShieldCheck className="h-2 w-2" />
+                      </span>
+                      <span className="text-[11px] sm:text-xs font-medium text-foreground leading-tight">
+                        Supports natural healing
+                      </span>
+                    </li>
+
+                    <li className="flex items-center gap-2">
+                      <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-[color:var(--botanical)]/30 bg-card/90 text-[color:var(--botanical)]">
+                        <Droplet className="h-2 w-2" />
+                      </span>
+                      <span className="text-[11px] sm:text-xs font-medium text-foreground leading-tight">
+                        Touch-free application
+                      </span>
+                    </li>
+                  </ul>
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="mt-7 flex flex-wrap items-center gap-3 w-full sm:w-auto">
+              <div className="mt-3 sm:mt-7 grid grid-cols-2 gap-2.5 w-full sm:flex sm:w-auto sm:items-center sm:gap-3">
                 <Link
                   to="/soliderma"
-                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[color:var(--burgundy)] hover:bg-[color:var(--burgundy)]/90 px-7 text-sm font-semibold text-white shadow-md transition-transform duration-300 hover:-translate-y-0.5"
+                  className="inline-flex min-h-10 sm:min-h-11 items-center justify-center gap-1.5 sm:gap-2 rounded-full bg-[color:var(--burgundy)] hover:bg-[color:var(--burgundy)]/90 px-4 sm:px-7 text-xs sm:text-sm font-semibold text-white shadow-md transition-transform duration-300 hover:-translate-y-0.5 text-center"
                 >
-                  Buy Now <ArrowRight className="h-4 w-4" />
+                  Buy Now <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 </Link>
 
                 <a
                   href={WA_ENQUIRY}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[color:var(--burgundy)]/30 bg-card/90 hover:bg-card px-6 text-sm font-semibold text-[color:var(--burgundy)] shadow-sm backdrop-blur-sm transition-colors"
+                  className="inline-flex min-h-10 sm:min-h-11 items-center justify-center gap-1.5 sm:gap-2 rounded-full border border-[color:var(--burgundy)]/30 bg-card/90 hover:bg-card px-3 sm:px-6 text-xs sm:text-sm font-semibold text-[color:var(--burgundy)] shadow-sm backdrop-blur-sm transition-colors text-center"
                 >
-                  <MessageCircle className="h-4 w-4" />
-                  Talk to a Care Expert
+                  <MessageCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
+                  <span className="truncate">Talk to Expert</span>
                 </a>
+              </div>
+
+              {/* 4 Feature Highlights Grid */}
+              <div className="mt-4 sm:mt-6 grid grid-cols-4 gap-1.5 sm:gap-4 w-full max-w-xl">
+                <div className="flex flex-col items-center sm:items-start text-center sm:text-left gap-1">
+                  <span className="flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center rounded-full border border-[color:var(--botanical)]/25 bg-card/90 shadow-sm text-[color:var(--botanical)]">
+                    <Leaf className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  </span>
+                  <span className="text-[10px] sm:text-xs font-semibold text-foreground leading-tight">
+                    Ayurvedic<br className="hidden sm:inline" /> Formula
+                  </span>
+                </div>
+
+                <div className="flex flex-col items-center sm:items-start text-center sm:text-left gap-1">
+                  <span className="flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center rounded-full border border-[color:var(--botanical)]/25 bg-card/90 shadow-sm text-[color:var(--botanical)]">
+                    <ShieldCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  </span>
+                  <span className="text-[10px] sm:text-xs font-semibold text-foreground leading-tight">
+                    Safe &<br className="hidden sm:inline" /> Gentle
+                  </span>
+                </div>
+
+                <div className="flex flex-col items-center sm:items-start text-center sm:text-left gap-1">
+                  <span className="flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center rounded-full border border-[color:var(--botanical)]/25 bg-card/90 shadow-sm text-[color:var(--botanical)]">
+                    <Droplet className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  </span>
+                  <span className="text-[10px] sm:text-xs font-semibold text-foreground leading-tight">
+                    Easy<br className="hidden sm:inline" /> Application
+                  </span>
+                </div>
+
+                <div className="flex flex-col items-center sm:items-start text-center sm:text-left gap-1">
+                  <span className="flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center rounded-full border border-[color:var(--botanical)]/25 bg-card/90 shadow-sm text-[color:var(--botanical)]">
+                    <Stethoscope className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  </span>
+                  <span className="text-[10px] sm:text-xs font-semibold text-foreground leading-tight">
+                    Doctor<br className="hidden sm:inline" /> Trusted
+                  </span>
+                </div>
               </div>
             </motion.div>
 
-            {/* RIGHT COLUMN: Product Bottle Presentation & Clean-Spray-Heal */}
+            {/* DESKTOP ONLY RIGHT COLUMN: Product Bottle Presentation & Clean-Spray-Heal */}
             <motion.div
               initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.9, delay: 0.15, ease: EASE }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-6 lg:col-span-5 lg:gap-8"
+              className="hidden lg:flex flex-row items-center justify-center gap-6 lg:col-span-5 lg:gap-8"
             >
               {/* Product Bottle with soft shadow */}
               <div className="relative flex flex-col items-center shrink-0">
@@ -300,56 +354,56 @@ function Home() {
           </div>
         </div>
 
-        {/* TRUST & CERTIFICATIONS STRIP (Docked seamlessly at bottom of Hero) */}
-        <div className="mt-auto w-full border-t border-border/70 bg-card/85 backdrop-blur-md">
-          <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-3 sm:px-6">
-            <div className="flex flex-wrap items-center gap-5 sm:gap-8">
+        {/* TRUST & CERTIFICATIONS STRIP */}
+        <div className="mt-auto w-full border-t border-border/70 bg-card/90 backdrop-blur-md">
+          <div className="mx-auto flex max-w-7xl flex-col sm:flex-row items-center justify-between gap-2.5 px-4 py-2.5 sm:px-6 sm:py-3">
+            <div className="grid grid-cols-2 gap-x-4 gap-y-2 w-full sm:w-auto sm:flex sm:flex-wrap sm:items-center sm:gap-6 lg:gap-8">
               <div className="flex items-center gap-2">
-                <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[color:var(--gold)]/40 bg-[color:var(--ivory)] text-[color:var(--botanical)]">
-                  <ShieldCheck className="h-3.5 w-3.5" />
+                <span className="flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-full border border-[color:var(--gold)]/40 bg-[color:var(--ivory)] text-[color:var(--botanical)]">
+                  <ShieldCheck className="h-3 sm:h-3.5 w-3 sm:w-3.5" />
                 </span>
                 <div>
-                  <p className="text-[11px] font-bold uppercase tracking-wider text-foreground">WHO-GMP</p>
-                  <p className="text-[9.5px] text-muted-foreground">Manufacturing</p>
+                  <p className="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-foreground leading-tight">WHO-GMP</p>
+                  <p className="text-[9px] sm:text-[9.5px] text-muted-foreground leading-tight">Manufacturing</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[color:var(--gold)]/40 bg-[color:var(--ivory)] text-[color:var(--botanical)]">
-                  <Leaf className="h-3.5 w-3.5" />
+                <span className="flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-full border border-[color:var(--gold)]/40 bg-[color:var(--ivory)] text-[color:var(--botanical)]">
+                  <Leaf className="h-3 sm:h-3.5 w-3 sm:w-3.5" />
                 </span>
                 <div>
-                  <p className="text-[11px] font-bold uppercase tracking-wider text-foreground">AYUSH</p>
-                  <p className="text-[9.5px] text-muted-foreground">Compliant</p>
+                  <p className="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-foreground leading-tight">AYUSH</p>
+                  <p className="text-[9px] sm:text-[9.5px] text-muted-foreground leading-tight">Compliant</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[color:var(--gold)]/40 bg-[color:var(--ivory)] text-[color:var(--botanical)]">
-                  <BadgeCheck className="h-3.5 w-3.5" />
+                <span className="flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-full border border-[color:var(--gold)]/40 bg-[color:var(--ivory)] text-[color:var(--botanical)]">
+                  <BadgeCheck className="h-3 sm:h-3.5 w-3 sm:w-3.5" />
                 </span>
                 <div>
-                  <p className="text-[11px] font-bold uppercase tracking-wider text-foreground">ISO 9001:2015</p>
-                  <p className="text-[9.5px] text-muted-foreground">Certified</p>
+                  <p className="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-foreground leading-tight">ISO 9001:2015</p>
+                  <p className="text-[9px] sm:text-[9.5px] text-muted-foreground leading-tight">Certified</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[color:var(--gold)]/40 bg-[color:var(--ivory)] text-[color:var(--botanical)]">
-                  <FlaskConical className="h-3.5 w-3.5" />
+                <span className="flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-full border border-[color:var(--gold)]/40 bg-[color:var(--ivory)] text-[color:var(--botanical)]">
+                  <FlaskConical className="h-3 sm:h-3.5 w-3 sm:w-3.5" />
                 </span>
                 <div>
-                  <p className="text-[11px] font-bold uppercase tracking-wider text-foreground">Batch Tested</p>
-                  <p className="text-[9.5px] text-muted-foreground">for Quality</p>
+                  <p className="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-foreground leading-tight">Batch Tested</p>
+                  <p className="text-[9px] sm:text-[9.5px] text-muted-foreground leading-tight">for Quality</p>
                 </div>
               </div>
             </div>
 
             <Link
               to="/about"
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-[color:var(--botanical)] hover:text-[color:var(--botanical-deep)] transition-colors"
+              className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-semibold text-[color:var(--botanical)] hover:text-[color:var(--botanical-deep)] transition-colors pt-0.5 sm:pt-0"
             >
-              <Leaf className="h-3.5 w-3.5" />
+              <Leaf className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
               <span>Ayurveda for a Healthier Tomorrow</span>
               <ArrowRight className="h-3 w-3" />
             </Link>
