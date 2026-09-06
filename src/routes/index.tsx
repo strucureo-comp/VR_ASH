@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import {
   ArrowRight,
   BadgeCheck,
+  Droplet,
   FlaskConical,
   Leaf,
   MessageCircle,
@@ -21,6 +22,7 @@ import { Stars } from "@/components/site/Stars";
 import { featuredProductsQuery } from "@/lib/shopify/queryOptions";
 import { sharedContentQuery } from "@/lib/content/queryOptions";
 import { iconRows } from "@/lib/content/render";
+import { isSolidermaHandle, sizedImage, imageAlt } from "@/lib/shopify/format";
 import {
   ABOUT_SNIPPET,
   CERTIFICATIONS,
@@ -34,6 +36,7 @@ import {
   WA_ENQUIRY,
 } from "@/lib/site";
 import hero from "@/assets/hero.jpeg";
+import bottle from "@/assets/soliderma-bottle.png";
 import forestHero from "@/assets/forest-hero.jpg";
 
 const HERO_BADGES = [
@@ -113,10 +116,19 @@ function Home() {
   const certifications = iconRows(shared?.certifications ?? [], CERTIFICATIONS);
   const metricsBar = metrics(certifications.length);
 
+  const solidermaProduct =
+    featured.find((p) => isSolidermaHandle(p.handle)) ?? featured[0] ?? null;
+  const bottleSrc = solidermaProduct?.featuredImage
+    ? sizedImage(solidermaProduct.featuredImage.url, 1000)
+    : bottle;
+  const bottleAlt = solidermaProduct
+    ? imageAlt(solidermaProduct.featuredImage?.altText ?? null, solidermaProduct)
+    : "Soliderma multi action wound healing spray";
+
   return (
     <>
-      {/* 01 HERO — Full botanical background with elegant overlay */}
-      <section className="relative isolate overflow-hidden">
+      {/* 01 HERO — 2-Column Ayurvedic Hero: Left Content with Background, Right Product */}
+      <section className="relative isolate overflow-hidden bg-[color:var(--surface)]">
         {/* Hero Background Image from src/assets/hero.jpeg */}
         <img
           src={hero}
@@ -126,100 +138,222 @@ function Home() {
           className="absolute inset-0 -z-20 h-full w-full object-cover object-[center_right] sm:object-center"
         />
 
-        {/* Soft Botanical Wash Overlay for pristine text readability while revealing Ayurvedic artistry */}
+        {/* Soft Botanical Wash Overlay allowing herbs and background light to illuminate through */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 -z-10 bg-gradient-to-b from-[color:var(--ivory)]/75 via-[color:var(--ivory)]/50 to-[color:var(--ivory)]/95"
+          className="absolute inset-0 -z-10 bg-gradient-to-r from-[color:var(--ivory)]/95 via-[color:var(--ivory)]/85 to-[color:var(--ivory)]/40"
         />
         <div
           aria-hidden="true"
-          className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_60%_at_50%_40%,rgba(247,244,235,0.70)_0%,rgba(247,244,235,0.30)_65%,transparent_100%)]"
+          className="absolute inset-0 -z-10 bg-gradient-to-b from-[color:var(--ivory)]/60 via-transparent to-[color:var(--ivory)]/90"
         />
 
-        <motion.div
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: EASE }}
-          className="mx-auto max-w-4xl px-5 pt-16 pb-16 text-center sm:px-6 sm:pt-24 sm:pb-24 lg:pt-28 lg:pb-28"
-        >
-          <div className="flex items-center justify-center gap-2 sm:gap-3">
-            <span className="h-px w-5 bg-[color:var(--gold)] sm:w-8" />
-            <p className="eyebrow text-[color:var(--botanical)]">Vallalaar Remedies</p>
-            <span className="h-px w-5 bg-[color:var(--gold)] sm:w-8" />
-          </div>
-
-          <h1 className="mt-5 text-balance text-[1.75rem] leading-[1.14] text-foreground sm:mt-7 sm:text-[3rem] sm:leading-[1.06] lg:text-[3.75rem]">
-            <span className="block">Trusted Care. Better Every Day.</span>
-            <span className="block">Bringing Long Term Illness People to Wellness.</span>
-          </h1>
-
-          <p className="mx-auto mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground sm:mt-6 sm:max-w-xl sm:text-base">
-            Safe, Effective, Researched. Backed by nature. Trusted by professionals.
-          </p>
-
-          {/* Stacked full-width taps on a phone; an inline pair from sm up. */}
-          <div className="mt-7 flex flex-col gap-3 sm:mt-9 sm:flex-row sm:justify-center">
-            <Link
-              to="/products"
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[color:var(--botanical-deep)] px-7 text-sm font-semibold text-primary-foreground shadow-sm transition-transform duration-300 sm:hover:-translate-y-0.5"
+        <div className="mx-auto max-w-7xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20 lg:pt-20 lg:pb-24">
+          <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-8">
+            {/* LEFT COLUMN: Value Proposition, 4 Feature Badges & CTA */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: EASE }}
+              className="flex flex-col items-start text-left lg:col-span-7"
             >
-              Explore Products <ArrowRight className="h-4 w-4" />
-            </Link>
-            <a
-              href={WA_ENQUIRY}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[color:var(--botanical)]/45 bg-card/90 px-7 text-sm font-medium text-[color:var(--botanical-deep)] shadow-sm backdrop-blur-sm transition-colors sm:hover:border-[color:var(--botanical)]"
+              {/* Category Pill Badge */}
+              <div className="inline-flex items-center gap-2 rounded-full bg-[color:var(--botanical)]/12 px-3.5 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-[color:var(--botanical)]">
+                <span>Ayurvedic Wound Care</span>
+              </div>
+
+              {/* Main Headline */}
+              <h1 className="mt-4 font-serif text-[2.5rem] font-bold leading-[1.08] tracking-tight text-foreground sm:text-[3.5rem] lg:text-[4.25rem]">
+                <span className="block text-[color:var(--burgundy)]">Faster Healing.</span>
+                <span className="block">Gentle Care.</span>
+              </h1>
+
+              {/* Description Subtitle */}
+              <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+                Soliderma is an ayurvedic multi-action wound healing spray designed for faster, cleaner and safer healing. Trusted care for you and your family.
+              </p>
+
+              {/* 4 Feature Highlights Grid */}
+              <div className="mt-7 grid grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-4 w-full max-w-xl">
+                <div className="flex flex-col items-center sm:items-start text-center sm:text-left gap-2">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[color:var(--botanical)]/25 bg-card/90 shadow-sm text-[color:var(--botanical)]">
+                    <Leaf className="h-4 w-4" />
+                  </span>
+                  <span className="text-xs font-semibold text-foreground leading-tight">
+                    Ayurvedic<br className="hidden sm:inline" /> Formula
+                  </span>
+                </div>
+
+                <div className="flex flex-col items-center sm:items-start text-center sm:text-left gap-2">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[color:var(--botanical)]/25 bg-card/90 shadow-sm text-[color:var(--botanical)]">
+                    <ShieldCheck className="h-4 w-4" />
+                  </span>
+                  <span className="text-xs font-semibold text-foreground leading-tight">
+                    Safe &<br className="hidden sm:inline" /> Gentle
+                  </span>
+                </div>
+
+                <div className="flex flex-col items-center sm:items-start text-center sm:text-left gap-2">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[color:var(--botanical)]/25 bg-card/90 shadow-sm text-[color:var(--botanical)]">
+                    <Droplet className="h-4 w-4" />
+                  </span>
+                  <span className="text-xs font-semibold text-foreground leading-tight">
+                    Easy<br className="hidden sm:inline" /> Application
+                  </span>
+                </div>
+
+                <div className="flex flex-col items-center sm:items-start text-center sm:text-left gap-2">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[color:var(--botanical)]/25 bg-card/90 shadow-sm text-[color:var(--botanical)]">
+                    <Stethoscope className="h-4 w-4" />
+                  </span>
+                  <span className="text-xs font-semibold text-foreground leading-tight">
+                    Trusted<br className="hidden sm:inline" /> by Doctors
+                  </span>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="mt-8 flex flex-wrap items-center gap-3.5 w-full sm:w-auto">
+                <Link
+                  to="/soliderma"
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[color:var(--burgundy)] hover:bg-[color:var(--burgundy)]/90 px-8 text-sm font-semibold text-white shadow-md transition-transform duration-300 hover:-translate-y-0.5"
+                >
+                  Buy Now <ArrowRight className="h-4 w-4" />
+                </Link>
+
+                <a
+                  href={WA_ENQUIRY}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[color:var(--burgundy)]/30 bg-card/90 hover:bg-card px-7 text-sm font-semibold text-[color:var(--burgundy)] shadow-sm backdrop-blur-sm transition-colors"
+                >
+                  <MessageCircle className="h-4 w-4" />
+                  Talk to a Care Expert
+                </a>
+              </div>
+            </motion.div>
+
+            {/* RIGHT COLUMN: Product Bottle Presentation & Clean-Spray-Heal */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.9, delay: 0.15, ease: EASE }}
+              className="flex flex-col sm:flex-row items-center justify-center gap-6 lg:col-span-5 lg:gap-8"
             >
-              <MessageCircle className="h-4 w-4" />
-              Chat on WhatsApp
-            </a>
-          </div>
+              {/* Product Bottle with soft shadow */}
+              <div className="relative flex flex-col items-center shrink-0">
+                <Link
+                  to="/soliderma"
+                  className="group block cursor-pointer transition-transform duration-500 hover:scale-105"
+                >
+                  <img
+                    src={bottleSrc}
+                    alt={bottleAlt}
+                    width={700}
+                    height={920}
+                    className="h-[320px] sm:h-[400px] lg:h-[450px] w-auto object-contain drop-shadow-[0_16px_32px_rgba(0,0,0,0.18)] transition-transform duration-500"
+                  />
+                  <div className="-mt-1 mx-auto h-3.5 w-24 sm:w-32 rounded-full bg-black/15 blur-md" />
+                </Link>
+              </div>
 
-          <ul className="mt-7 flex flex-wrap items-center justify-center gap-2 sm:mt-8">
-            {HERO_BADGES.map((b) => (
-              <li
-                key={b.label}
-                className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--gold)]/40 bg-card/85 px-3 py-1.5 shadow-sm backdrop-blur-sm"
-              >
-                <b.icon className="h-3.5 w-3.5 shrink-0 text-[color:var(--botanical)]" />
-                <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground sm:text-[11px] sm:tracking-[0.16em]">
-                  {b.label}
-                </span>
-              </li>
-            ))}
-          </ul>
+              {/* Beside Bottle: CLEAN. SPRAY. HEAL. & 3 Key Benefits */}
+              <div className="flex flex-col items-start gap-4 max-w-[220px]">
+                <div>
+                  <h3 className="font-serif text-xl sm:text-2xl font-bold tracking-tight text-[color:var(--botanical)] leading-tight">
+                    CLEAN.<br />
+                    SPRAY.<br />
+                    HEAL.
+                  </h3>
+                </div>
 
-          <div className="mt-9 sm:mt-11">
-            <p className="font-display text-base text-foreground/90 sm:text-xl">
-              Ayurvedic formulations, modern quality discipline
-            </p>
-            <p className="mx-auto mt-1 max-w-md text-xs leading-relaxed text-muted-foreground sm:text-sm">
-              Documented herbs, WHO-GMP manufacturing and batch testing behind every product we market.
-            </p>
+                <ul className="space-y-3">
+                  <li className="flex items-center gap-2.5">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[color:var(--botanical)]/30 bg-card/90 text-[color:var(--botanical)]">
+                      <Leaf className="h-3 w-3" />
+                    </span>
+                    <span className="text-xs sm:text-sm font-medium text-foreground leading-snug">
+                      Helps prevent infection
+                    </span>
+                  </li>
+
+                  <li className="flex items-center gap-2.5">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[color:var(--botanical)]/30 bg-card/90 text-[color:var(--botanical)]">
+                      <ShieldCheck className="h-3 w-3" />
+                    </span>
+                    <span className="text-xs sm:text-sm font-medium text-foreground leading-snug">
+                      Supports natural healing
+                    </span>
+                  </li>
+
+                  <li className="flex items-center gap-2.5">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[color:var(--botanical)]/30 bg-card/90 text-[color:var(--botanical)]">
+                      <Droplet className="h-3 w-3" />
+                    </span>
+                    <span className="text-xs sm:text-sm font-medium text-foreground leading-snug">
+                      Touch-free application
+                    </span>
+                  </li>
+                </ul>
+              </div>
+            </motion.div>
           </div>
-        </motion.div>
+        </div>
       </section>
 
-      {/* TRUST & CERTIFICATIONS — same list as /certifications. 3-up even on a phone. */}
-      <div className="border-y border-border bg-[color:var(--surface)]">
-        <div className="mx-auto grid max-w-6xl grid-cols-3 gap-3 px-5 py-8 sm:gap-6 sm:px-6 sm:py-12">
-          {certifications.map((c, i) => (
-            <Reveal key={c.title} delay={i * 0.06}>
-              <Link
-                to="/certifications"
-                className="flex h-full flex-col items-center gap-2 text-center transition-transform duration-300 sm:gap-3 sm:hover:-translate-y-1"
-              >
-                <span className="relative inline-flex h-12 w-12 items-center justify-center rounded-full border border-[color:var(--gold)]/50 bg-[color:var(--ivory)] sm:h-16 sm:w-16">
-                  <span className="absolute inset-1 rounded-full border border-dashed border-[color:var(--botanical)]/30" />
-                  <c.icon className="h-5 w-5 text-[color:var(--botanical)] sm:h-6 sm:w-6" />
-                </span>
-                <p className="text-[10px] font-medium uppercase leading-tight tracking-[0.1em] text-muted-foreground sm:text-xs sm:tracking-[0.14em]">
-                  {c.title}
-                </p>
-              </Link>
-            </Reveal>
-          ))}
+      {/* TRUST & CERTIFICATIONS STRIP (Matching reference bottom strip) */}
+      <div className="border-y border-border/80 bg-card/95 backdrop-blur-sm">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-5 py-4 sm:px-6">
+          <div className="flex flex-wrap items-center gap-6 sm:gap-10">
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--gold)]/40 bg-[color:var(--ivory)] text-[color:var(--botanical)]">
+                <ShieldCheck className="h-4 w-4" />
+              </span>
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wider text-foreground">WHO-GMP</p>
+                <p className="text-[10px] text-muted-foreground">Manufacturing</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--gold)]/40 bg-[color:var(--ivory)] text-[color:var(--botanical)]">
+                <Leaf className="h-4 w-4" />
+              </span>
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wider text-foreground">AYUSH</p>
+                <p className="text-[10px] text-muted-foreground">Compliant</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--gold)]/40 bg-[color:var(--ivory)] text-[color:var(--botanical)]">
+                <BadgeCheck className="h-4 w-4" />
+              </span>
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wider text-foreground">ISO 9001:2015</p>
+                <p className="text-[10px] text-muted-foreground">Certified</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--gold)]/40 bg-[color:var(--ivory)] text-[color:var(--botanical)]">
+                <FlaskConical className="h-4 w-4" />
+              </span>
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wider text-foreground">Batch Tested</p>
+                <p className="text-[10px] text-muted-foreground">for Quality</p>
+              </div>
+            </div>
+          </div>
+
+          <Link
+            to="/about"
+            className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-[color:var(--botanical)] hover:text-[color:var(--botanical-deep)] transition-colors"
+          >
+            <Leaf className="h-4 w-4" />
+            <span>Ayurveda for a Healthier Tomorrow</span>
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
         </div>
       </div>
 
