@@ -326,18 +326,20 @@ function Home() {
 
       {/* 03 CLINICAL INDICATIONS */}
       <Section className="border-b border-border/70 bg-[color:var(--surface)]">
-        <Reveal className="text-left sm:text-center">
-          <div className="flex sm:justify-center">
-            <SectionLabel index="03" label="Clinical Indications" />
-          </div>
-          <h2 className="mt-2 font-serif text-2xl leading-tight text-foreground sm:mt-6 sm:text-4xl">
-            Indications for Complex Wounds That Demand More
-          </h2>
-          <p className="mt-2 max-w-2xl text-xs leading-relaxed text-muted-foreground sm:mx-auto sm:mt-4 sm:text-[15px]">
-            SOLIDERMA is formulated for complex wounds that need ongoing, daily care, helping the skin progress steadily through every stage of healing.
-          </p>
-        </Reveal>
-        <div className="mt-10 sm:mt-14 w-full">
+        <div className="sticky top-[60px] z-10 bg-[color:var(--surface)] pt-4 pb-2 sm:relative sm:top-0 sm:z-auto sm:bg-transparent">
+          <Reveal className="text-left sm:text-center">
+            <div className="flex sm:justify-center">
+              <SectionLabel index="03" label="Clinical Indications" />
+            </div>
+            <h2 className="mt-2 font-serif text-2xl leading-tight text-foreground sm:mt-6 sm:text-4xl">
+              Indications for Complex Wounds That Demand More
+            </h2>
+            <p className="mt-2 max-w-2xl text-xs leading-relaxed text-muted-foreground sm:mx-auto sm:mt-4 sm:text-[15px]">
+              SOLIDERMA is formulated for complex wounds that need ongoing, daily care, helping the skin progress steadily through every stage of healing.
+            </p>
+          </Reveal>
+        </div>
+        <div className="mt-4 sm:mt-14 w-full">
           <MobileStackedIndications conditions={CONDITIONS} />
         </div>
 
@@ -359,9 +361,6 @@ function Home() {
             </Reveal>
           ))}
         </div>
-        <Note>
-          For significant, infected, deep, diabetic or otherwise serious wounds, users should seek appropriate professional medical care.
-        </Note>
       </Section>
 
       {/* 04 OUR RANGE / PRODUCT */}

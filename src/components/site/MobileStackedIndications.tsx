@@ -41,7 +41,7 @@ function StickyIndicationCard({ item, i, progress, range, targetScale }: any) {
   const Icon = isComponent ? item.icon : CheckCircle2;
 
   return (
-    <div className="sticky top-[140px] flex w-full flex-col mb-0">
+    <div className="sticky top-[260px] flex w-full flex-col mb-0">
       <motion.div
         style={{
           scale,
