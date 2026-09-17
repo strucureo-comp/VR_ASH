@@ -745,7 +745,7 @@ import {
   SolidermaFAQs 
 } from "@/components/site/SolidermaDetails";
 
-export function Soliderma() {
+function Soliderma() {
   const { product, content } = Route.useLoaderData();
   const ingredients = preferSaved(content?.ingredients ?? [], INGREDIENTS);
 
@@ -863,7 +863,7 @@ export function Soliderma() {
       {/* =========================================================================
           SECTION: AVAILABLE PRODUCT SIZES & ADD TO CART (E-commerce Integration)
           ========================================================================= */}
-      <section id="sizes" className="border-t border-border bg-background py-16 sm:py-20 px-6">
+      <section id="sizes" className="border-t border-border bg-background pt-8 pb-16 sm:py-20 px-6">
         <div className="mx-auto max-w-6xl">
           <div className="text-center sm:text-left">
             <SectionLabel index="02" label="Product Sizes" />

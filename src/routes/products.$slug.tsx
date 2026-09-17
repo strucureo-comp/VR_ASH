@@ -226,7 +226,7 @@ function ProductDetail() {
           ) : null}
 
           {hasScrollytelling ? (
-            <div className="mt-14 w-full h-[200vh] relative -mx-4 sm:-mx-6 lg:-mx-8">
+            <div className="mt-14 w-full md:h-[200vh] relative -mx-4 sm:-mx-6 lg:-mx-8">
               <div className="hidden md:block">
                 <DesktopScrollytelling
                   bottleSrc={stageImages[0]?.src || ""}

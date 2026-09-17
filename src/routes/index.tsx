@@ -128,22 +128,6 @@ function Home() {
     ? imageAlt(solidermaProduct.featuredImage?.altText ?? null, solidermaProduct)
     : "SOLIDERMA Multi-Action Wound Healing Spray Bottle";
 
-  // Measure the sticky topic's actual height to calculate the exact sticky offset for the cards
-  const [topicHeight, setTopicHeight] = React.useState(260);
-  const topicRef = React.useRef<HTMLDivElement>(null);
-
-  React.useEffect(() => {
-    function updateHeight() {
-      if (topicRef.current) {
-        // Topic top is 60px. Add the topic's actual height, plus a 16px buffer
-        setTopicHeight(60 + topicRef.current.offsetHeight + 16);
-      }
-    }
-    updateHeight();
-    window.addEventListener("resize", updateHeight);
-    return () => window.removeEventListener("resize", updateHeight);
-  }, []);
-
   return (
     <>
       {/* 01 HERO — Full width editorial backdrop */}
@@ -341,22 +325,25 @@ function Home() {
       </Section>
 
       {/* 03 CLINICAL INDICATIONS */}
-      <Section className="border-b border-border/70 bg-[color:var(--surface)]">
-        <div ref={topicRef} className="sticky top-[60px] z-10 bg-[color:var(--surface)] pt-4 pb-2 sm:relative sm:top-0 sm:z-auto sm:bg-transparent">
-          <Reveal className="text-left sm:text-center">
-            <div className="flex sm:justify-center">
+      <Section className="border-b border-border/70 bg-[color:var(--surface)] !py-0 sm:!py-14 lg:!py-16">
+        {/* Desktop Section Header */}
+        <div className="hidden sm:block pt-8 sm:pt-14 pb-4 sm:pb-8 text-center px-4">
+          <Reveal>
+            <div className="flex justify-center">
               <SectionLabel index="03" label="Clinical Indications" />
             </div>
-            <h2 className="mt-2 font-serif text-2xl leading-tight text-foreground sm:mt-6 sm:text-4xl">
+            <h2 className="mt-2 font-serif text-2xl sm:text-4xl text-foreground sm:mt-6 leading-tight">
               Indications for Complex Wounds That Demand More
             </h2>
-            <p className="mt-2 max-w-2xl text-xs leading-relaxed text-muted-foreground sm:mx-auto sm:mt-4 sm:text-[15px]">
+            <p className="mt-2 max-w-2xl text-xs sm:text-[15px] leading-relaxed text-muted-foreground mx-auto sm:mt-4">
               SOLIDERMA is formulated for complex wounds that need ongoing, daily care, helping the skin progress steadily through every stage of healing.
             </p>
           </Reveal>
         </div>
-        <div className="mt-4 sm:mt-14 w-full">
-          <MobileStackedIndications conditions={CONDITIONS} topOffsetPx={topicHeight} />
+
+        {/* Mobile View: Unified Pinned Scrollytelling Deck */}
+        <div className="block sm:hidden w-full">
+          <MobileStackedIndications conditions={CONDITIONS} />
         </div>
 
         {/* Desktop Layout */}
