@@ -14,7 +14,7 @@ export function MobileStackedIndications({ conditions }: { conditions: any[] }) 
       ref={container}
       className="relative flex w-full flex-col sm:hidden"
     >
-      <div className="flex flex-col gap-0 pb-[35vh]">
+      <div className="flex flex-col gap-0 pb-6">
         {conditions.map((item, i) => {
           const targetScale = Math.max(0.85, 1 - (conditions.length - i - 1) * 0.05);
           return (
@@ -41,8 +41,7 @@ function StickyIndicationCard({ item, i, progress, range, targetScale }: any) {
   const Icon = isComponent ? item.icon : CheckCircle2;
 
   return (
-    // Increased from top-[140px] to top-[30vh] to clear the intro text before sticking
-    <div className="sticky top-[30vh] flex w-full flex-col mb-0">
+    <div className="sticky top-[140px] flex w-full flex-col mb-0">
       <motion.div
         style={{
           scale,

@@ -337,7 +337,9 @@ function Home() {
             SOLIDERMA is formulated for complex wounds that need ongoing, daily care, helping the skin progress steadily through every stage of healing.
           </p>
         </Reveal>
-        <MobileStackedIndications conditions={CONDITIONS} />
+        <div className="mt-10 sm:mt-14 w-full">
+          <MobileStackedIndications conditions={CONDITIONS} />
+        </div>
 
         {/* Desktop Layout */}
         <div className="hidden sm:mt-12 sm:grid sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
