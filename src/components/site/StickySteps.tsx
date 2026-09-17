@@ -84,7 +84,7 @@ export const StickySteps = () => {
   });
 
   return (
-    <section ref={container} className="relative w-full bg-[color:var(--surface)]">
+    <section ref={container} className="relative w-full bg-[color:var(--surface)] pb-24 sm:pb-32">
       <div className="pt-16 sm:pt-24 pb-8 w-full flex flex-col items-center text-center px-4">
         <p className="eyebrow tracking-[0.2em] text-[color:var(--gold)]">
           SIMPLE APPLICATION

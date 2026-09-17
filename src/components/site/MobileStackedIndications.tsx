@@ -35,12 +35,14 @@ export function MobileStackedIndications({ conditions }: { conditions: any[] }) 
 
 function StickyIndicationCard({ item, i, progress, range, targetScale }: any) {
   const scale = useTransform(progress, range, [1, targetScale]);
-  const topOffset = i * 14;
+  // Compress the stack gap (was i * 14) so 6 cards don't look messy at the top
+  const topOffset = i * 6;
   const isComponent = typeof item.icon === 'function' || (typeof item.icon === 'object' && item.icon !== null);
   const Icon = isComponent ? item.icon : CheckCircle2;
 
   return (
-    <div className="sticky top-[140px] flex w-full flex-col mb-0">
+    // Increased from top-[140px] to top-[30vh] to clear the intro text before sticking
+    <div className="sticky top-[30vh] flex w-full flex-col mb-0">
       <motion.div
         style={{
           scale,
