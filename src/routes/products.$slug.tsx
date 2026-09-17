@@ -10,6 +10,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { DesktopScrollytelling, MobileScrollytelling } from "@/components/site/ProductScrollytelling";
+import { StickySteps } from "@/components/site/StickySteps";
 import { resolveIcon } from "@/lib/content/icons";
 import { contentId } from "@/lib/content/paths";
 import { productContentQuery } from "@/lib/content/queryOptions";
@@ -118,6 +119,20 @@ function ProductDetail() {
   }));
 
   const hasScrollytelling = content && content.benefits.length > 0 && content.conditions.length > 0;
+  const hasPreContent = Boolean(
+    content &&
+      (story.length > 0 ||
+        hasScrollytelling ||
+        content.benefits.length > 0 ||
+        content.conditions.length > 0 ||
+        content.ingredients.length > 0),
+  );
+  const hasPostContent = Boolean(
+    content &&
+      (content.directions !== "" ||
+        content.caution !== "" ||
+        content.faqs.length > 0),
+  );
 
   return (
     <>
@@ -212,7 +227,7 @@ function ProductDetail() {
       {/* Everything the admin panel holds about this product. Each block renders
           only when it has rows, so a product with no record keeps the plain
           template above and nothing here breaks. */}
-      {content ? (
+      {hasPreContent && content ? (
         <Section className="bg-[color:var(--surface)]">
           {story.length > 0 ? (
             <Reveal className="mt-14 first:mt-0">
@@ -302,24 +317,21 @@ function ProductDetail() {
               </ul>
             </Reveal>
           ) : null}
+        </Section>
+      ) : null}
 
-          {content.steps.length > 0 ? (
-            <Reveal className="mt-14 first:mt-0">
-              <h2 className="text-3xl text-foreground">How to use</h2>
-              <div className="mt-6 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
-                {content.steps.map((s) => (
-                  <div key={s.step} className="h-full bg-card p-6">
-                    <span className="font-display text-3xl text-[color:var(--gold)]">{s.step}</span>
-                    <h3 className="mt-4 text-lg text-foreground">{s.title}</h3>
-                    <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{s.body}</p>
-                  </div>
-                ))}
-              </div>
-            </Reveal>
-          ) : null}
+      {/* SECTION: THREE SIMPLE STEPS (Stacked card deck on mobile, static grid on desktop) */}
+      <StickySteps
+        steps={content?.steps && content.steps.length > 0 ? content.steps : undefined}
+        eyebrow="SIMPLE APPLICATION"
+        title="Three simple steps"
+        subtitle="Gentle, touch-free wound care engineered for rapid recovery and soothing comfort."
+      />
 
+      {hasPostContent && content ? (
+        <Section className="bg-[color:var(--surface)]">
           {content.directions !== "" || content.caution !== "" ? (
-            <Reveal className="mt-14 grid gap-6 first:mt-0 sm:grid-cols-2">
+            <Reveal className="grid gap-6 sm:grid-cols-2">
               {content.directions !== "" ? (
                 <div className="rounded-lg border border-border bg-card p-7">
                   <h3 className="text-lg text-foreground">Directions for use</h3>
