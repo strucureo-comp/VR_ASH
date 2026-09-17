@@ -128,6 +128,22 @@ function Home() {
     ? imageAlt(solidermaProduct.featuredImage?.altText ?? null, solidermaProduct)
     : "SOLIDERMA Multi-Action Wound Healing Spray Bottle";
 
+  // Measure the sticky topic's actual height to calculate the exact sticky offset for the cards
+  const [topicHeight, setTopicHeight] = React.useState(260);
+  const topicRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    function updateHeight() {
+      if (topicRef.current) {
+        // Topic top is 60px. Add the topic's actual height, plus a 16px buffer
+        setTopicHeight(60 + topicRef.current.offsetHeight + 16);
+      }
+    }
+    updateHeight();
+    window.addEventListener("resize", updateHeight);
+    return () => window.removeEventListener("resize", updateHeight);
+  }, []);
+
   return (
     <>
       {/* 01 HERO — Full width editorial backdrop */}
@@ -326,7 +342,7 @@ function Home() {
 
       {/* 03 CLINICAL INDICATIONS */}
       <Section className="border-b border-border/70 bg-[color:var(--surface)]">
-        <div className="sticky top-[60px] z-10 bg-[color:var(--surface)] pt-4 pb-2 sm:relative sm:top-0 sm:z-auto sm:bg-transparent">
+        <div ref={topicRef} className="sticky top-[60px] z-10 bg-[color:var(--surface)] pt-4 pb-2 sm:relative sm:top-0 sm:z-auto sm:bg-transparent">
           <Reveal className="text-left sm:text-center">
             <div className="flex sm:justify-center">
               <SectionLabel index="03" label="Clinical Indications" />
@@ -340,7 +356,7 @@ function Home() {
           </Reveal>
         </div>
         <div className="mt-4 sm:mt-14 w-full">
-          <MobileStackedIndications conditions={CONDITIONS} />
+          <MobileStackedIndications conditions={CONDITIONS} topOffsetPx={topicHeight} />
         </div>
 
         {/* Desktop Layout */}

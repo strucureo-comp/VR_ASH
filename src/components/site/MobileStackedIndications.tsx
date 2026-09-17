@@ -2,7 +2,13 @@ import React, { useRef } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { CheckCircle2 } from "lucide-react";
 
-export function MobileStackedIndications({ conditions }: { conditions: any[] }) {
+export function MobileStackedIndications({ 
+  conditions,
+  topOffsetPx = 140 
+}: { 
+  conditions: any[],
+  topOffsetPx?: number 
+}) {
   const container = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: container,
@@ -14,7 +20,7 @@ export function MobileStackedIndications({ conditions }: { conditions: any[] }) 
       ref={container}
       className="relative flex w-full flex-col sm:hidden"
     >
-      <div className="flex flex-col gap-0 pb-6">
+      <div className="flex flex-col gap-0 pb-10">
         {conditions.map((item, i) => {
           const targetScale = Math.max(0.85, 1 - (conditions.length - i - 1) * 0.05);
           return (
@@ -25,6 +31,7 @@ export function MobileStackedIndications({ conditions }: { conditions: any[] }) 
               progress={scrollYProgress}
               range={[i * (1 / conditions.length), 1]}
               targetScale={targetScale}
+              topOffsetPx={topOffsetPx}
             />
           );
         })}
@@ -33,15 +40,17 @@ export function MobileStackedIndications({ conditions }: { conditions: any[] }) 
   );
 }
 
-function StickyIndicationCard({ item, i, progress, range, targetScale }: any) {
+function StickyIndicationCard({ item, i, progress, range, targetScale, topOffsetPx }: any) {
   const scale = useTransform(progress, range, [1, targetScale]);
-  // Compress the stack gap (was i * 14) so 6 cards don't look messy at the top
-  const topOffset = i * 6;
+  const topOffset = i * 10;
   const isComponent = typeof item.icon === 'function' || (typeof item.icon === 'object' && item.icon !== null);
   const Icon = isComponent ? item.icon : CheckCircle2;
 
   return (
-    <div className="sticky top-[260px] flex w-full flex-col mb-0">
+    <div 
+      className="sticky flex w-full flex-col mb-0"
+      style={{ top: `${topOffsetPx}px` }}
+    >
       <motion.div
         style={{
           scale,
