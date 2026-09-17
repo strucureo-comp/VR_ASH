@@ -14,7 +14,7 @@ export function MobileStackedIndications({ conditions }: { conditions: any[] }) 
       ref={container}
       className="relative flex w-full flex-col sm:hidden"
     >
-      <div className="flex flex-col gap-0 pb-[5vh]">
+      <div className="flex flex-col gap-0 pb-[35vh]">
         {conditions.map((item, i) => {
           const targetScale = Math.max(0.85, 1 - (conditions.length - i - 1) * 0.05);
           return (
