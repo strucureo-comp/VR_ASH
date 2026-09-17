@@ -17,6 +17,18 @@ for (const file of [".env.local", ".env"]) {
 }
 
 export default defineConfig({
+  vite: {
+    server: {
+      allowedHosts: true,
+    },
+    optimizeDeps: {
+      exclude: [
+        "@tanstack/react-start",
+        "@tanstack/react-router",
+        "@tanstack/router-core",
+      ],
+    },
+  },
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this

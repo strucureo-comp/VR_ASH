@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { Reveal } from "@/components/site/Reveal";
 import { SectionLabel } from "@/components/site/Section";
+import { StickySteps } from "@/components/site/StickySteps";
 import { AddToCart } from "@/components/site/AddToCart";
 import {
   Accordion,
@@ -175,13 +176,13 @@ function DesktopScrollytelling({
           >
             <div>
               <p className="eyebrow tracking-[0.25em] text-[color:var(--gold)]">
-                ANTISEPTIC FIRST AID SKIN SPRAY
+                THE PINNACLE OF HERBAL WOUND SCIENCE
               </p>
               <h1 className="mt-1 font-serif text-4xl sm:text-6xl lg:text-7xl font-normal tracking-tight text-foreground">
                 SOLIDERMA<span className="text-xl align-top text-[color:var(--gold)]">™</span>
               </h1>
-              <p className="mt-1 font-serif text-base sm:text-xl text-[color:var(--burgundy)]">
-                Multi Action Wound Healing Spray
+              <p className="mt-1 max-w-lg font-serif text-base sm:text-xl text-[color:var(--burgundy)]">
+                Multi-Action Wound Healing Spray Crafted for Precision Healing
               </p>
             </div>
 
@@ -228,7 +229,7 @@ function DesktopScrollytelling({
                        top-1/2 -translate-y-1/2 left-[calc(50%+48px)] right-auto"
           >
             <div className="border-0 bg-transparent p-0 shadow-none">
-              <p className="eyebrow tracking-[0.2em] text-[color:var(--gold)]">HOW IT HELPS</p>
+              <p className="eyebrow tracking-[0.2em] text-[color:var(--gold)]">PHYSIOLOGICAL MECHANISM</p>
               <h2 className="mt-1 font-serif text-2xl sm:text-4xl lg:text-5xl font-normal leading-tight text-foreground">
                 Four actions,
                 <br className="hidden sm:inline" /> one spray.
@@ -239,21 +240,9 @@ function DesktopScrollytelling({
                     <HeartPulse className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                   </span>
                   <div>
-                    <h3 className="font-semibold text-foreground text-xs sm:text-sm">Rapid wound healing</h3>
+                    <h3 className="font-semibold text-foreground text-xs sm:text-sm">Expedited Healing</h3>
                     <p className="mt-0.5 text-[11px] sm:text-xs text-muted-foreground leading-relaxed">
-                      Accelerates skin tissue regeneration with active Ayurvedic extracts.
-                    </p>
-                  </div>
-                </li>
-
-                <li className="flex items-start gap-3">
-                  <span className="mt-0.5 flex h-5 w-5 sm:h-6 sm:w-6 shrink-0 items-center justify-center rounded-full bg-[color:var(--botanical)]/15 text-[color:var(--botanical)]">
-                    <ShieldCheck className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                  </span>
-                  <div>
-                    <h3 className="font-semibold text-foreground text-xs sm:text-sm">Antimicrobial cover</h3>
-                    <p className="mt-0.5 text-[11px] sm:text-xs text-muted-foreground leading-relaxed">
-                      Prevents bacterial colonization and forms an active protective barrier.
+                      Encourages efficient tissue regeneration.
                     </p>
                   </div>
                 </li>
@@ -263,9 +252,21 @@ function DesktopScrollytelling({
                     <Droplet className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                   </span>
                   <div>
-                    <h3 className="font-semibold text-foreground text-xs sm:text-sm">Pain relief & soothing</h3>
+                    <h3 className="font-semibold text-foreground text-xs sm:text-sm">Enhanced Microcirculation</h3>
                     <p className="mt-0.5 text-[11px] sm:text-xs text-muted-foreground leading-relaxed">
-                      Cools irritation immediately upon application with zero sting or burning.
+                      Assists localized vasodilation and oxygenation.
+                    </p>
+                  </div>
+                </li>
+
+                <li className="flex items-start gap-3">
+                  <span className="mt-0.5 flex h-5 w-5 sm:h-6 sm:w-6 shrink-0 items-center justify-center rounded-full bg-[color:var(--botanical)]/15 text-[color:var(--botanical)]">
+                    <ShieldCheck className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                  </span>
+                  <div>
+                    <h3 className="font-semibold text-foreground text-xs sm:text-sm">Antimicrobial Safeguard</h3>
+                    <p className="mt-0.5 text-[11px] sm:text-xs text-muted-foreground leading-relaxed">
+                      Supports robust defense against microbial burden.
                     </p>
                   </div>
                 </li>
@@ -275,9 +276,9 @@ function DesktopScrollytelling({
                     <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                   </span>
                   <div>
-                    <h3 className="font-semibold text-foreground text-xs sm:text-sm">Scar prevention</h3>
+                    <h3 className="font-semibold text-foreground text-xs sm:text-sm">Scar Modulation</h3>
                     <p className="mt-0.5 text-[11px] sm:text-xs text-muted-foreground leading-relaxed">
-                      Minimizes tissue marks and promotes clean, healthy skin texture recovery.
+                      Facilitates balanced remodeling for reduced scar visibility.
                     </p>
                   </div>
                 </li>
@@ -295,7 +296,7 @@ function DesktopScrollytelling({
                        top-1/2 -translate-y-1/2 right-[calc(50%+48px)] left-auto"
           >
             <div className="border-0 bg-transparent p-0 shadow-none">
-              <p className="eyebrow tracking-[0.2em] text-[color:var(--gold)]">WHERE TO APPLY</p>
+              <p className="eyebrow tracking-[0.2em] text-[color:var(--gold)]">CLINICAL INDICATIONS</p>
               <h2 className="mt-1 font-serif text-2xl sm:text-4xl lg:text-5xl font-normal leading-tight text-foreground">
                 Made for everyday
                 <br className="hidden sm:inline" /> wounds
@@ -305,28 +306,14 @@ function DesktopScrollytelling({
                 <div className="rounded-xl border border-border/80 bg-card/90 p-3 sm:p-4 shadow-sm">
                   <div className="flex items-center gap-2.5">
                     <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[color:var(--botanical)]/10 text-[color:var(--botanical)]">
-                      <Scissors className="h-3.5 w-3.5" />
+                      <Droplet className="h-3.5 w-3.5" />
                     </span>
                     <h3 className="font-semibold text-foreground text-xs sm:text-sm">
-                      Common Cuts & Scrapes
+                      Diabetic Foot Ulcers
                     </h3>
                   </div>
                   <p className="mt-1 text-[11px] sm:text-xs text-muted-foreground leading-relaxed">
-                    Household grazes, paper cuts, kitchen accidents, and surface abrasions.
-                  </p>
-                </div>
-
-                <div className="rounded-xl border border-border/80 bg-card/90 p-3 sm:p-4 shadow-sm">
-                  <div className="flex items-center gap-2.5">
-                    <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[color:var(--botanical)]/10 text-[color:var(--botanical)]">
-                      <Flame className="h-3.5 w-3.5" />
-                    </span>
-                    <h3 className="font-semibold text-foreground text-xs sm:text-sm">
-                      Minor Burns & Scalds
-                    </h3>
-                  </div>
-                  <p className="mt-1 text-[11px] sm:text-xs text-muted-foreground leading-relaxed">
-                    Instant cooling relief for accidental kitchen burns, steam, and surface scalds.
+                    Supportive dermal restoration and microvascular activation for slow-healing ulcerations.
                   </p>
                 </div>
 
@@ -336,11 +323,25 @@ function DesktopScrollytelling({
                       <Shield className="h-3.5 w-3.5" />
                     </span>
                     <h3 className="font-semibold text-foreground text-xs sm:text-sm">
-                      Post-Procedure & Sensitive Care
+                      Decubitus Ulcers (Bed Sores)
                     </h3>
                   </div>
                   <p className="mt-1 text-[11px] sm:text-xs text-muted-foreground leading-relaxed">
-                    Gentle healing support for delicate skin, clinical incisions, and diabetic care.
+                    Disciplined care for pressure-induced tissue breakdown in bed-bound patients.
+                  </p>
+                </div>
+
+                <div className="rounded-xl border border-border/80 bg-card/90 p-3 sm:p-4 shadow-sm">
+                  <div className="flex items-center gap-2.5">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[color:var(--botanical)]/10 text-[color:var(--botanical)]">
+                      <Flame className="h-3.5 w-3.5" />
+                    </span>
+                    <h3 className="font-semibold text-foreground text-xs sm:text-sm">
+                      Thermal Injuries (Fire Burns)
+                    </h3>
+                  </div>
+                  <p className="mt-1 text-[11px] sm:text-xs text-muted-foreground leading-relaxed">
+                    Immediate cooling soothing and bio-regenerative support for superficial burns.
                   </p>
                 </div>
               </div>
@@ -515,13 +516,13 @@ function MobileScrollytelling({
           >
             <div>
               <p className="eyebrow tracking-[0.22em] text-[color:var(--gold)] text-[10px]">
-                ANTISEPTIC FIRST AID SKIN SPRAY
+                THE PINNACLE OF HERBAL WOUND SCIENCE
               </p>
               <h1 className="mt-1 font-serif text-3xl sm:text-4xl font-normal tracking-tight text-foreground">
                 SOLIDERMA<span className="text-lg align-top text-[color:var(--gold)]">™</span>
               </h1>
-              <p className="mt-0.5 font-serif text-sm text-[color:var(--burgundy)]">
-                Multi Action Wound Healing Spray
+              <p className="mt-0.5 max-w-[280px] font-serif text-sm text-[color:var(--burgundy)] mx-auto leading-snug">
+                Multi-Action Wound Healing Spray Crafted for Precision Healing
               </p>
             </div>
 
@@ -562,7 +563,7 @@ function MobileScrollytelling({
             className="pointer-events-none absolute z-20 top-1/2 -translate-y-1/2 left-[36%] right-3 max-w-[280px]"
           >
             <div className="rounded-2xl border border-border/70 bg-card/95 p-4 sm:p-5 shadow-md backdrop-blur-sm">
-              <p className="eyebrow tracking-[0.18em] text-[color:var(--gold)] text-[10.5px] font-bold">HOW IT HELPS</p>
+              <p className="eyebrow tracking-[0.18em] text-[color:var(--gold)] text-[10.5px] font-bold">PHYSIOLOGICAL MECHANISM</p>
               <h2 className="mt-1 font-serif text-lg sm:text-xl font-normal leading-tight text-foreground">
                 Four actions,<br />one spray.
               </h2>
@@ -573,21 +574,9 @@ function MobileScrollytelling({
                     <HeartPulse className="h-3 w-3" />
                   </span>
                   <div>
-                    <h3 className="font-semibold text-foreground text-xs sm:text-[13px] leading-tight">Rapid wound healing</h3>
+                    <h3 className="font-semibold text-foreground text-xs sm:text-[13px] leading-tight">Expedited Healing</h3>
                     <p className="mt-0.5 text-[10px] sm:text-[11px] text-muted-foreground leading-snug">
-                      Accelerates tissue recovery with active extracts.
-                    </p>
-                  </div>
-                </li>
-
-                <li className="flex items-start gap-2.5">
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[color:var(--botanical)]/15 text-[color:var(--botanical)]">
-                    <ShieldCheck className="h-3 w-3" />
-                  </span>
-                  <div>
-                    <h3 className="font-semibold text-foreground text-xs sm:text-[13px] leading-tight">Antimicrobial cover</h3>
-                    <p className="mt-0.5 text-[10px] sm:text-[11px] text-muted-foreground leading-snug">
-                      Forms an active protective herbal shield.
+                      Encourages efficient tissue regeneration.
                     </p>
                   </div>
                 </li>
@@ -597,9 +586,21 @@ function MobileScrollytelling({
                     <Droplet className="h-3 w-3" />
                   </span>
                   <div>
-                    <h3 className="font-semibold text-foreground text-xs sm:text-[13px] leading-tight">Pain relief & soothing</h3>
+                    <h3 className="font-semibold text-foreground text-xs sm:text-[13px] leading-tight">Enhanced Microcirculation</h3>
                     <p className="mt-0.5 text-[10px] sm:text-[11px] text-muted-foreground leading-snug">
-                      Cools irritation with zero sting or burn.
+                      Assists localized vasodilation and oxygenation.
+                    </p>
+                  </div>
+                </li>
+
+                <li className="flex items-start gap-2.5">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[color:var(--botanical)]/15 text-[color:var(--botanical)]">
+                    <ShieldCheck className="h-3 w-3" />
+                  </span>
+                  <div>
+                    <h3 className="font-semibold text-foreground text-xs sm:text-[13px] leading-tight">Antimicrobial Safeguard</h3>
+                    <p className="mt-0.5 text-[10px] sm:text-[11px] text-muted-foreground leading-snug">
+                      Supports robust defense against microbial burden.
                     </p>
                   </div>
                 </li>
@@ -609,9 +610,9 @@ function MobileScrollytelling({
                     <Sparkles className="h-3 w-3" />
                   </span>
                   <div>
-                    <h3 className="font-semibold text-foreground text-xs sm:text-[13px] leading-tight">Scar prevention</h3>
+                    <h3 className="font-semibold text-foreground text-xs sm:text-[13px] leading-tight">Scar Modulation</h3>
                     <p className="mt-0.5 text-[10px] sm:text-[11px] text-muted-foreground leading-snug">
-                      Promotes clean, healthy skin recovery.
+                      Facilitates balanced remodeling for reduced scar visibility.
                     </p>
                   </div>
                 </li>
@@ -628,7 +629,7 @@ function MobileScrollytelling({
             className="pointer-events-none absolute z-20 top-1/2 -translate-y-1/2 left-3 right-[36%] max-w-[280px]"
           >
             <div className="rounded-2xl border border-border/70 bg-card/95 p-4 sm:p-5 shadow-md backdrop-blur-sm">
-              <p className="eyebrow tracking-[0.18em] text-[color:var(--gold)] text-[10.5px] font-bold">WHERE TO APPLY</p>
+              <p className="eyebrow tracking-[0.18em] text-[color:var(--gold)] text-[10.5px] font-bold">CLINICAL INDICATIONS</p>
               <h2 className="mt-1 font-serif text-lg sm:text-xl font-normal leading-tight text-foreground">
                 Made for everyday wounds
               </h2>
@@ -637,24 +638,12 @@ function MobileScrollytelling({
                 <div className="rounded-xl border border-border/60 bg-muted/30 p-2.5">
                   <div className="flex items-center gap-2">
                     <span className="flex h-5 w-5 items-center justify-center rounded bg-[color:var(--botanical)]/10 text-[color:var(--botanical)]">
-                      <Scissors className="h-3 w-3" />
+                      <Droplet className="h-3 w-3" />
                     </span>
-                    <h3 className="font-semibold text-foreground text-xs sm:text-[13px]">Cuts & Scrapes</h3>
+                    <h3 className="font-semibold text-foreground text-xs sm:text-[13px]">Diabetic Foot Ulcers</h3>
                   </div>
                   <p className="mt-1 text-[10px] sm:text-[11px] text-muted-foreground leading-snug">
-                    Grazes, paper cuts, kitchen accidents & abrasions.
-                  </p>
-                </div>
-
-                <div className="rounded-xl border border-border/60 bg-muted/30 p-2.5">
-                  <div className="flex items-center gap-2">
-                    <span className="flex h-5 w-5 items-center justify-center rounded bg-[color:var(--botanical)]/10 text-[color:var(--botanical)]">
-                      <Flame className="h-3 w-3" />
-                    </span>
-                    <h3 className="font-semibold text-foreground text-xs sm:text-[13px]">Burns & Scalds</h3>
-                  </div>
-                  <p className="mt-1 text-[10px] sm:text-[11px] text-muted-foreground leading-snug">
-                    Instant cooling relief for steam & accidental burns.
+                    Supportive dermal restoration for slow-healing ulcerations.
                   </p>
                 </div>
 
@@ -663,10 +652,22 @@ function MobileScrollytelling({
                     <span className="flex h-5 w-5 items-center justify-center rounded bg-[color:var(--botanical)]/10 text-[color:var(--botanical)]">
                       <Shield className="h-3 w-3" />
                     </span>
-                    <h3 className="font-semibold text-foreground text-xs sm:text-[13px]">Delicate & Sensitive</h3>
+                    <h3 className="font-semibold text-foreground text-xs sm:text-[13px]">Decubitus Ulcers</h3>
                   </div>
                   <p className="mt-1 text-[10px] sm:text-[11px] text-muted-foreground leading-snug">
-                    Gentle healing support for delicate skin care.
+                    Disciplined care for pressure-induced tissue breakdown.
+                  </p>
+                </div>
+
+                <div className="rounded-xl border border-border/60 bg-muted/30 p-2.5">
+                  <div className="flex items-center gap-2">
+                    <span className="flex h-5 w-5 items-center justify-center rounded bg-[color:var(--botanical)]/10 text-[color:var(--botanical)]">
+                      <Flame className="h-3 w-3" />
+                    </span>
+                    <h3 className="font-semibold text-foreground text-xs sm:text-[13px]">Thermal Injuries</h3>
+                  </div>
+                  <p className="mt-1 text-[10px] sm:text-[11px] text-muted-foreground leading-snug">
+                    Cooling and bio-regenerative support for burns.
                   </p>
                 </div>
               </div>
@@ -737,6 +738,13 @@ function MobileScrollytelling({
   );
 }
 
+import { 
+  SolidermaScience, 
+  SolidermaWhoShouldUse, 
+  SolidermaPresentationSafety, 
+  SolidermaFAQs 
+} from "@/components/site/SolidermaDetails";
+
 export function Soliderma() {
   const { product, content } = Route.useLoaderData();
   const ingredients = preferSaved(content?.ingredients ?? [], INGREDIENTS);
@@ -787,79 +795,70 @@ export function Soliderma() {
       </div>
 
       {/* =========================================================================
-          SECTION: THREE SIMPLE STEPS (Directly from Reference Frame 7)
+          SECTION: THE SCIENCE
           ========================================================================= */}
-      <section className="border-t border-border/80 bg-[color:var(--surface)] py-16 sm:py-20 px-6">
-        <div className="mx-auto max-w-6xl">
-          <div className="text-center">
-            <p className="eyebrow tracking-[0.2em] text-[color:var(--gold)]">
-              SIMPLE APPLICATION
-            </p>
-            <h2 className="mt-2 font-serif text-3xl sm:text-5xl font-normal text-foreground">
-              Three simple steps
-            </h2>
-            <p className="mt-3 text-sm sm:text-base text-muted-foreground max-w-xl mx-auto">
-              Gentle, touch-free wound care engineered for rapid recovery and soothing comfort.
-            </p>
-          </div>
+      <SolidermaScience />
 
-          <div className="mt-12 sm:mt-14 grid gap-6 sm:grid-cols-3">
-            {/* Step 1 */}
-            <Reveal delay={0}>
-              <div className="group h-full rounded-2xl border border-border bg-card p-6 sm:p-7 shadow-sm transition-all hover:border-[color:var(--botanical)]/40 hover:shadow-md">
-                <span className="font-serif text-3xl sm:text-4xl font-normal text-[color:var(--gold)]">
-                  01
-                </span>
-                <h3 className="mt-3 font-serif text-xl sm:text-2xl font-normal text-foreground">Clean</h3>
-                <p className="mt-2 text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                  Cleanse the affected wound area gently with clean water or mild sterile saline
-                  solution to remove dirt and particles.
-                </p>
-                <div className="mt-5 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[color:var(--botanical)]">
-                  <CheckCircle2 className="h-4 w-4" />
-                  <span>Prepare surface</span>
-                </div>
+      {/* =========================================================================
+          SECTION: INGREDIENTS & AYURVEDIC FORMULATION
+          ========================================================================= */}
+      <section 
+        className="relative py-16 sm:py-20 px-6 border-t border-border"
+        style={{
+          backgroundImage: `url(${botanicals})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        <div className="absolute inset-0 bg-black/70 backdrop-blur-[2px]" />
+        <div className="relative mx-auto max-w-4xl">
+          <Reveal>
+            <div className="flex flex-col items-center text-center">
+              <div className="flex items-center justify-center gap-3">
+                <span className="eyebrow text-[color:var(--gold)]">03</span>
+                <span className="h-px w-8 bg-white/30" />
+                <span className="eyebrow text-white/80">Formulation Details</span>
               </div>
-            </Reveal>
+              <h2 className="mt-4 font-serif text-3xl sm:text-4xl text-white leading-tight">
+                Pure Ayurvedic Botanicals & Active Bio-Compounds
+              </h2>
+              <p className="mt-4 text-sm sm:text-base text-white/80 leading-relaxed max-w-2xl mx-auto">
+                Developed through documented Ayurvedic preparation processes involving extraction,
+                purification, and micro-filtration for safe cutaneous application.
+              </p>
+            </div>
 
-            {/* Step 2 */}
-            <Reveal delay={0.1}>
-              <div className="group h-full rounded-2xl border border-border bg-card p-6 sm:p-7 shadow-sm transition-all hover:border-[color:var(--botanical)]/40 hover:shadow-md">
-                <span className="font-serif text-3xl sm:text-4xl font-normal text-[color:var(--gold)]">
-                  02
-                </span>
-                <h3 className="mt-3 font-serif text-xl sm:text-2xl font-normal text-foreground">Spray</h3>
-                <p className="mt-2 text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                  Hold the bottle 10–15cm away from the skin and spray 2–3 times to create a uniform,
-                  cooling antimicrobial film.
-                </p>
-                <div className="mt-5 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[color:var(--botanical)]">
-                  <CheckCircle2 className="h-4 w-4" />
-                  <span>Touch-free mist</span>
-                </div>
-              </div>
-            </Reveal>
+            <div className="mt-12 rounded-2xl border border-white/10 bg-black/40 backdrop-blur-md p-6 sm:p-8 shadow-2xl">
+              <ul className="divide-y divide-white/10">
+                {ingredients.map((item) => (
+                  <li key={item.name} className="grid grid-cols-[1.2fr_1.4fr_auto] gap-3 py-3.5 text-xs sm:text-sm">
+                    <span className="font-semibold text-white">{item.name}</span>
+                    <span className="italic text-white/70">{item.latin}</span>
+                    <span className="text-xs font-medium text-white/50">{item.part}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-            {/* Step 3 */}
-            <Reveal delay={0.2}>
-              <div className="group h-full rounded-2xl border border-border bg-card p-6 sm:p-7 shadow-sm transition-all hover:border-[color:var(--botanical)]/40 hover:shadow-md">
-                <span className="font-serif text-3xl sm:text-4xl font-normal text-[color:var(--gold)]">
-                  03
-                </span>
-                <h3 className="mt-3 font-serif text-xl sm:text-2xl font-normal text-foreground">Let it heal</h3>
-                <p className="mt-2 text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                  Allow the herbal formula to absorb naturally without touching or rubbing. Repeat
-                  2–3 times daily until fully recovered.
-                </p>
-                <div className="mt-5 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[color:var(--botanical)]">
-                  <CheckCircle2 className="h-4 w-4" />
-                  <span>Natural regeneration</span>
-                </div>
-              </div>
-            </Reveal>
-          </div>
+            <div className="mt-10 text-center flex flex-col items-center justify-center">
+               <p className="text-xs font-semibold uppercase tracking-widest text-[color:var(--gold)]">
+                 Traditional Heritage
+               </p>
+               <p className="mt-2 font-serif text-base sm:text-lg text-white">WHO-GMP Batch Tested Quality Assurance</p>
+            </div>
+          </Reveal>
         </div>
       </section>
+
+      {/* =========================================================================
+          SECTION: WHO SHOULD USE
+          ========================================================================= */}
+      <SolidermaWhoShouldUse />
+
+      {/* =========================================================================
+          SECTION: THREE SIMPLE STEPS (Directly from Reference Frame 7)
+          ========================================================================= */}
+      <StickySteps />
 
       {/* =========================================================================
           SECTION: AVAILABLE PRODUCT SIZES & ADD TO CART (E-commerce Integration)
@@ -877,9 +876,9 @@ export function Soliderma() {
           </div>
 
           <div
-            className={`mt-10 grid gap-6 ${
-              (product?.variants.length ?? 0) <= 1 ? "max-w-xl mx-auto" : "sm:grid-cols-2"
-            }`}
+            className={`mt-10 flex snap-x snap-mandatory gap-6 overflow-x-auto pb-8 sm:grid sm:overflow-x-visible sm:pb-0 ${
+              (product?.variants.length ?? 0) <= 1 ? "max-w-xl mx-auto sm:block" : "sm:grid-cols-2"
+            } -mx-6 px-6 sm:mx-0 sm:px-0`}
           >
             {product?.variants.map((v, i) => {
               const displayTitle =
@@ -887,9 +886,10 @@ export function Soliderma() {
                 (isSolidermaHandle(product.handle) ? "50ml Spray Bottle" : "Standard Pack");
 
               return (
-                <Reveal key={v.id} delay={i * 0.08}>
-                  <div className="flex h-full flex-col justify-between rounded-2xl border border-border bg-card p-7 sm:p-8 shadow-sm transition-all hover:border-[color:var(--botanical)]/50">
-                    <div>
+                <div key={v.id} className="w-[85vw] shrink-0 snap-center sm:w-auto">
+                  <Reveal delay={i * 0.08} className="h-full">
+                    <div className="flex h-full flex-col justify-between rounded-2xl border border-border bg-card p-7 sm:p-8 shadow-sm transition-all hover:border-[color:var(--botanical)]/50">
+                      <div>
                       <div className="flex items-center justify-between gap-3">
                         <h3 className="font-serif text-xl sm:text-2xl text-foreground">
                           {displayTitle}
@@ -911,10 +911,11 @@ export function Soliderma() {
                     </div>
                   </div>
                 </Reveal>
-              );
-            })}
+              </div>
+            );
+          })}
 
-            {!product && (
+          {!product && (
               <div className="col-span-2 rounded-2xl border border-dashed border-border p-10 text-center text-muted-foreground">
                 <p>Sizes and pricing are being updated in the catalogue.</p>
                 <Link
@@ -930,88 +931,10 @@ export function Soliderma() {
       </section>
 
       {/* =========================================================================
-          SECTION: INGREDIENTS & AYURVEDIC FORMULATION
+          SECTION: PRESENTATION, SAFETY, FAQS
           ========================================================================= */}
-      <section className="bg-[color:var(--surface)] py-16 sm:py-20 px-6 border-t border-border">
-        <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-2 lg:items-center">
-          <Reveal>
-            <div className="flex items-center gap-3">
-              <span className="eyebrow text-[color:var(--gold)]">03</span>
-              <span className="h-px w-8 bg-border" />
-              <span className="eyebrow text-muted-foreground">Formulation Details</span>
-            </div>
-            <h2 className="mt-4 font-serif text-3xl sm:text-4xl text-foreground leading-tight">
-              Pure Ayurvedic Botanicals & Active Bio-Compounds
-            </h2>
-            <p className="mt-3 text-sm sm:text-base text-muted-foreground leading-relaxed">
-              Developed through documented Ayurvedic preparation processes involving extraction,
-              purification, and micro-filtration for safe cutaneous application.
-            </p>
-
-            <ul className="mt-8 divide-y divide-border border-t border-border">
-              {ingredients.map((item) => (
-                <li key={item.name} className="grid grid-cols-[1.2fr_1.4fr_auto] gap-3 py-3.5 text-xs sm:text-sm">
-                  <span className="font-semibold text-foreground">{item.name}</span>
-                  <span className="italic text-muted-foreground">{item.latin}</span>
-                  <span className="text-xs font-medium text-muted-foreground/80">{item.part}</span>
-                </li>
-              ))}
-            </ul>
-          </Reveal>
-
-          <Reveal delay={0.1}>
-            <div className="relative overflow-hidden rounded-2xl border border-border shadow-sm">
-              <img
-                src={botanicals}
-                alt="Natural Ayurvedic botanicals used in Soliderma"
-                width={1408}
-                height={1008}
-                loading="lazy"
-                className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-              <div className="absolute bottom-6 left-6 right-6 text-white">
-                <p className="text-xs font-semibold uppercase tracking-widest text-[color:var(--gold)]">
-                  Traditional Heritage
-                </p>
-                <p className="mt-1 font-serif text-base sm:text-lg">WHO-GMP Batch Tested Quality Assurance</p>
-              </div>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* =========================================================================
-          SECTION: PRODUCT FAQS
-          ========================================================================= */}
-      {content && content.faqs.length > 0 && (
-        <section className="bg-background py-16 sm:py-20 px-6 border-t border-border">
-          <div className="mx-auto max-w-3xl">
-            <div className="text-center">
-              <SectionLabel index="04" label="Frequently Asked Questions" />
-              <h2 className="mt-4 font-serif text-3xl sm:text-4xl text-foreground">
-                Common Questions
-              </h2>
-            </div>
-
-            <div className="mt-10">
-              <Accordion type="single" collapsible className="w-full">
-                {content.faqs.map((f, i) => (
-                  <AccordionItem key={f.q} value={`item-${i}`}>
-                    <AccordionTrigger className="text-left font-serif text-base sm:text-lg">
-                      {f.q}
-                    </AccordionTrigger>
-                    <AccordionContent className="text-xs sm:text-sm leading-relaxed text-muted-foreground">
-                      {f.a}
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            </div>
-          </div>
-        </section>
-      )}
-
+      <SolidermaPresentationSafety content={content} />
+      <SolidermaFAQs content={content} />
       {/* =========================================================================
           SECTION: DEEP BOTANICAL GREEN FOOTER / CTA (Directly from Reference Frame 8)
           ========================================================================= */}

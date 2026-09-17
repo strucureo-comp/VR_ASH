@@ -46,6 +46,7 @@
 
 :root {
   --radius: 1rem;
+  --header-height: 92px;
   /* Emerald Prestige: #064e3b #0d7a5f #c9a84c #f5f0e0 */
   --ivory: oklch(0.955 0.023 95);
   --background: oklch(0.955 0.023 95);
@@ -133,3 +134,10 @@
     transparent
   );
 }
+
+@media (min-width: 640px) {
+  :root {
+    --header-height: 105px;
+  }
+}
+

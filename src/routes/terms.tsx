@@ -27,7 +27,7 @@ function Terms() {
           heading: "Product information",
           body: (
             <p>
-              Soliderma™ is an Ayurvedic proprietary medicine. Information on this site describes
+              SOLIDERMA is an Ayurvedic proprietary medicine. Information on this site describes
               the formulation and its intended use in wound care. It is not medical advice and does
               not replace consultation with a qualified practitioner, particularly for deep,
               infected or non-healing wounds.

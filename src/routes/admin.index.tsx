@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ChevronRight, FileText } from "lucide-react";
+import { ChevronRight, ExternalLink, FileText } from "lucide-react";
 
 import { AdminShell } from "@/components/admin/AdminShell";
 import { useAdminSession } from "@/lib/admin/useAdminSession";
@@ -42,6 +42,21 @@ function AdminProducts() {
       heading="Products"
       intro="Everything the site says about a product beyond its price and stock."
     >
+      <div className="mb-6 flex items-center justify-between gap-4">
+        <p className="text-xs text-muted-foreground sm:text-sm">
+          Select a product to manage clinical copy, indications, and FAQs.
+        </p>
+        <a
+          href="https://admin.shopify.com/store/s0wb3s-wb/products"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-full border border-border bg-card px-3.5 py-1.5 text-xs font-medium text-foreground shadow-sm transition-colors hover:border-primary hover:text-primary"
+        >
+          <ExternalLink className="h-3.5 w-3.5 text-[color:var(--gold)]" />
+          Shopify Admin
+        </a>
+      </div>
+
       {products.length === 0 ? (
         <p className="rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground">
           No products came back from Shopify. Add one in Shopify Admin and it appears here.

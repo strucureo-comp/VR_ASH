@@ -53,87 +53,74 @@ export const NAV = [
   { to: "/products", label: "Products" },
   { to: "/about", label: "About Us" },
   { to: "/certifications", label: "Our Science" },
-  { to: "/wound-care", label: "Wellness Guide" },
   { to: "/clinics", label: "For Professionals" },
   { to: "/contact", label: "Contact" },
 ] as const;
 
+export function cleanSoliderma(text: string): string {
+  if (!text) return "";
+  return text.replace(/SOLIDERMA[®️™]*/gi, "SOLIDERMA");
+}
+
+
 export const BENEFITS = [
   {
-    title: "Accelerates Healing",
-    body: "Supports the wound-healing process as part of an appropriate wound-care routine.",
+    title: "Expedited Healing",
+    body: "Uses powerful plant-based ingredients to help your skin heal naturally and rebuild healthy tissue.",
   },
   {
-    title: "Improves Blood Flow",
-    body: "Formulated with a stated focus on supporting blood flow.",
+    title: "Enhanced Microcirculation",
+    body: "Improves blood flow and oxygen to the wound area, delivering the vital nutrients needed for faster healing.",
   },
   {
-    title: "Antimicrobial Protection",
-    body: "Provides antimicrobial protection as described in the product material.",
+    title: "Antimicrobial Safeguard",
+    body: "Creates a protective barrier that fights off bacteria and stops infections from spreading.",
   },
   {
-    title: "Anti-Inflammatory",
-    body: "Designed with anti-inflammatory properties as part of its multi-action formulation.",
+    title: "Scar Modulation",
+    body: "Supports the skin's natural repair process to help minimize the appearance of scars over time.",
   },
 ];
 
 /**
- * The single list of conditions Soliderma is positioned for. Rendered by the
- * home "Works On" grid, the /wound-care page it links to, the /soliderma
- * categories list and the /faq answer — keep it here, not in the routes, so
- * those four never drift apart again.
+ * The single list of conditions Soliderma is positioned for.
+ * SOLIDERMA is formulated for complex wounds that need ongoing, daily care, helping the skin progress steadily through every stage of healing.
  */
 export const CONDITIONS = [
   {
     icon: Droplets,
-    title: "Diabetic Wound",
-    body: "Supportive wound care for slow-healing wounds associated with diabetic conditions.",
+    title: "Diabetic Foot Ulcers",
+    body: "Designed to improve circulation and promote healthy skin recovery in slow-healing diabetic wounds.",
   },
   {
     icon: BedDouble,
-    title: "Bed Sores",
-    body: "For pressure-related sores in bed-bound and long-term-care situations.",
-  },
-  {
-    icon: Ambulance,
-    title: "Accident Injuries",
-    body: "For wound-care support following accidental injuries.",
+    title: "Decubitus Ulcers (Bed Sores)",
+    body: "Disciplined care for pressure-induced tissue breakdown in bed-bound and long-term care patients.",
   },
   {
     icon: Flame,
-    title: "Burns / Post-Injuries",
-    body: "For wound-care situations involving burn and fire injuries.",
+    title: "Thermal Injuries (Fire Burns)",
+    body: "Immediate cooling soothing and bio-regenerative support for superficial and partial-thickness burn injuries.",
+  },
+  {
+    icon: Ambulance,
+    title: "Accidental Trauma Wounds",
+    body: "Rapid antimicrobial defense and accelerated tissue repair following acute accidental trauma.",
   },
   {
     icon: Scissors,
-    title: "Post-Surgical Care",
-    body: "As part of the care routine set by your surgeon for a healing incision.",
-  },
-  {
-    icon: Bug,
-    title: "Skin Infections",
-    body: "Antimicrobial support for the area under care, alongside professional advice.",
+    title: "Post-Operative Surgical Wounds",
+    body: "Clean, touch-free barrier protection facilitating disciplined incision healing and scar reduction.",
   },
   {
     icon: Activity,
-    title: "Chronic Ulcers",
-    body: "For long-standing ulcers being managed under practitioner supervision.",
-  },
-  {
-    icon: Bandage,
-    title: "Cuts & Abrasions",
-    body: "Everyday herbal care for minor cuts, grazes and abrasions.",
+    title: "Chronic Non-Healing Wounds",
+    body: "Supportive topical therapy to assist wound progression through key healing phases.",
   },
 ];
 
 /**
- * Certificates and documentation actually held on file — the home strip,
- * /certifications and the metrics count all read from this one array, so the
- * number can never disagree with the list.
- *
- * NOTE: only add an entry once the certificate exists and can be produced on
- * request. "Clinically Researched" is a positioning claim, not a certificate,
- * so it sits in the hero trust badges instead.
+ * Certificates and documentation actually held on file.
  */
 export const CERTIFICATIONS = [
   {
@@ -154,110 +141,103 @@ export const CERTIFICATIONS = [
 ];
 
 export const INGREDIENTS = [
-  { name: "Crustacean", latin: "Crustacea", part: "Powder" },
-  { name: "Haridra", latin: "Curcuma longa", part: "Powder" },
-  { name: "Kanyasara", latin: "Aloe barbadensis", part: "Dried Pulp" },
-  { name: "Avartaki", latin: "Cassia auriculata", part: "Flowers" },
-  { name: "Triphala", latin: "Terminalia chebula (Haritaki)", part: "Seeds" },
+  { name: "Crustacean Extract", latin: "Crustacea", part: "30 mg" },
+  { name: "Haridra", latin: "Curcuma longa", part: "0.1 mg" },
+  { name: "Kanyasara", latin: "Aloe barbadensis", part: "10 mg" },
+  { name: "Avartaki", latin: "Cassia auriculata", part: "50 mg" },
+  { name: "Triphala", latin: "Terminalia chebula (Haritaki)", part: "30 mg" },
+  { name: "IPA Base", latin: "Isopropanol Base", part: "q.s." },
 ];
 
 export const STEPS = [
   {
     step: "01",
-    title: "Prepare the Area",
-    body: "Clean the affected area according to the wound-care instructions provided by your healthcare professional.",
+    title: "Shake Well",
+    body: "Shake well before each application.",
   },
-  { step: "02", title: "Apply Soliderma", body: "Apply the spray as directed." },
+  {
+    step: "02",
+    title: "Spray Generously",
+    body: "Spray generously over the wound bed.",
+  },
   {
     step: "03",
-    title: "Continue the Care Routine",
-    body: "Follow the recommended wound-care protocol consistently.",
+    title: "Apply 3–4 Times Daily",
+    body: "Apply 3–4 times daily, or as advised by a medical professional.",
   },
   {
     step: "04",
-    title: "Monitor Progress",
-    body: "Observe the wound and follow professional medical guidance where required.",
+    title: "Medical Dressings",
+    body: "Suitable under medical dressings.",
   },
 ];
 
 /**
  * The site-wide FAQ, shown on /faq.
- *
- * Two answers are assembled from the lists above so they cannot drift from the
- * pages they describe. Once /faq reads from the database this array becomes the
- * seed for `content/shared/faqs` and the two answers freeze as literal text —
- * self-updating counts are not worth a second source of truth.
  */
 const CONDITION_LIST = CONDITIONS.map((c) => c.title.toLowerCase()).join(", ");
 const CERT_LIST = CERTIFICATIONS.map((c) => c.title).join(", ");
 
 export const FAQS = [
   {
-    q: "What is Soliderma?",
-    a: "Soliderma is an Ayurvedic proprietary medicine presented as a multi-action wound healing spray.",
+    q: "Is SOLIDERMA suitable for diabetic patients?",
+    a: "Yes. As indicated on the product label, SOLIDERMA is formulated to support healing in diabetic foot ulcers. However, all diabetic wound care should be supervised by a licensed medical professional.",
   },
   {
-    q: "What is Soliderma used for?",
-    a: `It is used as part of the care routine for ${CONDITION_LIST}. It supports a wound-care plan rather than replacing one.`,
+    q: "Can it be used on chronic non-healing wounds?",
+    a: "SOLIDERMA is designed to assist wound progression through key healing phases. Chronic wounds require medical assessment; SOLIDERMA functions as a supportive topical therapy.",
   },
   {
-    q: "How should Soliderma be applied?",
-    a: "Use according to the product instructions and the guidance of a qualified healthcare professional.",
+    q: "Is the formula purely herbal?",
+    a: "The formulation contains multiple traditional herbal actives selected for their historical therapeutic value, synergistic activity, and contribution to cutaneous homeostasis.",
   },
   {
-    q: "Is Soliderma herbal?",
-    a: "The product packaging identifies Soliderma as a herbal product.",
+    q: "How soon can results be expected?",
+    a: "Healing times depend on the depth of the wound and your overall health, but SOLIDERMA works continuously to support and speed up your body's natural healing process.",
   },
   {
-    q: "Where is Soliderma manufactured?",
-    a: "The supplied material identifies Kniss Laboratories (P) Ltd. as the manufacturer. Vallalaar Remedies markets the product.",
+    q: "What is SOLIDERMA used for?",
+    a: `It is engineered for complex wounds that demand more, including ${CONDITION_LIST}. It supports a structured wound-care plan.`,
+  },
+  {
+    q: "Where is SOLIDERMA manufactured?",
+    a: "Manufactured by KNISS Laboratories (P) Ltd. (Mfg. Lic. No.: 1055) and marketed by Vallalaar Remedies, Chennai.",
   },
   {
     q: "What certifications does it hold?",
-    a: `${CERT_LIST}. Certificates and regulatory documentation are listed on the Our Science page and can be provided on request.`,
+    a: `${CERT_LIST}. Certificates and regulatory documentation are listed on the Our Science page.`,
   },
   {
-    q: "What does Soliderma cost?",
-    a: "Live prices are shown on each product page and in the cart, per size. Shipping and any taxes are calculated at checkout.",
-  },
-  {
-    q: "Can I order Soliderma online?",
-    a: "Yes. Add the size you need to the cart and check out — payment is processed securely by our Shopify checkout, and you will receive an order confirmation by email.",
-  },
-  {
-    q: "Can clinics order in bulk?",
-    a: "Yes. A dedicated clinic / practitioner enquiry pathway is provided for bulk and professional requirements.",
-  },
-  {
-    q: "Can I use Soliderma without medical advice?",
-    a: "For significant, infected, deep, diabetic or otherwise serious wounds, users should seek appropriate professional medical care. Product use should follow the approved instructions.",
+    q: "Can clinics and hospitals order in bulk?",
+    a: "Yes. Institutional supply is available for wound-care centres, diabetic care clinics, geriatric care units, and hospitals.",
   },
 ];
 
 /**
- * Home-page marketing copy.
- *
- * NOTE: the metrics bar and the testimonials below are customer-supplied
- * claims. Keep them in sync with what can actually be evidenced (certificates
- * on file, consented patient quotes).
+ * Verified regulatory metrics replacing unverified marketing claims.
  */
-const METRIC_CLAIMS = [
-  { value: "10+", label: "Years of Trust" },
-  { value: "5000+", label: "Doctors Trusted" },
-  { value: "1M+", label: "Lives Touched" },
-];
-
-/**
- * The certification count is the one metric that is counted rather than claimed,
- * so the pages that read `content/shared` pass the saved list's length in — the
- * bar can then never disagree with what /certifications actually shows.
- */
-export function metrics(certificationCount: number) {
-  return [...METRIC_CLAIMS, { value: String(certificationCount), label: "Certifications" }];
+export function metrics(_certificationCount?: number) {
+  return [
+    { value: "WHO-GMP", label: "Compliant Facility" },
+    { value: "AYUSH", label: "Proprietary Medicine" },
+    { value: "ISO 9001", label: "Quality Certified" },
+    { value: "Batch Tested", label: "Quality Assured" },
+  ];
 }
 
 export const ABOUT_SNIPPET =
-  "Vallalaar Remedies is a Chennai-based Ayurvedic company built around a single idea — that traditional herbal wound care deserves modern manufacturing discipline. Soliderma is produced for us by Kniss Laboratories (P) Ltd. in a WHO-GMP compliant facility, from a formulation refined through years of practitioner feedback, so families and clinicians get the same result every time.";
+  "Combining the wisdom of Ayurveda with modern science. We are dedicated to creating pure, high-quality herbal remedies you can trust. SOLIDERMA is manufactured by KNISS Laboratories (P) Ltd. under WHO-GMP compliance.";
+
+export const MANUFACTURER_INFO = {
+  name: "KNISS Laboratories (P) Ltd.",
+  licence: "Mfg. Lic. No.: 1055",
+  marketedBy: "Vallalaar Remedies",
+  address: "25/5, Nathamuni Street, T. Nagar, Chennai – 600 017",
+  phone: "+91 94458 48148",
+};
+
+export const DISCLAIMER =
+  "This website conveys information consistent with the product label. It is not a substitute for physician consultation. For severe, spreading, or infected wounds particularly in diabetic individuals professional medical care is essential.";
 
 export const TESTIMONIALS = [
   {

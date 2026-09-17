@@ -9,6 +9,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { DesktopScrollytelling, MobileScrollytelling } from "@/components/site/ProductScrollytelling";
 import { resolveIcon } from "@/lib/content/icons";
 import { contentId } from "@/lib/content/paths";
 import { productContentQuery } from "@/lib/content/queryOptions";
@@ -116,6 +117,8 @@ function ProductDetail() {
     alt: imageAlt(img.altText, product),
   }));
 
+  const hasScrollytelling = content && content.benefits.length > 0 && content.conditions.length > 0;
+
   return (
     <>
       <Section className="bg-[color:var(--surface)]">
@@ -222,42 +225,69 @@ function ProductDetail() {
             </Reveal>
           ) : null}
 
-          {content.benefits.length > 0 ? (
-            <Reveal className="mt-14 first:mt-0">
-              <h2 className="text-3xl text-foreground">Key benefits</h2>
-              <ul className="mt-6 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2">
-                {content.benefits.map((b) => (
-                  <li key={b.title} className="bg-card p-6">
-                    <p className="text-lg text-foreground">{b.title}</p>
-                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{b.body}</p>
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
-          ) : null}
-
-          {content.conditions.length > 0 ? (
-            <Reveal className="mt-14 first:mt-0">
-              <h2 className="text-3xl text-foreground">Where it is used</h2>
-              <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                {content.conditions.map((c) => {
-                  const Icon = resolveIcon(c.icon);
-                  return (
-                    <article
-                      key={c.title}
-                      className="flex h-full flex-col rounded-2xl border border-border bg-card p-6"
-                    >
-                      <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[color:var(--botanical)]/10">
-                        <Icon className="h-5 w-5 text-[color:var(--botanical)]" />
-                      </span>
-                      <h3 className="mt-5 text-lg leading-tight text-foreground">{c.title}</h3>
-                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{c.body}</p>
-                    </article>
-                  );
-                })}
+          {hasScrollytelling ? (
+            <div className="mt-14 w-full h-[200vh] relative -mx-4 sm:-mx-6 lg:-mx-8">
+              <div className="hidden md:block">
+                <DesktopScrollytelling
+                  bottleSrc={stageImages[0]?.src || ""}
+                  bottleAlt={stageImages[0]?.alt || ""}
+                  howItHelpsTitle={content.breakthroughTitle || "How it helps"}
+                  benefits={content.benefits || []}
+                  whereToApplyTitle={content.indicationsTitle || "Where to apply"}
+                  conditions={content.conditions || []}
+                />
               </div>
-            </Reveal>
-          ) : null}
+              <div className="block md:hidden">
+                <MobileScrollytelling
+                  bottleSrc={stageImages[0]?.src || ""}
+                  bottleAlt={stageImages[0]?.alt || ""}
+                  howItHelpsTitle={content.breakthroughTitle || "How it helps"}
+                  benefits={content.benefits || []}
+                  whereToApplyTitle={content.indicationsTitle || "Where to apply"}
+                  conditions={content.conditions || []}
+                />
+              </div>
+            </div>
+          ) : (
+            <>
+              {content.benefits.length > 0 ? (
+                <Reveal className="mt-14 first:mt-0">
+                  <h2 className="text-3xl text-foreground">Key benefits</h2>
+                  <ul className="mt-6 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2">
+                    {content.benefits.map((b) => (
+                      <li key={b.title} className="bg-card p-6">
+                        <p className="text-lg text-foreground">{b.title}</p>
+                        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{b.body}</p>
+                      </li>
+                    ))}
+                  </ul>
+                </Reveal>
+              ) : null}
+
+              {content.conditions.length > 0 ? (
+                <Reveal className="mt-14 first:mt-0">
+                  <h2 className="text-3xl text-foreground">Where it is used</h2>
+                  <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                    {content.conditions.map((c) => {
+                      const Icon = resolveIcon(c.icon);
+                      return (
+                        <article
+                          key={c.title}
+                          className="flex h-full flex-col rounded-2xl border border-border bg-card p-6"
+                        >
+                          <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[color:var(--botanical)]/10">
+                            <Icon className="h-5 w-5 text-[color:var(--botanical)]" />
+                          </span>
+                          <h3 className="mt-5 text-lg leading-tight text-foreground">{c.title}</h3>
+                          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{c.body}</p>
+                        </article>
+                      );
+                    })}
+                  </div>
+                </Reveal>
+              ) : null}
+            </>
+          )}
           {content.ingredients.length > 0 ? (
             <Reveal className="mt-14 first:mt-0">
               <h2 className="text-3xl text-foreground">Formulation</h2>
@@ -336,22 +366,24 @@ function ProductDetail() {
               <SectionLabel index="02" label="Sizes" />
               <h2 className="mt-6 text-3xl text-foreground">Available sizes</h2>
             </Reveal>
-            <div className="mt-8 grid gap-5 sm:grid-cols-2">
+            <div className="mt-8 flex snap-x snap-mandatory gap-5 overflow-x-auto pb-6 sm:grid sm:grid-cols-2 sm:overflow-x-visible sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0">
               {product.variants.map((v, i) => (
-                <Reveal key={v.id} delay={i * 0.06}>
-                  <div className="h-full rounded-lg border border-border bg-card p-7">
-                    <h3 className="text-2xl text-foreground">
-                      {variantLabel(v.title) ||
-                        (isSolidermaHandle(product.handle) ? "50ml Spray Bottle" : "Standard Pack")}
-                    </h3>
-                    <p className="mt-2 text-sm text-muted-foreground">
-                      {v.availableForSale ? "In stock" : "Out of stock"}
-                    </p>
-                    <p className="mt-4 font-display text-lg text-foreground">
-                      {formatMoney(v.price)}
-                    </p>
-                  </div>
-                </Reveal>
+                <div key={v.id} className="w-[85vw] shrink-0 snap-center sm:w-auto">
+                  <Reveal delay={i * 0.06} className="h-full">
+                    <div className="h-full rounded-lg border border-border bg-card p-7">
+                      <h3 className="text-2xl text-foreground">
+                        {variantLabel(v.title) ||
+                          (isSolidermaHandle(product.handle) ? "50ml Spray Bottle" : "Standard Pack")}
+                      </h3>
+                      <p className="mt-2 text-sm text-muted-foreground">
+                        {v.availableForSale ? "In stock" : "Out of stock"}
+                      </p>
+                      <p className="mt-4 font-display text-lg text-foreground">
+                        {formatMoney(v.price)}
+                      </p>
+                    </div>
+                  </Reveal>
+                </div>
               ))}
             </div>
           </>

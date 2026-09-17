@@ -31,8 +31,26 @@ export function variantLabel(title: string): string {
 export function productSubtitle(product: Product): string {
   const type = product.productType?.trim();
   if (type) return type;
-  if (isSolidermaHandle(product.handle)) return "Ayurvedic Wound Care";
-  return product.tags?.[0]?.trim() || "Ayurvedic Medicine";
+  return product.tags?.[0]?.trim() || "";
+}
+
+/** Extracts dynamic variant pack sizes (e.g. 100g · 150g · 200g or 50ml) from Shopify variants */
+export function productSizes(product: Product): string {
+  const sizes = product.variants
+    .map((v) => {
+      const sizeOption = v.selectedOptions.find((o) =>
+        /size|volume|weight/i.test(o.name),
+      );
+      if (sizeOption?.value) return sizeOption.value;
+      if (v.title && v.title !== "Default Title") return v.title;
+      return null;
+    })
+    .filter((s): s is string => Boolean(s));
+
+  if (sizes.length > 0) {
+    return sizes.join(" · ");
+  }
+  return "";
 }
 
 /**

@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { motion } from "motion/react";
 import {
+  Activity,
   ArrowRight,
   BadgeCheck,
   Droplet,
@@ -18,16 +18,17 @@ import { Reveal } from "@/components/site/Reveal";
 import { Section, SectionLabel, Note } from "@/components/site/Section";
 import { Blob } from "@/components/site/Blob";
 import { ProductRange } from "@/components/site/ProductRange";
+import { AddToCart } from "@/components/site/AddToCart";
+import { MobileStackedIndications } from "@/components/site/MobileStackedIndications";
 import { Stars } from "@/components/site/Stars";
 import { featuredProductsQuery } from "@/lib/shopify/queryOptions";
 import { sharedContentQuery } from "@/lib/content/queryOptions";
 import { iconRows } from "@/lib/content/render";
 import { isSolidermaHandle, sizedImage, imageAlt } from "@/lib/shopify/format";
 import {
-  ABOUT_SNIPPET,
   CERTIFICATIONS,
+  CONDITIONS,
   GUIDES,
-  metrics,
   PHONE_DISPLAY,
   PHONE_TEL,
   PRO_POINTS,
@@ -46,23 +47,28 @@ const HERO_BADGES = [
 ];
 
 const PILLARS = [
-  { icon: Leaf, title: "Herbal & Safe", body: "An Ayurvedic formulation of documented herbs." },
   {
-    icon: Stethoscope,
-    title: "Doctor Trusted",
-    body: "Used by practitioners as part of wound-care plans.",
+    icon: Leaf,
+    title: "Expedited Healing",
+    body: "Uses powerful plant-based ingredients to help your skin heal naturally and rebuild healthy tissue.",
   },
   {
-    icon: FlaskConical,
-    title: "Research & Backed",
-    body: "Developed and refined through clinical feedback.",
+    icon: Activity,
+    title: "Enhanced Microcirculation",
+    body: "Improves blood flow and oxygen to the wound area, delivering the vital nutrients needed for faster healing.",
   },
   {
-    icon: BadgeCheck,
-    title: "Quality Assured",
-    body: "Manufactured under WHO-GMP conditions, batch tested.",
+    icon: ShieldCheck,
+    title: "Antimicrobial Safeguard",
+    body: "Supports robust defense against microbial burden and infection progression.",
+  },
+  {
+    icon: Sparkles,
+    title: "Scar Modulation",
+    body: "Supports the skin's natural repair process to help minimize the appearance of scars over time.",
   },
 ];
+
 
 /** Home shows the first three; /clinics lists all of them. */
 const HOME_PRO_POINTS = PRO_POINTS.slice(0, 3);
@@ -109,26 +115,23 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-const EASE = [0.22, 1, 0.36, 1] as const;
-
 function Home() {
   const { featured, upcoming, shared } = Route.useLoaderData();
   const certifications = iconRows(shared?.certifications ?? [], CERTIFICATIONS);
-  const metricsBar = metrics(certifications.length);
 
   const solidermaProduct =
     featured.find((p) => isSolidermaHandle(p.handle)) ?? featured[0] ?? null;
   const bottleSrc = solidermaProduct?.featuredImage
-    ? sizedImage(solidermaProduct.featuredImage.url, 1000)
+    ? sizedImage(solidermaProduct.featuredImage.url, 1200)
     : bottle;
   const bottleAlt = solidermaProduct
     ? imageAlt(solidermaProduct.featuredImage?.altText ?? null, solidermaProduct)
-    : "Soliderma multi action wound healing spray";
+    : "SOLIDERMA Multi-Action Wound Healing Spray Bottle";
 
   return (
     <>
-      {/* 01 HERO — 2-Column Ayurvedic Hero: Left Content with Background, Right Product */}
-      <section className="relative isolate flex flex-col justify-between overflow-hidden bg-[color:var(--surface)] lg:min-h-[calc(100vh-5.5rem)]">
+      {/* 01 HERO — Full width editorial backdrop */}
+      <section className="relative isolate flex min-h-[90vh] sm:min-h-[92vh] flex-col justify-between overflow-hidden bg-[color:var(--ivory)] pt-14 sm:pt-16 pb-0">
         {/* Hero Background Image from src/assets/hero.jpeg */}
         <img
           src={hero}
@@ -151,30 +154,31 @@ function Home() {
         <div className="mx-auto flex w-full max-w-7xl flex-1 items-center px-4 pt-5 pb-4 sm:px-6 sm:pt-8 sm:pb-6 lg:pt-8 lg:pb-6">
           <div className="grid w-full grid-cols-1 items-center gap-6 lg:grid-cols-12 lg:gap-8">
             {/* LEFT COLUMN: Value Proposition, Mobile Product stage, 4 Feature Badges & CTA */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: EASE }}
+            <div
               className="flex flex-col items-start text-left lg:col-span-7"
             >
               {/* Category Pill Badge */}
-              <div className="inline-flex items-center gap-2 rounded-full bg-[color:var(--botanical)]/12 px-3 py-0.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.16em] text-[color:var(--botanical)]">
-                <span>Ayurvedic Wound Care</span>
+              <div className="inline-flex items-center gap-2 rounded-full bg-[color:var(--botanical)]/12 px-3 py-0.5 text-[10.5px] sm:text-[11px] font-bold uppercase tracking-[0.16em] text-[color:var(--botanical)]">
+                <span>The Pinnacle of Herbal Wound Science</span>
               </div>
 
               {/* Main Headline */}
-              <h1 className="mt-2.5 sm:mt-3.5 font-serif text-[2.1rem] font-bold leading-[1.08] tracking-tight text-foreground sm:text-[3.2rem] lg:text-[4rem]">
-                <span className="block text-[color:var(--burgundy)]">Faster Healing.</span>
-                <span className="block">Gentle Care.</span>
+              <h1 className="mt-3 sm:mt-5 font-serif tracking-tight text-foreground">
+                <span className="block text-3xl sm:text-5xl lg:text-6xl font-bold text-[color:var(--burgundy)] mb-3 sm:mb-4">
+                  SOLIDERMA
+                </span>{" "}
+                <span className="block text-xl sm:text-3xl lg:text-4xl font-medium leading-snug text-foreground/90">
+                  Multi-Action Wound Healing Spray Crafted for Precision Healing
+                </span>
               </h1>
 
               {/* Description Subtitle */}
-              <p className="mt-2 sm:mt-3 max-w-xl text-xs sm:text-base leading-relaxed text-foreground/80">
-                Soliderma is an ayurvedic multi-action wound healing spray designed for faster, cleaner and safer healing. Trusted care for you and your family.
+              <p className="mt-3 sm:mt-4 max-w-xl text-xs sm:text-base leading-relaxed text-foreground/80">
+                SOLIDERMA combines traditional Ayurvedic herbs with modern spray technology for effective, hassle-free wound care. Our formula helps speed up skin healing, improves blood flow, protects against infection, and reduces scarring—giving you a reliable, natural way to heal.
               </p>
 
-              {/* MOBILE ONLY: Product Bottle & Key Benefits Side-by-Side */}
-              <div className="flex w-full items-center justify-center gap-4 sm:gap-6 lg:hidden my-3 py-1">
+              {/* MOBILE ONLY: Product Bottle Stage */}
+              <div className="flex w-full items-center justify-center lg:hidden my-4 py-2">
                 <Link
                   to="/soliderma"
                   className="group relative flex flex-col items-center shrink-0 cursor-pointer transition-transform duration-300 hover:scale-105"
@@ -184,56 +188,19 @@ function Home() {
                     alt={bottleAlt}
                     width={350}
                     height={460}
-                    className="h-[175px] sm:h-[230px] w-auto object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.18)]"
+                    className="h-[200px] sm:h-[260px] w-auto object-contain drop-shadow-[0_14px_28px_rgba(0,0,0,0.18)]"
                   />
-                  <div className="-mt-1 mx-auto h-2 w-16 sm:w-20 rounded-full bg-black/15 blur-sm" />
+                  <div className="-mt-1 mx-auto h-2 w-20 sm:w-24 rounded-full bg-black/15 blur-sm" />
                 </Link>
-
-                <div className="flex flex-col items-start gap-2 max-w-[200px]">
-                  <h3 className="font-serif text-sm sm:text-base font-bold tracking-tight text-[color:var(--botanical)] leading-tight">
-                    CLEAN.<br />
-                    SPRAY.<br />
-                    HEAL.
-                  </h3>
-
-                  <ul className="space-y-1.5">
-                    <li className="flex items-center gap-2">
-                      <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-[color:var(--botanical)]/30 bg-card/90 text-[color:var(--botanical)]">
-                        <Leaf className="h-2 w-2" />
-                      </span>
-                      <span className="text-[11px] sm:text-xs font-medium text-foreground leading-tight">
-                        Helps prevent infection
-                      </span>
-                    </li>
-
-                    <li className="flex items-center gap-2">
-                      <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-[color:var(--botanical)]/30 bg-card/90 text-[color:var(--botanical)]">
-                        <ShieldCheck className="h-2 w-2" />
-                      </span>
-                      <span className="text-[11px] sm:text-xs font-medium text-foreground leading-tight">
-                        Supports natural healing
-                      </span>
-                    </li>
-
-                    <li className="flex items-center gap-2">
-                      <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-[color:var(--botanical)]/30 bg-card/90 text-[color:var(--botanical)]">
-                        <Droplet className="h-2 w-2" />
-                      </span>
-                      <span className="text-[11px] sm:text-xs font-medium text-foreground leading-tight">
-                        Touch-free application
-                      </span>
-                    </li>
-                  </ul>
-                </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="mt-3 sm:mt-7 grid grid-cols-2 gap-2.5 w-full sm:flex sm:w-auto sm:items-center sm:gap-3">
+              <div className="mt-3 sm:mt-7 flex flex-wrap gap-2.5 w-full sm:flex sm:w-auto sm:items-center sm:gap-3">
                 <Link
                   to="/soliderma"
-                  className="inline-flex min-h-10 sm:min-h-11 items-center justify-center gap-1.5 sm:gap-2 rounded-full bg-[color:var(--burgundy)] hover:bg-[color:var(--burgundy)]/90 px-4 sm:px-7 text-xs sm:text-sm font-semibold text-white shadow-md transition-transform duration-300 hover:-translate-y-0.5 text-center"
+                  className="inline-flex min-h-10 sm:min-h-11 items-center justify-center gap-1.5 sm:gap-2 rounded-full bg-[color:var(--botanical-deep)] hover:bg-[color:var(--botanical)] px-5 sm:px-7 text-xs sm:text-sm font-semibold text-white shadow-md transition-transform duration-300 hover:-translate-y-0.5 text-center"
                 >
-                  Buy Now <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  Get Soliderma <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 </Link>
 
                 <a
@@ -246,56 +213,14 @@ function Home() {
                   <span className="truncate">Talk to Expert</span>
                 </a>
               </div>
+            </div>
 
-              {/* 4 Feature Highlights Grid */}
-              <div className="mt-4 sm:mt-6 grid grid-cols-4 gap-1.5 sm:gap-4 w-full max-w-xl">
-                <div className="flex flex-col items-center sm:items-start text-center sm:text-left gap-1">
-                  <span className="flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center rounded-full border border-[color:var(--botanical)]/25 bg-card/90 shadow-sm text-[color:var(--botanical)]">
-                    <Leaf className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                  </span>
-                  <span className="text-[10px] sm:text-xs font-semibold text-foreground leading-tight">
-                    Ayurvedic<br className="hidden sm:inline" /> Formula
-                  </span>
-                </div>
-
-                <div className="flex flex-col items-center sm:items-start text-center sm:text-left gap-1">
-                  <span className="flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center rounded-full border border-[color:var(--botanical)]/25 bg-card/90 shadow-sm text-[color:var(--botanical)]">
-                    <ShieldCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                  </span>
-                  <span className="text-[10px] sm:text-xs font-semibold text-foreground leading-tight">
-                    Safe &<br className="hidden sm:inline" /> Gentle
-                  </span>
-                </div>
-
-                <div className="flex flex-col items-center sm:items-start text-center sm:text-left gap-1">
-                  <span className="flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center rounded-full border border-[color:var(--botanical)]/25 bg-card/90 shadow-sm text-[color:var(--botanical)]">
-                    <Droplet className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                  </span>
-                  <span className="text-[10px] sm:text-xs font-semibold text-foreground leading-tight">
-                    Easy<br className="hidden sm:inline" /> Application
-                  </span>
-                </div>
-
-                <div className="flex flex-col items-center sm:items-start text-center sm:text-left gap-1">
-                  <span className="flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center rounded-full border border-[color:var(--botanical)]/25 bg-card/90 shadow-sm text-[color:var(--botanical)]">
-                    <Stethoscope className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                  </span>
-                  <span className="text-[10px] sm:text-xs font-semibold text-foreground leading-tight">
-                    Doctor<br className="hidden sm:inline" /> Trusted
-                  </span>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* DESKTOP ONLY RIGHT COLUMN: Product Bottle Presentation & Clean-Spray-Heal */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.9, delay: 0.15, ease: EASE }}
-              className="hidden lg:flex flex-row items-center justify-center gap-6 lg:col-span-5 lg:gap-8"
+            {/* DESKTOP ONLY RIGHT COLUMN: Product Bottle Presentation */}
+            <div
+              className="hidden lg:flex flex-col items-center justify-center lg:col-span-5"
             >
               {/* Product Bottle with soft shadow */}
-              <div className="relative flex flex-col items-center shrink-0">
+              <div className="relative flex flex-col items-center">
                 <Link
                   to="/soliderma"
                   className="group block cursor-pointer transition-transform duration-500 hover:scale-105"
@@ -305,52 +230,12 @@ function Home() {
                     alt={bottleAlt}
                     width={700}
                     height={920}
-                    className="h-[290px] sm:h-[360px] lg:h-[430px] xl:h-[460px] w-auto object-contain drop-shadow-[0_16px_32px_rgba(0,0,0,0.18)] transition-transform duration-500"
+                    className="h-[340px] sm:h-[400px] lg:h-[460px] xl:h-[500px] w-auto object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.2)] transition-transform duration-500"
                   />
-                  <div className="-mt-1 mx-auto h-3 w-24 sm:w-28 rounded-full bg-black/15 blur-sm" />
+                  <div className="-mt-2 mx-auto h-3.5 w-32 rounded-full bg-black/15 blur-sm" />
                 </Link>
               </div>
-
-              {/* Beside Bottle: CLEAN. SPRAY. HEAL. & 3 Key Benefits */}
-              <div className="flex flex-col items-start gap-3.5 max-w-[220px]">
-                <div>
-                  <h3 className="font-serif text-lg sm:text-xl font-bold tracking-tight text-[color:var(--botanical)] leading-tight">
-                    CLEAN.<br />
-                    SPRAY.<br />
-                    HEAL.
-                  </h3>
-                </div>
-
-                <ul className="space-y-2.5">
-                  <li className="flex items-center gap-2.5">
-                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[color:var(--botanical)]/30 bg-card/90 text-[color:var(--botanical)]">
-                      <Leaf className="h-2.5 w-2.5" />
-                    </span>
-                    <span className="text-xs sm:text-sm font-medium text-foreground leading-snug">
-                      Helps prevent infection
-                    </span>
-                  </li>
-
-                  <li className="flex items-center gap-2.5">
-                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[color:var(--botanical)]/30 bg-card/90 text-[color:var(--botanical)]">
-                      <ShieldCheck className="h-2.5 w-2.5" />
-                    </span>
-                    <span className="text-xs sm:text-sm font-medium text-foreground leading-snug">
-                      Supports natural healing
-                    </span>
-                  </li>
-
-                  <li className="flex items-center gap-2.5">
-                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[color:var(--botanical)]/30 bg-card/90 text-[color:var(--botanical)]">
-                      <Droplet className="h-2.5 w-2.5" />
-                    </span>
-                    <span className="text-xs sm:text-sm font-medium text-foreground leading-snug">
-                      Touch-free application
-                    </span>
-                  </li>
-                </ul>
-              </div>
-            </motion.div>
+            </div>
           </div>
         </div>
 
@@ -427,22 +312,60 @@ function Home() {
         <div className="mt-8 grid gap-4 sm:mt-12 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
           {PILLARS.map((f, i) => (
             <Reveal key={f.title} delay={i * 0.06}>
-              <div className="h-full rounded-2xl border border-border bg-card p-5 transition-transform duration-300 sm:p-7 sm:hover:-translate-y-1">
-                <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[color:var(--botanical)]/10 sm:h-12 sm:w-12">
-                  <f.icon className="h-5 w-5 text-[color:var(--botanical)]" />
+              <div className="flex h-full flex-col rounded-2xl border border-border bg-card p-5 sm:p-7 transition-transform duration-300 sm:hover:-translate-y-1 shadow-sm">
+                <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[color:var(--botanical)]/10 text-[color:var(--botanical)] sm:h-12 sm:w-12">
+                  <f.icon className="h-5 w-5" />
                 </span>
-                <h3 className="mt-4 text-lg text-foreground sm:mt-5 sm:text-xl">{f.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{f.body}</p>
+                <h3 className="mt-4 text-lg font-semibold text-foreground sm:mt-5 sm:text-xl">{f.title}</h3>
+                <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">{f.body}</p>
               </div>
             </Reveal>
           ))}
         </div>
       </Section>
 
-      {/* 03 OUR RANGE / PRODUCT */}
+      {/* 03 CLINICAL INDICATIONS */}
+      <Section className="border-b border-border/70 bg-[color:var(--surface)]">
+        <Reveal className="text-left sm:text-center">
+          <div className="flex sm:justify-center">
+            <SectionLabel index="03" label="Clinical Indications" />
+          </div>
+          <h2 className="mt-2 font-serif text-2xl leading-tight text-foreground sm:mt-6 sm:text-4xl">
+            Indications for Complex Wounds That Demand More
+          </h2>
+          <p className="mt-2 max-w-2xl text-xs leading-relaxed text-muted-foreground sm:mx-auto sm:mt-4 sm:text-[15px]">
+            SOLIDERMA is formulated for complex wounds that need ongoing, daily care, helping the skin progress steadily through every stage of healing.
+          </p>
+        </Reveal>
+        <MobileStackedIndications conditions={CONDITIONS} />
+
+        {/* Desktop Layout */}
+        <div className="hidden sm:mt-12 sm:grid sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+          {CONDITIONS.map((c, i) => (
+            <Reveal key={c.title} delay={i * 0.05}>
+              <div className="flex w-full flex-col rounded-2xl border border-border bg-card p-6 transition-all hover:border-[color:var(--botanical)]/40 hover:shadow-md h-full">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[color:var(--botanical)]/10 text-[color:var(--botanical)]">
+                    <c.icon className="h-5 w-5" />
+                  </span>
+                  <h3 className="font-serif text-lg font-semibold text-foreground">{c.title}</h3>
+                </div>
+                <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
+                  {c.body}
+                </p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+        <Note>
+          For significant, infected, deep, diabetic or otherwise serious wounds, users should seek appropriate professional medical care.
+        </Note>
+      </Section>
+
+      {/* 04 OUR RANGE / PRODUCT */}
       <section
         id="products"
-        className="relative isolate overflow-hidden bg-[color:var(--surface)] px-5 py-10 sm:px-6 sm:py-14"
+        className="relative isolate overflow-hidden bg-background px-5 py-10 sm:px-6 sm:py-14"
       >
         <Blob
           variant={1}
@@ -453,7 +376,7 @@ function Home() {
         <div className="mx-auto max-w-6xl">
           <Reveal className="text-center">
             <div className="flex justify-center">
-              <SectionLabel index="03" label="Our Range" />
+              <SectionLabel index="04" label="Our Range" />
             </div>
             <h2 className="mt-5 text-[1.75rem] leading-tight text-foreground sm:mt-6 sm:text-4xl">
               Find your care product
@@ -500,22 +423,22 @@ function Home() {
         </div>
       </section>
 
-      {/* 04 TESTIMONIALS */}
+      {/* 05 TESTIMONIALS */}
       <section
         id="testimonials"
         className="border-y border-border bg-[color:var(--surface)] px-5 py-16 sm:px-6 sm:py-24"
       >
         <div className="mx-auto max-w-6xl">
           <Reveal>
-            <SectionLabel index="04" label="Testimonials" />
+            <SectionLabel index="05" label="Testimonials" />
             <h2 className="mt-5 text-[1.75rem] leading-tight text-foreground sm:mt-6 sm:text-4xl">
               Real Stories. Real Results.
             </h2>
           </Reveal>
-          <div className="mt-8 grid gap-5 sm:mt-12 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+          <div className="-mx-5 mt-8 flex items-stretch snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 sm:mx-0 sm:mt-12 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {TESTIMONIALS.map((t, i) => (
-              <Reveal key={t.name} delay={i * 0.06}>
-                <figure className="flex h-full flex-col rounded-2xl border border-border bg-card p-5 sm:p-7">
+              <Reveal key={t.name} delay={i * 0.06} className="flex w-[85vw] max-w-[340px] shrink-0 snap-center sm:w-auto sm:max-w-none sm:shrink sm:snap-align-none">
+                <figure className="flex w-full flex-col rounded-2xl border border-border bg-card p-5 shadow-sm transition-all hover:border-[color:var(--botanical)]/40 hover:shadow-md sm:p-7">
                   <Quote className="h-6 w-6 text-[color:var(--botanical)]/25 sm:h-7 sm:w-7" />
                   <Stars rating={t.rating} className="mt-3 sm:mt-4" />
                   <blockquote className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground sm:mt-4">
@@ -536,108 +459,12 @@ function Home() {
         </div>
       </section>
 
-      {/* 05 ABOUT SNIPPET + METRICS */}
-      <section className="relative isolate overflow-hidden bg-[color:var(--botanical-deep)] px-5 py-16 text-primary-foreground sm:px-6 sm:py-24">
-        <Blob
-          variant={2}
-          className="-left-40 -bottom-32 hidden h-[480px] w-[560px] -z-10 sm:block"
-          color="var(--ivory)"
-          opacity={0.07}
-        />
-        <div className="mx-auto max-w-5xl text-center">
-          <Reveal>
-            <span className="eyebrow text-[color:var(--gold)]">About</span>
-            <h2 className="mt-4 text-[1.75rem] leading-tight sm:mt-5 sm:text-4xl">
-              About Vallalaar Remedies
-            </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-primary-foreground/75 sm:mt-6 sm:text-[15px]">
-              {ABOUT_SNIPPET}
-            </p>
-            <Link
-              to="/about"
-              className="mt-6 inline-flex items-center gap-2 border-b border-[color:var(--gold)] pb-1 text-sm font-medium text-[color:var(--gold)] sm:mt-8"
-            >
-              Read our story <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Reveal>
-        </div>
-        {/* Two columns on a phone — a single column made these read as a long list. */}
-        <div className="mx-auto mt-10 grid max-w-5xl grid-cols-2 border-t border-primary-foreground/15 sm:mt-14 lg:grid-cols-4 lg:border-b">
-          {metricsBar.map((m, i) => (
-            <Reveal
-              key={m.label}
-              delay={i * 0.06}
-              className={i > 0 ? "lg:border-l lg:border-primary-foreground/15" : ""}
-            >
-              <div className="border-b border-primary-foreground/15 px-3 py-6 text-center sm:px-4 sm:py-7 lg:border-b-0">
-                <p className="font-display text-3xl text-[color:var(--gold)] sm:text-4xl">
-                  {m.value}
-                </p>
-                <p className="mt-1.5 text-[10px] font-semibold uppercase leading-tight tracking-[0.12em] text-primary-foreground/70 sm:mt-2 sm:text-[11px] sm:tracking-[0.16em]">
-                  {m.label}
-                </p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
-      {/* 06 WELLNESS GUIDE */}
-      <Section>
-        <Reveal>
-          <SectionLabel index="04" label="Wellness Guide" />
-          <div className="mt-5 flex flex-wrap items-end justify-between gap-4 sm:mt-6 sm:gap-6">
-            <h2 className="text-[1.75rem] leading-tight text-foreground sm:text-4xl">
-              Learn. Care. Stay Healthy.
-            </h2>
-            <Link
-              to="/wound-care"
-              className="inline-flex items-center gap-2 text-sm font-medium text-[color:var(--burgundy)]"
-            >
-              All guides <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-        </Reveal>
-        <div className="mt-8 grid gap-5 sm:mt-12 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
-          {GUIDES.map((g, i) => (
-            <Reveal key={g.title} delay={i * 0.06}>
-              <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card">
-                <div className="h-36 overflow-hidden sm:h-44">
-                  <img
-                    src={g.image}
-                    alt=""
-                    loading="lazy"
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                </div>
-                <div className="flex flex-1 flex-col p-5 sm:p-6">
-                  <p className="eyebrow text-[color:var(--gold)]">{g.tag}</p>
-                  <h3 className="mt-2.5 text-lg leading-tight text-foreground sm:mt-3 sm:text-xl">
-                    {g.title}
-                  </h3>
-                  <p className="mt-2.5 flex-1 text-sm leading-relaxed text-muted-foreground sm:mt-3">
-                    {g.body}
-                  </p>
-                  <Link
-                    to="/wound-care"
-                    hash={g.slug}
-                    className="mt-4 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--burgundy)] sm:mt-5"
-                  >
-                    Read More
-                    <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
-                  </Link>
-                </div>
-              </article>
-            </Reveal>
-          ))}
-        </div>
-      </Section>
 
       {/* 07 FOR PROFESSIONALS */}
       <section className="border-y border-border bg-[color:var(--surface)] px-5 py-16 sm:px-6 sm:py-24">
         <div className="mx-auto grid max-w-6xl items-center gap-8 sm:gap-14 lg:grid-cols-2">
           <Reveal delay={0.1} className="lg:order-2">
-            <SectionLabel index="05" label="For Professionals" />
+            <SectionLabel index="07" label="For Professionals" />
             <h2 className="mt-5 text-[1.75rem] leading-tight text-foreground sm:mt-6 sm:text-4xl">
               For Healthcare Professionals
             </h2>

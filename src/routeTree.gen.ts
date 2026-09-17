@@ -20,7 +20,6 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ShippingRouteImport } from './routes/shipping'
 import { Route as SolidermaRouteImport } from './routes/soliderma'
 import { Route as TermsRouteImport } from './routes/terms'
-import { Route as WoundCareRouteImport } from './routes/wound-care'
 import { Route as AccountIndexRouteImport } from './routes/account.index'
 import { Route as AccountAddressesRouteImport } from './routes/account.addresses'
 import { Route as AccountCallbackRouteImport } from './routes/account.callback'
@@ -88,11 +87,6 @@ const SolidermaRoute = SolidermaRouteImport.update({
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const WoundCareRoute = WoundCareRouteImport.update({
-  id: '/wound-care',
-  path: '/wound-care',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AccountIndexRoute = AccountIndexRouteImport.update({
@@ -173,7 +167,6 @@ export interface FileRoutesByFullPath {
   '/shipping': typeof ShippingRoute
   '/soliderma': typeof SolidermaRoute
   '/terms': typeof TermsRoute
-  '/wound-care': typeof WoundCareRoute
   '/account/addresses': typeof AccountAddressesRoute
   '/account/callback': typeof AccountCallbackRoute
   '/account/login': typeof AccountLoginRoute
@@ -200,7 +193,6 @@ export interface FileRoutesByTo {
   '/shipping': typeof ShippingRoute
   '/soliderma': typeof SolidermaRoute
   '/terms': typeof TermsRoute
-  '/wound-care': typeof WoundCareRoute
   '/account/addresses': typeof AccountAddressesRoute
   '/account/callback': typeof AccountCallbackRoute
   '/account/login': typeof AccountLoginRoute
@@ -228,7 +220,6 @@ export interface FileRoutesById {
   '/shipping': typeof ShippingRoute
   '/soliderma': typeof SolidermaRoute
   '/terms': typeof TermsRoute
-  '/wound-care': typeof WoundCareRoute
   '/account/addresses': typeof AccountAddressesRoute
   '/account/callback': typeof AccountCallbackRoute
   '/account/login': typeof AccountLoginRoute
@@ -257,7 +248,6 @@ export interface FileRouteTypes {
     | '/shipping'
     | '/soliderma'
     | '/terms'
-    | '/wound-care'
     | '/account/addresses'
     | '/account/callback'
     | '/account/login'
@@ -284,7 +274,6 @@ export interface FileRouteTypes {
     | '/shipping'
     | '/soliderma'
     | '/terms'
-    | '/wound-care'
     | '/account/addresses'
     | '/account/callback'
     | '/account/login'
@@ -311,7 +300,6 @@ export interface FileRouteTypes {
     | '/shipping'
     | '/soliderma'
     | '/terms'
-    | '/wound-care'
     | '/account/addresses'
     | '/account/callback'
     | '/account/login'
@@ -339,7 +327,6 @@ export interface RootRouteChildren {
   ShippingRoute: typeof ShippingRoute
   SolidermaRoute: typeof SolidermaRoute
   TermsRoute: typeof TermsRoute
-  WoundCareRoute: typeof WoundCareRoute
   AccountAddressesRoute: typeof AccountAddressesRoute
   AccountCallbackRoute: typeof AccountCallbackRoute
   AccountLoginRoute: typeof AccountLoginRoute
@@ -432,13 +419,6 @@ declare module '@tanstack/react-router' {
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/wound-care': {
-      id: '/wound-care'
-      path: '/wound-care'
-      fullPath: '/wound-care'
-      preLoaderRoute: typeof WoundCareRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/account/': {
@@ -547,7 +527,6 @@ const rootRouteChildren: RootRouteChildren = {
   ShippingRoute: ShippingRoute,
   SolidermaRoute: SolidermaRoute,
   TermsRoute: TermsRoute,
-  WoundCareRoute: WoundCareRoute,
   AccountAddressesRoute: AccountAddressesRoute,
   AccountCallbackRoute: AccountCallbackRoute,
   AccountLoginRoute: AccountLoginRoute,

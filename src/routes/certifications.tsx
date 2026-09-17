@@ -16,7 +16,7 @@ export const Route = createFileRoute("/certifications")({
       {
         name: "description",
         content:
-          "Certification and regulatory documentation associated with Soliderma and its manufacturing by Kniss Laboratories (P) Ltd.",
+          "Certification and regulatory documentation associated with SOLIDERMA and its manufacturing by Kniss Laboratories (P) Ltd.",
       },
       { property: "og:title", content: "Trust Should Be Verifiable | Vallalaar Remedies" },
       {
@@ -40,14 +40,14 @@ function Certifications() {
           <h1 className="mt-4 text-[2rem] leading-tight text-foreground sm:mt-5 sm:text-4xl lg:text-5xl">
             Manufactured with Care.
           </h1>
-          <p className="mt-6 text-[15px] text-muted-foreground">Soliderma is manufactured by:</p>
+          <p className="mt-6 text-[15px] text-muted-foreground">SOLIDERMA is manufactured by:</p>
           <p className="mt-2 font-display text-2xl text-[color:var(--burgundy)]">
-            Kniss Laboratories (P) Ltd.
+            KNISS Laboratories (P) Ltd.
           </p>
+          <p className="text-xs font-semibold text-muted-foreground mt-0.5">Mfg. Lic. No.: 1055</p>
           <p className="mt-5 max-w-2xl text-[15px] leading-relaxed text-muted-foreground">
-            The supplied product material identifies the manufacturer and states WHO / GMP / ISO
-            9001:2015 certification. Vallalaar Remedies markets Soliderma as part of its Ayurvedic
-            healthcare offering.
+            Manufactured in a WHO-GMP compliant facility under rigorous ISO 9001:2015 quality standards.
+            Marketed by Vallalaar Remedies, Chennai as an Ayurvedic Proprietary Medicine.
           </p>
         </div>
       </section>
@@ -60,7 +60,7 @@ function Certifications() {
           </h2>
           <p className="mt-5 max-w-2xl text-[15px] leading-relaxed text-muted-foreground">
             We believe credibility comes from transparency. Explore the available certification and
-            regulatory documentation associated with Soliderma and its manufacturing.
+            regulatory documentation associated with SOLIDERMA and its manufacturing.
           </p>
         </Reveal>
         <div className="mt-12 grid gap-6 sm:grid-cols-3">

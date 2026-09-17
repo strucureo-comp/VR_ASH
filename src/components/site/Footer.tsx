@@ -10,7 +10,6 @@ const quickLinks: FooterLink[] = [
   { to: "/products", label: "Products" },
   { to: "/about", label: "About Us" },
   { to: "/certifications", label: "Our Science" },
-  { to: "/wound-care", label: "Wellness Guide" },
   { to: "/", hash: "testimonials", label: "Testimonials" },
   { to: "/faq", label: "FAQ" },
   { to: "/contact", label: "Contact" },
@@ -104,10 +103,32 @@ export function Footer() {
         </div>
       </div>
 
+      {/* DISCLAIMER BANNER */}
+      <div className="border-t border-primary-foreground/15 bg-black/20 px-5 py-5 sm:px-6">
+        <div className="mx-auto max-w-6xl">
+          <p className="text-[11px] sm:text-xs leading-relaxed text-primary-foreground/60 text-center sm:text-left">
+            <strong className="text-primary-foreground/80 uppercase tracking-wider mr-1.5">Disclaimer:</strong>
+            This website conveys information consistent with the product label. It is not a substitute for physician consultation. For severe, spreading, or infected wounds particularly in diabetic individuals professional medical care is essential.
+          </p>
+        </div>
+      </div>
+
       <div className="border-t border-primary-foreground/15 px-5 py-6 sm:px-6">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 text-xs text-primary-foreground/60 sm:flex-row">
-          <p>&copy; {new Date().getFullYear()} Vallalaar Remedies. All Rights Reserved.</p>
-          <p>Ayurvedic proprietary medicine. Use as directed by a qualified practitioner.</p>
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 text-xs text-primary-foreground/70 sm:flex-row text-center sm:text-left">
+          <div>
+            <p className="font-serif text-sm tracking-wide text-primary-foreground">
+              SOLIDERMA <span className="text-[color:var(--gold)] font-sans font-normal">Elevated Herbal Wound Science</span>
+            </p>
+            <p className="mt-0.5 text-[11px] text-primary-foreground/60">
+              ©️ {new Date().getFullYear()} Vallalaar Remedies | All Rights Reserved
+            </p>
+          </div>
+          <div className="sm:text-right text-[11px] text-primary-foreground/60">
+            <p>Manufactured by KNISS Laboratories (P) Ltd. (Mfg. Lic. No.: 1055)</p>
+            <p className="mt-0.5 font-medium text-[color:var(--gold)]/90">
+              Ayurvedic Proprietary Medicine | External Use Only
+            </p>
+          </div>
         </div>
       </div>
     </footer>

@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ExternalLink } from "lucide-react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -50,6 +50,24 @@ export const Route = createFileRoute("/admin/products/$id")({
 });
 
 const EMPTY: ProductContentForm = {
+  heroEyebrow: "",
+  heroTitle: "",
+  heroSubtitle: "",
+  heroDescription: "",
+  breakthroughEyebrow: "",
+  breakthroughTitle: "",
+  breakthroughDescription: "",
+  breakthroughFeature1Title: "",
+  breakthroughFeature1Text: "",
+  breakthroughFeature2Title: "",
+  breakthroughFeature2Text: "",
+  indicationsEyebrow: "",
+  indicationsTitle: "",
+  indicationsDescription: "",
+  summaryEyebrow: "",
+  summaryTitle: "",
+  summaryDescription: "",
+  summaryNote: "",
   longDescription: "",
   directions: "",
   caution: "",
@@ -58,20 +76,43 @@ const EMPTY: ProductContentForm = {
   steps: [],
   conditions: [],
   faqs: [],
+  whereToApply: "",
+  howItHelps: "",
 };
 
 /** Drops `updatedAt`: it is stamped on save, not edited. */
 function toForm(content: ProductContent | null): ProductContentForm {
   if (!content) return EMPTY;
+  const defaults = seedProductContent();
   return {
-    longDescription: content.longDescription,
-    directions: content.directions,
-    caution: content.caution,
-    benefits: content.benefits,
-    ingredients: content.ingredients,
-    steps: content.steps,
-    conditions: content.conditions,
-    faqs: content.faqs,
+    heroEyebrow: content.heroEyebrow || defaults.heroEyebrow,
+    heroTitle: content.heroTitle || defaults.heroTitle,
+    heroSubtitle: content.heroSubtitle || defaults.heroSubtitle,
+    heroDescription: content.heroDescription || defaults.heroDescription,
+    breakthroughEyebrow: content.breakthroughEyebrow || defaults.breakthroughEyebrow,
+    breakthroughTitle: content.breakthroughTitle || defaults.breakthroughTitle,
+    breakthroughDescription: content.breakthroughDescription || defaults.breakthroughDescription,
+    breakthroughFeature1Title: content.breakthroughFeature1Title || defaults.breakthroughFeature1Title,
+    breakthroughFeature1Text: content.breakthroughFeature1Text || defaults.breakthroughFeature1Text,
+    breakthroughFeature2Title: content.breakthroughFeature2Title || defaults.breakthroughFeature2Title,
+    breakthroughFeature2Text: content.breakthroughFeature2Text || defaults.breakthroughFeature2Text,
+    indicationsEyebrow: content.indicationsEyebrow || defaults.indicationsEyebrow,
+    indicationsTitle: content.indicationsTitle || defaults.indicationsTitle,
+    indicationsDescription: content.indicationsDescription || defaults.indicationsDescription,
+    summaryEyebrow: content.summaryEyebrow || defaults.summaryEyebrow,
+    summaryTitle: content.summaryTitle || defaults.summaryTitle,
+    summaryDescription: content.summaryDescription || defaults.summaryDescription,
+    summaryNote: content.summaryNote || defaults.summaryNote,
+    longDescription: content.longDescription || defaults.longDescription,
+    directions: content.directions || defaults.directions,
+    caution: content.caution || defaults.caution,
+    whereToApply: content.whereToApply || "",
+    howItHelps: content.howItHelps || "",
+    benefits: content.benefits || [],
+    ingredients: content.ingredients || [],
+    steps: content.steps || [],
+    conditions: content.conditions || [],
+    faqs: content.faqs || [],
   };
 }
 
@@ -103,22 +144,32 @@ function ProductEditor() {
         queryClient.invalidateQueries({ queryKey: ["content", "index"] }),
       ]);
       reset(values);
-      toast.success("Saved.");
-    } catch (cause) {
-      const reason = cause instanceof Error ? cause.message : "Could not save.";
-      toast.error(reason);
+      toast.success("Saved");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to save");
     }
   });
 
   return (
     <AdminShell session={session} heading={product.title} intro={`/${product.handle}`}>
-      <Link
-        to="/admin"
-        className="inline-flex min-h-10 items-center gap-1.5 text-sm text-muted-foreground transition-colors sm:hover:text-primary"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        All products
-      </Link>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <Link
+          to="/admin"
+          className="inline-flex min-h-10 items-center gap-1.5 text-sm text-muted-foreground transition-colors sm:hover:text-primary"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          All products
+        </Link>
+        <a
+          href={`https://admin.shopify.com/store/s0wb3s-wb/products/${id}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex min-h-10 items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-xs sm:text-sm font-medium text-foreground shadow-sm transition-colors hover:border-primary hover:text-primary"
+        >
+          <ExternalLink className="h-4 w-4 text-[color:var(--gold)]" />
+          Open in Shopify Admin
+        </a>
+      </div>
 
       {!content && isSolidermaHandle(product.handle) ? (
         <div className="mt-4 rounded-xl border border-[color:var(--gold)]/40 bg-card p-5">
@@ -137,6 +188,78 @@ function ProductEditor() {
       ) : null}
 
       <form onSubmit={onSubmit} className="mt-6 space-y-6">
+        {isSolidermaHandle(product.handle) ? (
+          <Panel
+            title="Presentation & Scrollytelling Stages"
+            hint="Edit the copy across all 4 interactive presentation stages on the Soliderma product page."
+          >
+            <div className="space-y-6">
+              {/* Stage 1 */}
+              <div className="rounded-lg border border-border/70 bg-background/60 p-4 space-y-4">
+                <div className="border-b border-border/50 pb-2">
+                  <h3 className="font-medium text-sm text-foreground">Stage 1: Hero &amp; Intro</h3>
+                  <p className="text-xs text-muted-foreground">The initial full-screen header and opening statement.</p>
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Field id="heroEyebrow" label="Eyebrow" error={errors.heroEyebrow?.message}>
+                    <Input id="heroEyebrow" {...register("heroEyebrow")} placeholder="THE PINNACLE OF HERBAL WOUND SCIENCE" />
+                  </Field>
+                  <Field id="heroTitle" label="Title" error={errors.heroTitle?.message}>
+                    <Input id="heroTitle" {...register("heroTitle")} placeholder="SOLIDERMA" />
+                  </Field>
+                </div>
+                <Field id="heroSubtitle" label="Subtitle" error={errors.heroSubtitle?.message}>
+                  <Input id="heroSubtitle" {...register("heroSubtitle")} placeholder="Multi-Action Wound Healing Spray Crafted for Precision Healing" />
+                </Field>
+                <Field id="heroDescription" label="Description" error={errors.heroDescription?.message}>
+                  <Textarea id="heroDescription" rows={3} {...register("heroDescription")} placeholder="SOLIDERMA combines traditional Ayurvedic herbs with modern spray technology..." />
+                </Field>
+              </div>
+
+              {/* Stage 2 */}
+              <div className="rounded-lg border border-border/70 bg-background/60 p-4 space-y-4">
+                <div className="border-b border-border/50 pb-2">
+                  <h3 className="font-medium text-sm text-foreground">Stage 2: Purposeful Indications</h3>
+                  <p className="text-xs text-muted-foreground">Heading and summary for clinical wound presentations.</p>
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Field id="indicationsEyebrow" label="Eyebrow" error={errors.indicationsEyebrow?.message}>
+                    <Input id="indicationsEyebrow" {...register("indicationsEyebrow")} placeholder="PURPOSEFUL INDICATIONS" />
+                  </Field>
+                  <Field id="indicationsTitle" label="Title" error={errors.indicationsTitle?.message}>
+                    <Input id="indicationsTitle" {...register("indicationsTitle")} placeholder="Engineered for Wounds That Demand More" />
+                  </Field>
+                </div>
+                <Field id="indicationsDescription" label="Description" error={errors.indicationsDescription?.message}>
+                  <Textarea id="indicationsDescription" rows={2} {...register("indicationsDescription")} placeholder="From high-risk diabetic presentations to surgical recovery..." />
+                </Field>
+              </div>
+
+              {/* Stage 3 */}
+              <div className="rounded-lg border border-border/70 bg-background/60 p-4 space-y-4">
+                <div className="border-b border-border/50 pb-2">
+                  <h3 className="font-medium text-sm text-foreground">Stage 3: Summary &amp; Closing Call to Action</h3>
+                  <p className="text-xs text-muted-foreground">The final pack presentation and regulatory note above the checkout options.</p>
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Field id="summaryEyebrow" label="Eyebrow" error={errors.summaryEyebrow?.message}>
+                    <Input id="summaryEyebrow" {...register("summaryEyebrow")} placeholder="PRECISION HEALING, NATURALLY" />
+                  </Field>
+                  <Field id="summaryTitle" label="Title" error={errors.summaryTitle?.message}>
+                    <Input id="summaryTitle" {...register("summaryTitle")} placeholder="The Pinnacle of Herbal Wound Science" />
+                  </Field>
+                </div>
+                <Field id="summaryDescription" label="Description" error={errors.summaryDescription?.message}>
+                  <Textarea id="summaryDescription" rows={2} {...register("summaryDescription")} placeholder="SOLIDERMA operates at the intersection of phytopharmacology..." />
+                </Field>
+                <Field id="summaryNote" label="Footer Regulatory / Usage Note" error={errors.summaryNote?.message}>
+                  <Input id="summaryNote" {...register("summaryNote")} placeholder="EXTERNAL USE ONLY | 100G · 150G · 200G | AYURVEDIC PROPRIETARY MEDICINE" />
+                </Field>
+              </div>
+            </div>
+          </Panel>
+        ) : null}
+
         <Panel
           title="Long description"
           hint="Leave a blank line between paragraphs. Shown on the product page; Shopify's own description is not used for this."
@@ -145,6 +268,30 @@ function ProductEditor() {
           {errors.longDescription ? (
             <p role="alert" className="mt-1.5 text-xs text-[color:var(--burgundy)]">
               {errors.longDescription.message}
+            </p>
+          ) : null}
+        </Panel>
+
+        <Panel
+          title="Where to apply"
+          hint="Describe the specific body areas or types of wounds where this product should be applied."
+        >
+          <Textarea id="whereToApply" rows={4} {...register("whereToApply")} />
+          {errors.whereToApply ? (
+            <p role="alert" className="mt-1.5 text-xs text-[color:var(--burgundy)]">
+              {errors.whereToApply.message}
+            </p>
+          ) : null}
+        </Panel>
+
+        <Panel
+          title="How it helps"
+          hint="Explain the mechanism of action or the primary benefits for the user."
+        >
+          <Textarea id="howItHelps" rows={4} {...register("howItHelps")} />
+          {errors.howItHelps ? (
+            <p role="alert" className="mt-1.5 text-xs text-[color:var(--burgundy)]">
+              {errors.howItHelps.message}
             </p>
           ) : null}
         </Panel>

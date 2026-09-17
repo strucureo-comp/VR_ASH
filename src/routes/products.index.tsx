@@ -6,6 +6,7 @@ import {
   imageAlt,
   isSolidermaHandle,
   priceRangeLabel,
+  productSizes,
   productSubtitle,
   sizedImage,
   variantLabel,
@@ -70,12 +71,7 @@ function ProductsIndex() {
             const cardLinkProps = isSoliderma
               ? { to: "/soliderma" as const }
               : { to: "/products/$slug" as const, params: { slug: p.handle } };
-
-            const sizes =
-              p.variants
-                .map((v) => variantLabel(v.title))
-                .filter((label) => label !== "")
-                .join(" · ") || (isSoliderma ? "50ml Spray" : "");
+            const sizes = productSizes(p);
 
             return (
               <Reveal key={p.handle} delay={i * 0.06}>
@@ -110,21 +106,38 @@ function ProductsIndex() {
                       </h2>
                     </Link>
 
-                    <p className="mt-1 text-sm text-[color:var(--burgundy)] font-medium">
-                      {productSubtitle(p)}
-                    </p>
+                    {productSubtitle(p) ? (
+                      <p className="mt-1 text-xs uppercase tracking-[0.14em] text-[color:var(--gold)] font-semibold">
+                        {productSubtitle(p)}
+                      </p>
+                    ) : null}
 
-                    <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground line-clamp-3">
-                      {p.description}
-                    </p>
+                    {p.description ? (
+                      <p className="mt-2.5 flex-1 text-xs sm:text-sm leading-relaxed text-foreground/80">
+                        {p.description}
+                      </p>
+                    ) : null}
+
+                    {p.tags && p.tags.length > 0 ? (
+                      <div className="mt-3 flex flex-wrap gap-1.5">
+                        {p.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="rounded-full bg-[color:var(--botanical)]/10 px-2 py-0.5 text-[10px] font-semibold text-[color:var(--botanical)]"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    ) : null}
 
                     <div className="mt-5 pt-4 border-t border-border flex items-center justify-between gap-3">
                       <div>
-                        {sizes && (
+                        {sizes ? (
                           <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground font-medium">
                             {sizes}
                           </p>
-                        )}
+                        ) : null}
                         <p className="font-display text-xl font-semibold text-foreground">
                           {p.availableForSale ? priceRangeLabel(p) : "Coming soon"}
                         </p>

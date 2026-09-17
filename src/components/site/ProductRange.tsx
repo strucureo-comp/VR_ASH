@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Blob } from "@/components/site/Blob";
 import { Reveal } from "@/components/site/Reveal";
 import { CardAddToCart } from "@/components/site/AddToCart";
-import { imageAlt, isSolidermaHandle, priceRangeLabel, productSubtitle, sizedImage } from "@/lib/shopify/format";
+import { imageAlt, isSolidermaHandle, priceRangeLabel, productSizes, productSubtitle, sizedImage } from "@/lib/shopify/format";
 import type { Product } from "@/lib/shopify/types";
 
 /**
@@ -205,24 +205,42 @@ function ProductCard({ product }: { product: Product }) {
           {...cardLinkProps}
           className="block group-hover:text-[color:var(--burgundy)] transition-colors"
         >
-          <h3 className="text-xl text-foreground font-serif transition-colors group-hover:text-[color:var(--burgundy)]">
+          <h3 className="text-xl sm:text-2xl text-foreground font-serif font-bold transition-colors group-hover:text-[color:var(--burgundy)]">
             {product.title}
           </h3>
         </Link>
-        <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-[color:var(--gold)] font-medium">
-          {productSubtitle(product)}
-        </p>
-        <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground line-clamp-2">
-          {product.description}
-        </p>
+        {productSubtitle(product) ? (
+          <p className="mt-1 text-xs uppercase tracking-[0.14em] text-[color:var(--gold)] font-semibold">
+            {productSubtitle(product)}
+          </p>
+        ) : null}
+        {product.description ? (
+          <p className="mt-2.5 flex-1 text-xs sm:text-sm leading-relaxed text-foreground/80">
+            {product.description}
+          </p>
+        ) : null}
+        {product.tags && product.tags.length > 0 ? (
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {product.tags.map((tag) => (
+              <span
+                key={tag}
+                className="rounded-full bg-[color:var(--botanical)]/10 px-2 py-0.5 text-[10px] font-semibold text-[color:var(--botanical)]"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        ) : null}
       </div>
 
       <div className="px-5 pb-5 sm:px-6 sm:pb-6">
         <div className="mt-4 border-t border-border pt-4 flex items-center justify-between gap-3">
           <div>
-            {isSoliderma && (
-              <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">50ml Bottle</p>
-            )}
+            {productSizes(product) ? (
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">
+                {productSizes(product)}
+              </p>
+            ) : null}
             <p className="font-display text-xl font-bold text-foreground">{priceRangeLabel(product)}</p>
           </div>
           <CardAddToCart product={product} />

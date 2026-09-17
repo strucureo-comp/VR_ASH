@@ -70,6 +70,28 @@ export const faqSchema = z.object({ q: text(300), a: text(2000) });
 
 /** What the product editor submits. Every field is present, no transforms. */
 export const productContentFormSchema = z.object({
+  heroEyebrow: looseText(200),
+  heroTitle: looseText(200),
+  heroSubtitle: looseText(300),
+  heroDescription: looseText(2000),
+
+  breakthroughEyebrow: looseText(200),
+  breakthroughTitle: looseText(300),
+  breakthroughDescription: looseText(2000),
+  breakthroughFeature1Title: looseText(100),
+  breakthroughFeature1Text: looseText(200),
+  breakthroughFeature2Title: looseText(100),
+  breakthroughFeature2Text: looseText(200),
+
+  indicationsEyebrow: looseText(200),
+  indicationsTitle: looseText(300),
+  indicationsDescription: looseText(2000),
+
+  summaryEyebrow: looseText(200),
+  summaryTitle: looseText(300),
+  summaryDescription: looseText(2000),
+  summaryNote: looseText(300),
+
   longDescription: looseText(8000),
   directions: looseText(2000),
   caution: looseText(2000),
@@ -78,6 +100,8 @@ export const productContentFormSchema = z.object({
   steps: z.array(stepSchema),
   conditions: z.array(conditionSchema),
   faqs: z.array(faqSchema),
+  whereToApply: looseText(2000),
+  howItHelps: looseText(4000),
 });
 
 /** What the shared-content editor submits. */
@@ -89,6 +113,28 @@ export const sharedContentFormSchema = z.object({
 /** Everything the site says about one Shopify product, as read back. */
 export const productContentSchema = z.object({
   updatedAt: readNumber,
+  heroEyebrow: readText(200),
+  heroTitle: readText(200),
+  heroSubtitle: readText(300),
+  heroDescription: readText(2000),
+
+  breakthroughEyebrow: readText(200),
+  breakthroughTitle: readText(300),
+  breakthroughDescription: readText(2000),
+  breakthroughFeature1Title: readText(100),
+  breakthroughFeature1Text: readText(200),
+  breakthroughFeature2Title: readText(100),
+  breakthroughFeature2Text: readText(200),
+
+  indicationsEyebrow: readText(200),
+  indicationsTitle: readText(300),
+  indicationsDescription: readText(2000),
+
+  summaryEyebrow: readText(200),
+  summaryTitle: readText(300),
+  summaryDescription: readText(2000),
+  summaryNote: readText(300),
+
   longDescription: readText(8000),
   directions: readText(2000),
   caution: readText(2000),
@@ -97,6 +143,8 @@ export const productContentSchema = z.object({
   steps: listOf(stepSchema),
   conditions: listOf(conditionSchema),
   faqs: listOf(faqSchema),
+  whereToApply: readText(2000),
+  howItHelps: readText(4000),
 });
 
 /** Blocks several brand pages render, so they live once rather than per product. */

@@ -10,7 +10,7 @@ export const Route = createFileRoute("/clinics")({
       {
         name: "description",
         content:
-          "A dedicated enquiry channel for clinics, practitioners, pharmacies and professional buyers of Soliderma — bulk orders, training and documentation.",
+          "A dedicated enquiry channel for clinics, practitioners, pharmacies and professional buyers of SOLIDERMA — bulk orders, training and documentation.",
       },
       { property: "og:title", content: "For Healthcare Professionals | Vallalaar Remedies" },
       {

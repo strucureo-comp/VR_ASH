@@ -20,7 +20,7 @@ export const Route = createFileRoute("/about")({
       {
         name: "description",
         content:
-          "Vallalaar Remedies brings an Ayurvedic perspective to modern healthcare needs, with Soliderma™ as its flagship herbal wound-care spray.",
+          "Vallalaar Remedies brings an Ayurvedic perspective to modern healthcare needs, with SOLIDERMA as its flagship herbal wound-care spray.",
       },
       { property: "og:title", content: "Rooted in Traditional Healing | Vallalaar Remedies" },
       {
@@ -62,17 +62,17 @@ function About() {
         <div className="relative mx-auto max-w-4xl">
           <p className="eyebrow text-[color:var(--gold)]">About Us</p>
           <h1 className="mt-4 text-[2rem] leading-tight text-foreground sm:mt-5 sm:text-4xl lg:text-5xl">
-            Rooted in Traditional Healing. Focused on Better Care.
+            Combining the Wisdom of Ayurveda with Modern Science.
           </h1>
           <div className="mt-7 max-w-2xl space-y-4 text-[15px] leading-relaxed text-muted-foreground">
             <p>{ABOUT_SNIPPET}</p>
             <p>
-              Our focus is on developing and bringing forward herbal formulations that can be
-              presented in practical, accessible formats for today&rsquo;s users.
+              We are dedicated to creating pure, high-quality herbal remedies you can trust, backed by science and clinical practice.
             </p>
             <p>
-              Our flagship product, Soliderma&trade;, represents this approach — combining an
-              Ayurvedic proprietary formulation with a convenient modern spray format.
+              Our flagship product, SOLIDERMA, represents this vision — combining an
+              Ayurvedic proprietary formulation with contemporary topical delivery science for
+              precision wound healing.
             </p>
           </div>
           <dl className="mt-12 grid gap-8 border-t border-border pt-8 sm:grid-cols-4">
@@ -116,10 +116,10 @@ function About() {
             wound-care journey.
           </p>
         </Reveal>
-        <div className="mt-12 grid gap-6 lg:grid-cols-3">
+        <div className="-mx-5 mt-8 flex items-stretch snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 sm:mx-0 sm:mt-12 sm:grid sm:gap-6 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           {TESTIMONIALS.map((t, i) => (
-            <Reveal key={t.name} delay={i * 0.06}>
-              <figure className="flex h-full flex-col rounded-2xl border border-border bg-card p-7">
+            <Reveal key={t.name} delay={i * 0.06} className="flex w-[85vw] max-w-[340px] shrink-0 snap-center sm:w-auto sm:max-w-none sm:shrink sm:snap-align-none">
+              <figure className="flex w-full flex-col rounded-2xl border border-border bg-card p-5 shadow-sm transition-all hover:border-[color:var(--botanical)]/40 hover:shadow-md sm:p-7">
                 <Quote className="h-7 w-7 text-[color:var(--gold)]" />
                 <Stars rating={t.rating} className="mt-4" />
                 <blockquote className="mt-4 flex-1 text-sm leading-relaxed text-foreground">

@@ -1,11 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Reveal } from "@/components/site/Reveal";
 import { Section } from "@/components/site/Section";
 import { sharedContentQuery } from "@/lib/content/queryOptions";
 import { preferSaved } from "@/lib/content/render";
@@ -35,7 +28,24 @@ export const Route = createFileRoute("/faq")({
 
 function Faq() {
   const { shared } = Route.useLoaderData();
-  const faqs = preferSaved(shared?.faqs ?? [], FAQS);
+  const rawFaqs = preferSaved(shared?.faqs ?? [], FAQS);
+  const faqs = rawFaqs.map((f) => {
+    const fallback = FAQS.find(
+      (item) => item.q.toLowerCase().trim() === f.q.toLowerCase().trim(),
+    );
+    const clean = (str: string) => {
+      let res = str.replace(/SOLIDERMA[®️®™]*/gi, "SOLIDERMA");
+      if (res.includes("Healing outcomes vary by wound depth")) {
+        return "Healing times depend on the depth of the wound and your overall health, but SOLIDERMA works continuously to support and speed up your body's natural healing process.";
+      }
+      return res;
+    };
+    const rawAnswer = f.a && f.a.trim().length > 0 ? f.a : (fallback?.a ?? f.a ?? "");
+    return {
+      q: clean(f.q),
+      a: clean(rawAnswer),
+    };
+  });
 
   return (
     <>
@@ -48,20 +58,46 @@ function Faq() {
         </div>
       </section>
       <Section>
-        <Reveal className="mx-auto max-w-3xl">
-          <Accordion type="single" collapsible className="w-full">
-            {faqs.map((f, i) => (
-              <AccordionItem key={f.q} value={`item-${i}`}>
-                <AccordionTrigger className="text-left font-display text-lg">
-                  {f.q}
-                </AccordionTrigger>
-                <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
-                  {f.a}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </Reveal>
+        <div className="mx-auto max-w-4xl">
+          <div className="grid gap-6 sm:grid-cols-2">
+            {faqs.map((f, i) => {
+              const categories = [
+                "Diabetic Patients",
+                "Chronic Wounds",
+                "Formula Purity",
+                "Results Timeline",
+                "Clinical Scope",
+                "Manufacturing",
+                "Certifications",
+                "Institutional Supply",
+              ];
+              const category = categories[i] ?? "Clinical Guidance";
+              return (
+                <div
+                  key={f.q}
+                  className="flex flex-col justify-between rounded-2xl border border-border bg-card p-6 sm:p-7 shadow-sm transition-all hover:border-[color:var(--botanical)]/40 hover:shadow-md"
+                >
+                  <div>
+                    <span className="inline-block rounded-full bg-[color:var(--botanical)]/10 px-3 py-1 text-[10.5px] font-bold uppercase tracking-wider text-[color:var(--botanical)]">
+                      {category}
+                    </span>
+                    <h3 className="mt-3 font-serif text-lg font-semibold text-foreground">
+                      {f.q}
+                    </h3>
+                    <div className="mt-3.5 border-t border-border/50 pt-3">
+                      <p className="mb-1 text-[11px] font-bold uppercase tracking-wider text-[color:var(--gold)]">
+                        Answer
+                      </p>
+                      <p className="text-sm leading-relaxed text-foreground/85">
+                        {f.a}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </Section>
     </>
   );
