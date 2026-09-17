@@ -325,9 +325,14 @@ function Home() {
       </Section>
 
       {/* 03 CLINICAL INDICATIONS */}
-      <Section className="border-b border-border/70 bg-[color:var(--surface)] !py-0 sm:!py-14 lg:!py-16">
-        {/* Desktop Section Header */}
-        <div className="hidden sm:block pt-8 sm:pt-14 pb-4 sm:pb-8 text-center px-4">
+      {/* Mobile View: Full-width Pinned Scrollytelling Deck */}
+      <div className="block sm:hidden w-full border-b border-border/70">
+        <MobileStackedIndications conditions={CONDITIONS} />
+      </div>
+
+      {/* Desktop View: Traditional Section Grid */}
+      <Section className="hidden sm:block border-b border-border/70 bg-[color:var(--surface)] sm:py-14 lg:py-16">
+        <div className="pt-8 sm:pt-14 pb-4 sm:pb-8 text-center px-4">
           <Reveal>
             <div className="flex justify-center">
               <SectionLabel index="03" label="Clinical Indications" />
@@ -341,13 +346,7 @@ function Home() {
           </Reveal>
         </div>
 
-        {/* Mobile View: Unified Pinned Scrollytelling Deck */}
-        <div className="block sm:hidden w-full">
-          <MobileStackedIndications conditions={CONDITIONS} />
-        </div>
-
-        {/* Desktop Layout */}
-        <div className="hidden sm:mt-12 sm:grid sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+        <div className="mt-12 grid grid-cols-2 gap-6 lg:grid-cols-3">
           {CONDITIONS.map((c, i) => (
             <Reveal key={c.title} delay={i * 0.05}>
               <div className="flex w-full flex-col rounded-2xl border border-border bg-card p-6 transition-all hover:border-[color:var(--botanical)]/40 hover:shadow-md h-full">

@@ -124,7 +124,7 @@ export function MobileStackedIndications({
   const [scrollBounds, setScrollBounds] = useState({ start: 0, end: 1000 });
 
   const total = Math.max(1, conditions.length);
-  const runwayHeight = `${Math.max(175, 55 + total * 30)}vh`;
+  const runwayHeight = `${Math.max(180, 60 + total * 28)}vh`;
 
   useEffect(() => {
     const measure = () => {
@@ -149,10 +149,14 @@ export function MobileStackedIndications({
 
     measure();
     window.addEventListener("resize", measure, { passive: true });
-    const timer = setTimeout(measure, 500);
+    window.addEventListener("load", measure, { passive: true });
+    const timer1 = setTimeout(measure, 300);
+    const timer2 = setTimeout(measure, 800);
     return () => {
       window.removeEventListener("resize", measure);
-      clearTimeout(timer);
+      window.removeEventListener("load", measure);
+      clearTimeout(timer1);
+      clearTimeout(timer2);
     };
   }, []);
 
@@ -177,16 +181,16 @@ export function MobileStackedIndications({
         {/* Constant Topic Header */}
         <div className="w-full flex flex-col items-center text-center px-4 shrink-0">
           <SectionLabel index="03" label="Clinical Indications" />
-          <h2 className="mt-1 font-serif text-xl leading-tight text-foreground">
+          <h2 className="mt-1 font-serif text-2xl leading-tight text-foreground">
             Indications for Complex Wounds
           </h2>
-          <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
+          <p className="mt-1 text-xs text-muted-foreground leading-relaxed max-w-sm mx-auto">
             Formulated for complex wounds requiring disciplined ongoing care.
           </p>
         </div>
 
         {/* Card Deck Area - Cards stack in single slot below title */}
-        <div className="relative w-full flex justify-center mt-3 h-[250px]">
+        <div className="relative w-full flex justify-center mt-3 h-[270px]">
           {conditions.map((item, i) => {
             const step = String(i + 1).padStart(2, "0");
             const action = CONDITION_ACTIONS[item.title] ?? "Clinical Care";

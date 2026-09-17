@@ -342,10 +342,14 @@ function MobileStackedIndicationsPhase({
 
     measure();
     window.addEventListener("resize", measure, { passive: true });
-    const timer = setTimeout(measure, 500);
+    window.addEventListener("load", measure, { passive: true });
+    const timer1 = setTimeout(measure, 300);
+    const timer2 = setTimeout(measure, 800);
     return () => {
       window.removeEventListener("resize", measure);
-      clearTimeout(timer);
+      window.removeEventListener("load", measure);
+      clearTimeout(timer1);
+      clearTimeout(timer2);
     };
   }, []);
 
