@@ -1,5 +1,5 @@
 import { motion, useScroll, useTransform, type MotionValue } from "motion/react";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CheckCircle2 } from "lucide-react";
 
 export interface StepItem {
@@ -10,10 +10,10 @@ export interface StepItem {
 }
 
 export interface StickyStepsProps {
-  steps?: StepItem[];
-  eyebrow?: string;
-  title?: string;
-  subtitle?: string;
+  steps?: StepItem[] | undefined;
+  eyebrow?: string | undefined;
+  title?: string | undefined;
+  subtitle?: string | undefined;
 }
 
 const DEFAULT_STEPS: StepItem[] = [
@@ -65,6 +65,8 @@ interface StickyStepCardProps {
   range: [number, number];
   targetScale: number;
   total: number;
+  baseTop: number;
+  cardRef?: React.Ref<HTMLDivElement> | undefined;
 }
 
 const StickyStepCard = ({
@@ -77,11 +79,13 @@ const StickyStepCard = ({
   range,
   targetScale,
   total,
+  baseTop,
+  cardRef,
 }: StickyStepCardProps) => {
   const scale = useTransform(progress, range, [1, targetScale], { clamp: true });
-  // Deck sticks right below the sticky title (≈84px navbar + ≈106px title).
-  // 80px stagger keeps each buried card's number + title peeking out.
-  const stickyTop = 190 + i * 80;
+  // Tight blank-edge peeks (20px = the card's top padding): suits the large
+  // step type, zero text peeking, same compact deck language as home.
+  const stickyTop = baseTop + i * 20;
 
   return (
     <div
@@ -89,16 +93,19 @@ const StickyStepCard = ({
       style={{
         top: `${stickyTop}px`,
         zIndex: 10 + i,
-        marginBottom: i === total - 1 ? "0px" : "24px",
+        // Even flow gap per card to rise and lock in turn; stuck tops and
+        // the finished stack are untouched by it.
+        marginBottom: i === total - 1 ? "0px" : "48px",
       }}
     >
       <motion.div
+        ref={cardRef}
         style={{ scale }}
-        className="w-full max-w-[420px] origin-top flex flex-col rounded-2xl border border-border/80 bg-card p-5 shadow-[0_-4px_20px_rgba(0,0,0,0.06),0_10px_25px_rgba(0,0,0,0.08)]"
+        className="w-full max-w-[420px] origin-top flex flex-col rounded-2xl border border-border/80 bg-card p-5 shadow-[0_-4px_20px_rgba(0,0,0,0.06),0_10px_25px_rgba(0,0,0,0.08)] min-h-[216px]"
       >
         <span className="font-serif text-3xl font-normal text-[color:var(--gold)]">{step}</span>
         <h3 className="mt-2.5 font-serif text-xl font-normal text-foreground">{title}</h3>
-        <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">{body}</p>
+        <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed flex-1">{body}</p>
         <div className="mt-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[color:var(--botanical)]">
           <CheckCircle2 className="h-4 w-4 shrink-0" />
           <span>{action}</span>
@@ -119,6 +126,14 @@ export const StickySteps = ({
     target: containerRef,
     offset: ["start start", "end end"],
   });
+  // Exit progress runs 0→1 while the finished section scrolls out AFTER the
+  // pin releases. The title handoff is driven off this — fully relative, so
+  // it can't drift the way absolute-scroll windows do on real page depths.
+  const { scrollYProgress: exitProgress } = useScroll({
+    target: containerRef,
+    offset: ["end end", "end start"],
+  });
+  const titleOpacity = useTransform(exitProgress, [0.12, 0.4], [1, 0], { clamp: true });
 
   const resolvedSteps = (steps.length > 0 ? steps : DEFAULT_STEPS).map((s) => ({
     ...s,
@@ -126,6 +141,45 @@ export const StickySteps = ({
   }));
 
   const total = resolvedSteps.length;
+
+  // Runtime-measured geometry so the last card parks exactly on every
+  // device: whether it reaches its slot before the container ends depends
+  // on viewport height AND card height (tail needed = viewport − card −
+  // slot). Measure and size the tail exactly — never bigger (no dead beige).
+  // Defaults = safe values (SSR-safe).
+  const titleRef = useRef<HTMLDivElement>(null);
+  const lastCardRef = useRef<HTMLDivElement>(null);
+  const [baseTop, setBaseTop] = useState(201);
+  const [tail, setTail] = useState(28);
+
+  useEffect(() => {
+    // Single measurement pass (plus guards for late resources/resizes).
+    // min-heights below keep fallback and webfont metrics rendering
+    // identical boxes, so re-reading never re-layouts a settled deck.
+    const measure = () => {
+      const titleH = titleRef.current?.offsetHeight || 112;
+      const cardH = lastCardRef.current?.offsetHeight || 200;
+      const v = window.innerHeight;
+      const base = Math.round(84 + titleH + 5);
+      const nextTail = 28; // fixed 28px instead of computed value
+      setBaseTop(base);
+      setTail(nextTail);
+
+      // --steps-tail-pull logic no longer needed since tail is already 28px
+      document.documentElement.style.removeProperty("--steps-tail-pull");
+    };
+    measure();
+    if (document.fonts) {
+      document.fonts.ready.then(measure).catch(() => undefined);
+    }
+    window.addEventListener("resize", measure);
+    window.addEventListener("orientationchange", measure);
+    return () => {
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("orientationchange", measure);
+      document.documentElement.style.removeProperty("--steps-tail-pull");
+    };
+  }, [total]);
 
   return (
     <div className="w-full">
@@ -178,19 +232,27 @@ export const StickySteps = ({
       </div>
 
       {/* =========================================================================
-          MOBILE VIEW: Skiper16 sticky card deck.
-          Deep 80px stagger so each buried card keeps its number + title
-          peeking above the next card (Image 1 showed bodies cut with a
-          shallow stagger). Title stays sticky under the navbar; small pb-8
-          tail so no beige void sits below the finished stack (Image 2).
+          MOBILE VIEW: tight sticky card deck (blank-edge peeks).
+          Title stays sticky under the navbar through the stack, then yields
+          on exit so title + deck read as one unit leaving. Tail is measured
+          per device so the last card parks exactly (never bigger = no dead
+          beige). Title/cards use min-heights so font swaps can't re-layout
+          a settled deck.
           ========================================================================= */}
       <div className="block md:hidden w-full">
         <section
           ref={containerRef}
-          className="relative w-full bg-[color:var(--surface)] border-t border-b border-border/70 pb-8"
+          className="relative w-full bg-[color:var(--surface)] border-t border-b border-border/70"
+          style={{ paddingBottom: tail }}
+          data-base-top={baseTop}
+          data-tail={tail}
         >
           {/* Sticky header - locks beneath navbar while cards stack */}
-          <div className="sticky top-[84px] z-30 bg-[color:var(--surface)] pt-3 pb-3 px-4 text-center">
+          <motion.div
+            ref={titleRef}
+            style={{ opacity: titleOpacity }}
+            className="sticky top-[84px] z-30 bg-[color:var(--surface)] pt-3 pb-3 px-4 text-center min-h-[140px]"
+          >
             <p className="eyebrow tracking-[0.2em] text-[color:var(--gold)] text-xs font-semibold">
               {eyebrow}
             </p>
@@ -198,7 +260,7 @@ export const StickySteps = ({
             <p className="mt-1 text-xs text-muted-foreground max-w-xl mx-auto leading-relaxed">
               {subtitle}
             </p>
-          </div>
+          </motion.div>
 
           <div className="relative w-full mt-4 flex flex-col">
             {resolvedSteps.map((stepData, i) => {
@@ -214,6 +276,8 @@ export const StickySteps = ({
                   range={range}
                   targetScale={targetScale}
                   total={total}
+                  baseTop={baseTop}
+                  cardRef={i === total - 1 ? lastCardRef : undefined}
                 />
               );
             })}
