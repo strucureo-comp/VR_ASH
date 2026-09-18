@@ -67,6 +67,7 @@ interface StickyStepCardProps {
   total: number;
   baseTop: number;
   cardRef?: React.Ref<HTMLDivElement> | undefined;
+  marginBottom?: string | undefined;
 }
 
 const StickyStepCard = ({
@@ -81,6 +82,7 @@ const StickyStepCard = ({
   total,
   baseTop,
   cardRef,
+  marginBottom,
 }: StickyStepCardProps) => {
   const scale = useTransform(progress, range, [1, targetScale], { clamp: true });
   // Tight blank-edge peeks (20px = the card's top padding): suits the large
@@ -93,9 +95,9 @@ const StickyStepCard = ({
       style={{
         top: `${stickyTop}px`,
         zIndex: 10 + i,
-        // Even flow gap per card to rise and lock in turn; stuck tops and
-        // the finished stack are untouched by it.
-        marginBottom: i === total - 1 ? "0px" : "48px",
+        // CSS Bottom-Edge Equalization: offsets the 20px top stagger so all cards
+        // share the exact same physical bottom threshold and exit together without collapsing.
+        marginBottom: marginBottom ?? `${(total - 1 - i) * 20}px`,
       }}
     >
       <motion.div
@@ -126,14 +128,6 @@ export const StickySteps = ({
     target: containerRef,
     offset: ["start start", "end end"],
   });
-  // Exit progress runs 0→1 while the finished section scrolls out AFTER the
-  // pin releases. The title handoff is driven off this — fully relative, so
-  // it can't drift the way absolute-scroll windows do on real page depths.
-  const { scrollYProgress: exitProgress } = useScroll({
-    target: containerRef,
-    offset: ["end end", "end start"],
-  });
-  const titleOpacity = useTransform(exitProgress, [0.12, 0.4], [1, 0], { clamp: true });
 
   const resolvedSteps = (steps.length > 0 ? steps : DEFAULT_STEPS).map((s) => ({
     ...s,
@@ -142,28 +136,28 @@ export const StickySteps = ({
 
   const total = resolvedSteps.length;
 
-  // Runtime-measured geometry so the last card parks exactly on every
-  // device: whether it reaches its slot before the container ends depends
-  // on viewport height AND card height (tail needed = viewport − card −
-  // slot). Measure and size the tail exactly — never bigger (no dead beige).
-  // Defaults = safe values (SSR-safe).
   const titleRef = useRef<HTMLDivElement>(null);
   const lastCardRef = useRef<HTMLDivElement>(null);
   const [baseTop, setBaseTop] = useState(201);
   const [tail, setTail] = useState(28);
+  // Equalized bottom margin for Title to match the last card's bottom edge:
+  // (baseTop + (total - 1) * 20 + cardH) - (84 + titleH)
+  const [titleMarginBottom, setTitleMarginBottom] = useState(265);
 
   useEffect(() => {
     // Single measurement pass (plus guards for late resources/resizes).
-    // min-heights below keep fallback and webfont metrics rendering
-    // identical boxes, so re-reading never re-layouts a settled deck.
     const measure = () => {
       const titleH = titleRef.current?.offsetHeight || 112;
       const cardH = lastCardRef.current?.offsetHeight || 200;
-      const v = window.innerHeight;
       const base = Math.round(84 + titleH + 5);
       const nextTail = 28; // fixed 28px instead of computed value
       setBaseTop(base);
       setTail(nextTail);
+
+      // Title Bottom-Edge Equalization:
+      // (base + (total - 1) * 20 + cardH) - (84 + titleH)
+      const titleMB = Math.max(0, base + (total - 1) * 20 + cardH - (84 + titleH));
+      setTitleMarginBottom(titleMB);
 
       // --steps-tail-pull logic no longer needed since tail is already 28px
       document.documentElement.style.removeProperty("--steps-tail-pull");
@@ -232,12 +226,9 @@ export const StickySteps = ({
       </div>
 
       {/* =========================================================================
-          MOBILE VIEW: tight sticky card deck (blank-edge peeks).
-          Title stays sticky under the navbar through the stack, then yields
-          on exit so title + deck read as one unit leaving. Tail is measured
-          per device so the last card parks exactly (never bigger = no dead
-          beige). Title/cards use min-heights so font swaps can't re-layout
-          a settled deck.
+          MOBILE VIEW: tight sticky card deck with CSS Bottom-Edge Equalization.
+          Title and all cards share the exact same physical bottom boundary,
+          scrolling away together as one unified unit without collapsing.
           ========================================================================= */}
       <div className="block md:hidden w-full">
         <section
@@ -248,10 +239,10 @@ export const StickySteps = ({
           data-tail={tail}
         >
           {/* Sticky header - locks beneath navbar while cards stack */}
-          <motion.div
+          <div
             ref={titleRef}
-            style={{ opacity: titleOpacity }}
-            className="sticky top-[84px] z-30 bg-[color:var(--surface)] pt-3 pb-3 px-4 text-center min-h-[140px]"
+            className="sticky top-[84px] z-20 bg-[color:var(--surface)] pt-3 pb-3 px-4 text-center min-h-[140px]"
+            style={{ marginBottom: `${titleMarginBottom}px` }}
           >
             <p className="eyebrow tracking-[0.2em] text-[color:var(--gold)] text-xs font-semibold">
               {eyebrow}
@@ -260,7 +251,7 @@ export const StickySteps = ({
             <p className="mt-1 text-xs text-muted-foreground max-w-xl mx-auto leading-relaxed">
               {subtitle}
             </p>
-          </motion.div>
+          </div>
 
           <div className="relative w-full mt-4 flex flex-col">
             {resolvedSteps.map((stepData, i) => {
@@ -278,6 +269,7 @@ export const StickySteps = ({
                   total={total}
                   baseTop={baseTop}
                   cardRef={i === total - 1 ? lastCardRef : undefined}
+                  marginBottom={`${(total - 1 - i) * 20}px`}
                 />
               );
             })}

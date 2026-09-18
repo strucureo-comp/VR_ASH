@@ -387,7 +387,7 @@ function Home() {
       {/* 04 OUR RANGE / PRODUCT */}
       <section
         id="products"
-        className="relative isolate overflow-hidden bg-background px-5 py-10 sm:px-6 sm:py-14 mt-[calc(-1*var(--deck-tail-pull,0px))]"
+        className="relative isolate overflow-hidden bg-background px-5 py-10 sm:px-6 sm:py-14"
       >
         <Blob
           variant={1}

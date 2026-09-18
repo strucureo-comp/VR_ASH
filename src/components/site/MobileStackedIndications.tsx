@@ -25,6 +25,7 @@ interface StickyIndicationCardProps {
   total: number;
   baseTop: number;
   cardRef?: React.Ref<HTMLDivElement> | undefined;
+  marginBottom?: string | undefined;
 }
 
 const StickyIndicationCard = ({
@@ -40,6 +41,7 @@ const StickyIndicationCard = ({
   total,
   baseTop,
   cardRef,
+  marginBottom,
 }: StickyIndicationCardProps) => {
   const scale = useTransform(progress, range, [1, targetScale], { clamp: true });
 
@@ -54,12 +56,10 @@ const StickyIndicationCard = ({
       style={{
         top: `${stickyTop}px`,
         zIndex: 10 + i,
-        // Even flow gap: each card gets its own scroll beat to rise and lock
-        // in turn, kept compact so no beige void opens between the parked
-        // stack and each incoming card. This only paces the journey: stuck
-        // tops and the finished stack are untouched, so the end state is
-        // pixel-identical.
-        marginBottom: i === total - 1 ? "0px" : "48px",
+        // CSS Bottom-Edge Equalization: Card 6 has 0 margin, Card 5 has 28px,
+        // Card 4 has 56px, etc. This perfectly offsets their top stagger so
+        // all 6 cards share the EXACT same physical bottom boundary.
+        marginBottom: marginBottom ?? `${(total - 1 - i) * 28}px`,
       }}
     >
       <motion.div
@@ -93,55 +93,34 @@ export function MobileStackedIndications({ conditions }: { conditions: any[] }) 
     target: containerRef,
     offset: ["start start", "end end"],
   });
-  // Exit progress runs 0→1 while the finished section scrolls out AFTER the
-  // pin releases (container end travelling viewport bottom → viewport top).
-  // The title handoff is driven off this — fully relative, so it can never
-  // drift the way absolute-scroll windows do on real page depths.
-  const { scrollYProgress: exitProgress } = useScroll({
-    target: containerRef,
-    offset: ["end end", "end start"],
-  });
-  const titleOpacity = useTransform(exitProgress, [0.12, 0.4], [1, 0], { clamp: true });
 
   const total = Math.max(1, conditions.length);
 
-  // Runtime-measured geometry so 05/06 park exactly on every device.
-  // Fixed constants can't do this: whether the last card reaches its slot
-  // before the container ends depends on viewport height AND card height.
-  // So measure everything and size the tail exactly: big enough for 06 to
-  // land on its slot (base + 5 × stagger), never bigger (no dead beige).
-  // Defaults = current approved values (SSR-safe).
   const titleRef = useRef<HTMLDivElement>(null);
   const lastCardRef = useRef<HTMLDivElement>(null);
   const [baseTop, setBaseTop] = useState(208);
-  const [tail, setTail] = useState(96);
+  const [tail, setTail] = useState(28);
+  // Equalized bottom margin for the Title to match Card 6's bottom edge:
+  // (baseTop + 140 + cardH) - (84 + titleH)
+  const [titleMarginBottom, setTitleMarginBottom] = useState(345);
 
   useEffect(() => {
     // Single measurement pass (plus guards for late resources/resizes).
-    // No timer re-measures: with min-heights above, fallback and webfont
-    // metrics render identical boxes, so re-reading would only ever
-    // re-layout a settled deck — the "rearranges after 1s" bug.
     const measure = () => {
       const titleH = titleRef.current?.offsetHeight || 119;
       const cardH = lastCardRef.current?.offsetHeight || 200;
-      const v = window.innerHeight;
       const base = Math.round(84 + titleH + 5);
-      const nextTail = Math.round(Math.min(420, Math.max(96, v - cardH - (base + 5 * 28))));
+      const nextTail = 28; // flat 28px tail
       setBaseTop(base);
       setTail(nextTail);
-      // Let section 04 overlap the tail: it pulls up by (tail − 28px), so
-      // the handoff keeps a tight 28px rhythm with zero beige. Mobile only
-      // (the deck is sm:hidden); elsewhere the var is removed → no-op.
-      // 04 paints under the stuck cards (static vs positioned), so it stays
-      // hidden behind the opaque deck until release, then reveals cleanly.
-      if (window.matchMedia("(max-width: 639px)").matches) {
-        document.documentElement.style.setProperty(
-          "--deck-tail-pull",
-          `${Math.max(0, nextTail - 28)}px`,
-        );
-      } else {
-        document.documentElement.style.removeProperty("--deck-tail-pull");
-      }
+
+      // Title Bottom-Edge Equalization:
+      // (baseTop + 140 + cardHeight) - (84 + titleHeight)
+      const titleMB = Math.max(0, base + 140 + cardH - (84 + titleH));
+      setTitleMarginBottom(titleMB);
+
+      // Clean up --deck-tail-pull since tail is already 28px
+      document.documentElement.style.removeProperty("--deck-tail-pull");
     };
     measure();
     if (document.fonts) {
@@ -152,26 +131,23 @@ export function MobileStackedIndications({ conditions }: { conditions: any[] }) 
     return () => {
       window.removeEventListener("resize", measure);
       window.removeEventListener("orientationchange", measure);
+      document.documentElement.style.removeProperty("--deck-tail-pull");
     };
   }, []);
 
   return (
-    <div
+    <section
       ref={containerRef}
       className="relative w-full sm:hidden bg-[color:var(--surface)] pt-2"
       style={{ paddingBottom: tail }}
       data-base-top={baseTop}
       data-tail={tail}
     >
-      {/* Stationary Title Header - locks beneath navbar while cards stack,
-          then yields as its solo hold would begin, so title + deck read as
-          one unit leaving into 04. Always opaque through the deck phase.
-          min-h reserves the tallest wrap variant (2-line heading + 2-line
-          subtitle) so font swaps can't resize this block post-paint. */}
-      <motion.div
+      {/* Sticky Section Title Header - Equalized bottom edge matches Card 6 */}
+      <div
         ref={titleRef}
-        style={{ opacity: titleOpacity }}
-        className="sticky top-[84px] z-30 bg-[color:var(--surface)] pt-3 pb-3 px-4 text-center min-h-[150px]"
+        className="sticky top-[84px] z-20 bg-[color:var(--surface)] pt-3 pb-3 px-4 text-center min-h-[150px]"
+        style={{ marginBottom: `${titleMarginBottom}px` }}
       >
         <div className="flex justify-center">
           <SectionLabel index="03" label="Clinical Indications" />
@@ -182,11 +158,9 @@ export function MobileStackedIndications({ conditions }: { conditions: any[] }) 
         <p className="mt-1 text-xs text-muted-foreground leading-relaxed max-w-sm mx-auto">
           Formulated for complex wounds requiring disciplined ongoing care.
         </p>
-      </motion.div>
+      </div>
 
-      {/* Sticky Card Deck Stream. Content-filled container (no spacer runway).
-          The measured tail gives 06 exactly enough room to park on its slot,
-          then the whole section hands off to 04. */}
+      {/* Sticky Card Deck Stream - Each card's marginBottom equalizes physical bottom boundary */}
       <div className="relative w-full mt-3">
         {conditions.map((item, i) => {
           const step = String(i + 1).padStart(2, "0");
@@ -214,10 +188,11 @@ export function MobileStackedIndications({ conditions }: { conditions: any[] }) 
               total={total}
               baseTop={baseTop}
               cardRef={i === total - 1 ? lastCardRef : undefined}
+              marginBottom={`${(total - 1 - i) * 28}px`}
             />
           );
         })}
       </div>
-    </div>
+    </section>
   );
 }
