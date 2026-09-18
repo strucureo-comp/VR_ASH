@@ -320,11 +320,11 @@ function ProductDetail() {
         </Section>
       ) : null}
 
-      {/* SECTION: THREE SIMPLE STEPS (Stacked card deck on mobile, static grid on desktop) */}
+      {/* SECTION: FOUR SIMPLE STEPS (Stacked card deck on mobile, static grid on desktop) */}
       <StickySteps
         steps={content?.steps && content.steps.length > 0 ? content.steps : undefined}
         eyebrow="SIMPLE APPLICATION"
-        title="Three simple steps"
+        title="Four simple steps"
         subtitle="Gentle, touch-free wound care engineered for rapid recovery and soothing comfort."
       />
 

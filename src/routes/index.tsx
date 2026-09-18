@@ -69,7 +69,6 @@ const PILLARS = [
   },
 ];
 
-
 /** Home shows the first three; /clinics lists all of them. */
 const HOME_PRO_POINTS = PRO_POINTS.slice(0, 3);
 
@@ -119,8 +118,7 @@ function Home() {
   const { featured, upcoming, shared } = Route.useLoaderData();
   const certifications = iconRows(shared?.certifications ?? [], CERTIFICATIONS);
 
-  const solidermaProduct =
-    featured.find((p) => isSolidermaHandle(p.handle)) ?? featured[0] ?? null;
+  const solidermaProduct = featured.find((p) => isSolidermaHandle(p.handle)) ?? featured[0] ?? null;
   const bottleSrc = solidermaProduct?.featuredImage
     ? sizedImage(solidermaProduct.featuredImage.url, 1200)
     : bottle;
@@ -154,9 +152,7 @@ function Home() {
         <div className="mx-auto flex w-full max-w-7xl flex-1 items-center px-4 pt-5 pb-4 sm:px-6 sm:pt-8 sm:pb-6 lg:pt-8 lg:pb-6">
           <div className="grid w-full grid-cols-1 items-center gap-6 lg:grid-cols-12 lg:gap-8">
             {/* LEFT COLUMN: Value Proposition, Mobile Product stage, 4 Feature Badges & CTA */}
-            <div
-              className="flex flex-col items-start text-left lg:col-span-7"
-            >
+            <div className="flex flex-col items-start text-left lg:col-span-7">
               {/* Category Pill Badge */}
               <div className="inline-flex items-center gap-2 rounded-full bg-[color:var(--botanical)]/12 px-3 py-0.5 text-[10.5px] sm:text-[11px] font-bold uppercase tracking-[0.16em] text-[color:var(--botanical)]">
                 <span>The Pinnacle of Herbal Wound Science</span>
@@ -174,7 +170,10 @@ function Home() {
 
               {/* Description Subtitle */}
               <p className="mt-3 sm:mt-4 max-w-xl text-xs sm:text-base leading-relaxed text-foreground/80">
-                SOLIDERMA combines traditional Ayurvedic herbs with modern spray technology for effective, hassle-free wound care. Our formula helps speed up skin healing, improves blood flow, protects against infection, and reduces scarring—giving you a reliable, natural way to heal.
+                SOLIDERMA combines traditional Ayurvedic herbs with modern spray technology for
+                effective, hassle-free wound care. Our formula helps speed up skin healing, improves
+                blood flow, protects against infection, and reduces scarring—giving you a reliable,
+                natural way to heal.
               </p>
 
               {/* MOBILE ONLY: Product Bottle Stage */}
@@ -216,9 +215,7 @@ function Home() {
             </div>
 
             {/* DESKTOP ONLY RIGHT COLUMN: Product Bottle Presentation */}
-            <div
-              className="hidden lg:flex flex-col items-center justify-center lg:col-span-5"
-            >
+            <div className="hidden lg:flex flex-col items-center justify-center lg:col-span-5">
               {/* Product Bottle with soft shadow */}
               <div className="relative flex flex-col items-center">
                 <Link
@@ -248,8 +245,12 @@ function Home() {
                   <ShieldCheck className="h-3 sm:h-3.5 w-3 sm:w-3.5" />
                 </span>
                 <div>
-                  <p className="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-foreground leading-tight">WHO-GMP</p>
-                  <p className="text-[9px] sm:text-[9.5px] text-muted-foreground leading-tight">Manufacturing</p>
+                  <p className="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-foreground leading-tight">
+                    WHO-GMP
+                  </p>
+                  <p className="text-[9px] sm:text-[9.5px] text-muted-foreground leading-tight">
+                    Manufacturing
+                  </p>
                 </div>
               </div>
 
@@ -258,8 +259,12 @@ function Home() {
                   <Leaf className="h-3 sm:h-3.5 w-3 sm:w-3.5" />
                 </span>
                 <div>
-                  <p className="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-foreground leading-tight">AYUSH</p>
-                  <p className="text-[9px] sm:text-[9.5px] text-muted-foreground leading-tight">Compliant</p>
+                  <p className="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-foreground leading-tight">
+                    AYUSH
+                  </p>
+                  <p className="text-[9px] sm:text-[9.5px] text-muted-foreground leading-tight">
+                    Compliant
+                  </p>
                 </div>
               </div>
 
@@ -268,8 +273,12 @@ function Home() {
                   <BadgeCheck className="h-3 sm:h-3.5 w-3 sm:w-3.5" />
                 </span>
                 <div>
-                  <p className="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-foreground leading-tight">ISO 9001:2015</p>
-                  <p className="text-[9px] sm:text-[9.5px] text-muted-foreground leading-tight">Certified</p>
+                  <p className="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-foreground leading-tight">
+                    ISO 9001:2015
+                  </p>
+                  <p className="text-[9px] sm:text-[9.5px] text-muted-foreground leading-tight">
+                    Certified
+                  </p>
                 </div>
               </div>
 
@@ -278,8 +287,12 @@ function Home() {
                   <FlaskConical className="h-3 sm:h-3.5 w-3 sm:w-3.5" />
                 </span>
                 <div>
-                  <p className="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-foreground leading-tight">Batch Tested</p>
-                  <p className="text-[9px] sm:text-[9.5px] text-muted-foreground leading-tight">for Quality</p>
+                  <p className="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-foreground leading-tight">
+                    Batch Tested
+                  </p>
+                  <p className="text-[9px] sm:text-[9.5px] text-muted-foreground leading-tight">
+                    for Quality
+                  </p>
                 </div>
               </div>
             </div>
@@ -306,7 +319,8 @@ function Home() {
             Why Thousands Trust Us
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground sm:mt-4 sm:text-[15px]">
-            Pure Ayurvedic formulations manufactured under WHO-GMP conditions, backed by science and clinical practice.
+            Pure Ayurvedic formulations manufactured under WHO-GMP conditions, backed by science and
+            clinical practice.
           </p>
         </Reveal>
         <div className="mt-8 grid gap-4 sm:mt-12 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
@@ -316,8 +330,12 @@ function Home() {
                 <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[color:var(--botanical)]/10 text-[color:var(--botanical)] sm:h-12 sm:w-12">
                   <f.icon className="h-5 w-5" />
                 </span>
-                <h3 className="mt-4 text-lg font-semibold text-foreground sm:mt-5 sm:text-xl">{f.title}</h3>
-                <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">{f.body}</p>
+                <h3 className="mt-4 text-lg font-semibold text-foreground sm:mt-5 sm:text-xl">
+                  {f.title}
+                </h3>
+                <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">
+                  {f.body}
+                </p>
               </div>
             </Reveal>
           ))}
@@ -341,7 +359,8 @@ function Home() {
               Indications for Complex Wounds That Demand More
             </h2>
             <p className="mt-2 max-w-2xl text-xs sm:text-[15px] leading-relaxed text-muted-foreground mx-auto sm:mt-4">
-              SOLIDERMA is formulated for complex wounds that need ongoing, daily care, helping the skin progress steadily through every stage of healing.
+              SOLIDERMA is formulated for complex wounds that need ongoing, daily care, helping the
+              skin progress steadily through every stage of healing.
             </p>
           </Reveal>
         </div>
@@ -368,7 +387,7 @@ function Home() {
       {/* 04 OUR RANGE / PRODUCT */}
       <section
         id="products"
-        className="relative isolate overflow-hidden bg-background px-5 py-10 sm:px-6 sm:py-14"
+        className="relative isolate overflow-hidden bg-background px-5 py-10 sm:px-6 sm:py-14 mt-[calc(-1*var(--deck-tail-pull,0px))]"
       >
         <Blob
           variant={1}
@@ -440,7 +459,11 @@ function Home() {
           </Reveal>
           <div className="-mx-5 mt-8 flex items-stretch snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 sm:mx-0 sm:mt-12 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {TESTIMONIALS.map((t, i) => (
-              <Reveal key={t.name} delay={i * 0.06} className="flex w-[85vw] max-w-[340px] shrink-0 snap-center sm:w-auto sm:max-w-none sm:shrink sm:snap-align-none">
+              <Reveal
+                key={t.name}
+                delay={i * 0.06}
+                className="flex w-[85vw] max-w-[340px] shrink-0 snap-center sm:w-auto sm:max-w-none sm:shrink sm:snap-align-none"
+              >
                 <figure className="flex w-full flex-col rounded-2xl border border-border bg-card p-5 shadow-sm transition-all hover:border-[color:var(--botanical)]/40 hover:shadow-md sm:p-7">
                   <Quote className="h-6 w-6 text-[color:var(--botanical)]/25 sm:h-7 sm:w-7" />
                   <Stars rating={t.rating} className="mt-3 sm:mt-4" />
@@ -461,7 +484,6 @@ function Home() {
           </Note>
         </div>
       </section>
-
 
       {/* 07 FOR PROFESSIONALS */}
       <section className="border-y border-border bg-[color:var(--surface)] px-5 py-16 sm:px-6 sm:py-24">

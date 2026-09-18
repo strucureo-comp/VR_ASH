@@ -207,99 +207,68 @@ function MobileMechanismPhase({
   );
 }
 
-function AnimatedStackedIndicationCard({
-  i,
-  step,
-  title,
-  body,
-  icon: Icon,
-  progress,
-  total,
-}: {
+interface StickyConditionCardProps {
   i: number;
   step: string;
   title: string;
   body: string;
   icon: any;
   progress: MotionValue<number>;
+  range: [number, number];
+  targetScale: number;
   total: number;
-}) {
-  const slot = 0.88 / Math.max(1, total - 1);
-  const start = i === 0 ? 0 : 0.05 + (i - 1) * slot;
-  const end = i === 0 ? 0 : start + slot;
-  const fadeEnd = i === 0 ? 0 : start + slot * 0.35;
+}
 
-  // Initial visibility: Card 0 is 100% visible immediately.
-  // Cards 1..n start at 0 opacity and only fade in when their scroll slot arrives.
-  const enterOpacity = useTransform(
-    progress,
-    i === 0 ? [0, 1] : [start, fadeEnd],
-    i === 0 ? [1, 1] : [0, 1],
-    { clamp: true }
-  );
-
-  // Content dims slightly when covered by next card so text never looks awkwardly sliced
-  const nextStart = 0.05 + i * slot;
-  const coverDim = useTransform(
-    progress,
-    i < total - 1 ? [nextStart, nextStart + slot * 0.4] : [0.95, 1],
-    i < total - 1 ? [1, 0.45] : [1, 1],
-    { clamp: true }
-  );
-
-  const opacity = useTransform(
-    [enterOpacity, coverDim],
-    ([enter, dim]: number[]) => enter * dim
-  );
-
-  const y = useTransform(
-    progress,
-    i === 0 ? [0, 1] : [start, end],
-    i === 0 ? [0, 0] : [320, 0],
-    { clamp: true }
-  );
-
-  const targetScale = Math.max(0.90, 1 - (total - i - 1) * 0.02);
-  const scale = useTransform(
-    progress,
-    [Math.max(end, 0.05), 0.95],
-    [1, targetScale],
-    { clamp: true }
-  );
+function StickyConditionCard({
+  i,
+  step,
+  title,
+  body,
+  icon: Icon,
+  progress,
+  range,
+  targetScale,
+  total,
+}: StickyConditionCardProps) {
+  const scale = useTransform(progress, range, [1, targetScale], { clamp: true });
+  const stickyTop = 178 + i * 12;
 
   return (
-    <motion.div
+    <div
+      className="sticky flex w-full justify-center px-4"
       style={{
-        opacity,
-        y,
-        scale,
-        top: `${i * 14}px`,
-        zIndex: 20 + i,
+        top: `${stickyTop}px`,
+        zIndex: 10 + i,
+        marginBottom: i === total - 1 ? "0px" : "130px",
       }}
-      className="absolute w-[92%] max-w-[440px] origin-top flex flex-col overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-xl transition-colors"
     >
-      <div className="flex items-center justify-between">
-        <span className="font-serif text-2xl font-normal text-[color:var(--gold)]">
-          {step}
-        </span>
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[color:var(--botanical)]/10 text-[color:var(--botanical)]">
-          <Icon className="h-4 w-4" />
-        </span>
-      </div>
+      <motion.div
+        style={{ scale }}
+        className="w-full max-w-[420px] origin-top flex flex-col rounded-2xl border border-border/80 bg-card p-5 shadow-[0_-4px_20px_rgba(0,0,0,0.06),0_10px_25px_rgba(0,0,0,0.08)] transition-colors"
+      >
+        <div className="flex items-center justify-between">
+          <span className="font-serif text-2xl font-normal text-[color:var(--gold)]">
+            {step}
+          </span>
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[color:var(--botanical)]/10 text-[color:var(--botanical)]">
+            <Icon className="h-4 w-4" />
+          </span>
+        </div>
 
-      <h3 className="mt-2.5 font-serif text-lg font-normal text-foreground">
-        {title}
-      </h3>
+        <h3 className="mt-2.5 font-serif text-base font-semibold text-foreground">
+          {title}
+        </h3>
 
-      <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
-        {body}
-      </p>
+        <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
+          {body}
+        </p>
 
-      <div className="mt-3.5 flex items-center gap-2 text-[10.5px] font-semibold uppercase tracking-wider text-[color:var(--botanical)]">
-        <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
-        <span>Clinical Indication</span>
-      </div>
-    </motion.div>
+        <div className="mt-3.5 flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-wider text-[color:var(--botanical)]">
+          <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
+          <span>Clinical Indication</span>
+        </div>
+      </motion.div>
+    </div>
   );
 }
 
@@ -310,100 +279,59 @@ function MobileStackedIndicationsPhase({
   whereToApplyTitle: string;
   conditions: Array<{ title: string; body: string; icon?: string }>;
 }) {
-  const runwayRef = useRef<HTMLDivElement>(null);
-  const stageRef = useRef<HTMLDivElement>(null);
-  const { scrollY } = useScroll();
-
-  const [scrollBounds, setScrollBounds] = useState({ start: 0, end: 1000 });
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
 
   const total = Math.max(1, conditions.length);
-  const runwayHeight = `${Math.max(175, 55 + total * 30)}vh`;
-
-  useEffect(() => {
-    const measure = () => {
-      if (!runwayRef.current || !stageRef.current) return;
-      const runwayRect = runwayRef.current.getBoundingClientRect();
-      const stageRect = stageRef.current.getBoundingClientRect();
-      const currentScroll = window.scrollY;
-
-      const runwayTop = runwayRect.top + currentScroll;
-      const runwayH = runwayRef.current.offsetHeight;
-      const stageH = stageRect.height;
-      const navOffset = window.innerWidth >= 640 ? 96 : 86;
-
-      const start = runwayTop - navOffset;
-      const end = runwayTop + runwayH - (navOffset + stageH);
-
-      setScrollBounds({
-        start: Math.max(0, start),
-        end: Math.max(start + 50, end),
-      });
-    };
-
-    measure();
-    window.addEventListener("resize", measure, { passive: true });
-    window.addEventListener("load", measure, { passive: true });
-    const timer1 = setTimeout(measure, 300);
-    const timer2 = setTimeout(measure, 800);
-    return () => {
-      window.removeEventListener("resize", measure);
-      window.removeEventListener("load", measure);
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-    };
-  }, []);
-
-  const progress = useTransform(
-    scrollY,
-    [scrollBounds.start, scrollBounds.end],
-    [0, 1],
-    { clamp: true }
-  );
 
   return (
     <div
-      ref={runwayRef}
-      className="relative w-full bg-[color:var(--surface)]"
-      style={{ height: runwayHeight }}
+      ref={containerRef}
+      className="relative w-full bg-[color:var(--surface)] pt-2 pb-24"
     >
-      {/* Pinned Stage: Stays locked under navbar */}
-      <div
-        ref={stageRef}
-        className="sticky top-[86px] sm:top-[96px] w-full flex flex-col items-center z-10 pt-3 pb-6"
-      >
-        {/* Title Header - Never moves, always constant */}
-        <div className="w-full text-center px-4 shrink-0">
-          <p className="eyebrow tracking-[0.2em] text-[color:var(--gold)] text-xs font-semibold">
-            CLINICAL INDICATIONS
-          </p>
-          <h2
-            className="mt-1 font-serif text-xl sm:text-2xl leading-tight text-foreground"
-            dangerouslySetInnerHTML={{ __html: whereToApplyTitle }}
-          />
-          <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
-            Formulated for complex wounds requiring disciplined topical care.
-          </p>
-        </div>
+      {/* Stationary Title Header */}
+      <div className="sticky top-[84px] z-30 bg-[color:var(--surface)] pt-3 pb-3 px-4 text-center">
+        <p className="eyebrow tracking-[0.2em] text-[color:var(--gold)] text-xs font-semibold">
+          CLINICAL INDICATIONS
+        </p>
+        <h2
+          className="mt-1 font-serif text-xl sm:text-2xl leading-tight text-foreground"
+          dangerouslySetInnerHTML={{ __html: whereToApplyTitle }}
+        />
+        <p className="mt-1 text-xs text-muted-foreground leading-relaxed max-w-sm mx-auto">
+          Formulated for complex wounds requiring disciplined topical care.
+        </p>
+      </div>
 
-        {/* Card Deck Area - Cards stack in single slot below title */}
-        <div className="relative w-full flex justify-center mt-3 h-[250px] sm:h-[280px]">
-          {conditions.map((c, i) => {
-            const step = String(i + 1).padStart(2, "0");
-            const Icon = resolveIcon(c.icon ?? "");
-            return (
-              <AnimatedStackedIndicationCard
-                key={c.title || i}
-                i={i}
-                step={step}
-                title={c.title}
-                body={c.body}
-                icon={Icon}
-                progress={progress}
-                total={total}
-              />
-            );
-          })}
-        </div>
+      {/* Skiper16 Sticky Card Deck Stream */}
+      <div className="relative w-full mt-3">
+        {conditions.map((c, i) => {
+          const step = String(i + 1).padStart(2, "0");
+          const Icon = resolveIcon(c.icon ?? "");
+          const targetScale = Math.max(0.88, 1 - (total - i - 1) * 0.025);
+          const range: [number, number] = [
+            total > 1 ? (i / (total - 1)) * 0.85 : 0,
+            1,
+          ];
+
+          return (
+            <StickyConditionCard
+              key={c.title || i}
+              i={i}
+              step={step}
+              title={c.title}
+              body={c.body}
+              icon={Icon}
+              progress={scrollYProgress}
+              range={range}
+              targetScale={targetScale}
+              total={total}
+            />
+          );
+        })}
       </div>
     </div>
   );

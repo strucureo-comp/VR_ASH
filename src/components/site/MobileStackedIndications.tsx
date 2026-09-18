@@ -12,7 +12,7 @@ const CONDITION_ACTIONS: Record<string, string> = {
   "Chronic Non-Healing Wounds": "Phase Progression",
 };
 
-interface AnimatedIndicationProps {
+interface StickyIndicationCardProps {
   i: number;
   step: string;
   title: string;
@@ -20,10 +20,14 @@ interface AnimatedIndicationProps {
   action: string;
   icon: any;
   progress: MotionValue<number>;
+  range: [number, number];
+  targetScale: number;
   total: number;
+  baseTop: number;
+  cardRef?: React.Ref<HTMLDivElement> | undefined;
 }
 
-const AnimatedIndicationStepCard = ({
+const StickyIndicationCard = ({
   i,
   step,
   title,
@@ -31,189 +35,188 @@ const AnimatedIndicationStepCard = ({
   action,
   icon: Icon,
   progress,
+  range,
+  targetScale,
   total,
-}: AnimatedIndicationProps) => {
-  const slot = 0.88 / Math.max(1, total - 1);
-  const start = i === 0 ? 0 : 0.05 + (i - 1) * slot;
-  const end = i === 0 ? 0 : start + slot;
-  const fadeEnd = i === 0 ? 0 : start + slot * 0.35;
+  baseTop,
+  cardRef,
+}: StickyIndicationCardProps) => {
+  const scale = useTransform(progress, range, [1, targetScale], { clamp: true });
 
-  // Initial visibility: Card 0 is 100% visible immediately.
-  // Cards 1..n start at 0 opacity and only fade in when their scroll slot arrives.
-  const enterOpacity = useTransform(
-    progress,
-    i === 0 ? [0, 1] : [start, fadeEnd],
-    i === 0 ? [1, 1] : [0, 1],
-    { clamp: true }
-  );
-
-  // Content dims slightly when covered by next card so text never looks awkwardly sliced
-  const nextStart = 0.05 + i * slot;
-  const coverDim = useTransform(
-    progress,
-    i < total - 1 ? [nextStart, nextStart + slot * 0.4] : [0.95, 1],
-    i < total - 1 ? [1, 0.45] : [1, 1],
-    { clamp: true }
-  );
-
-  const opacity = useTransform(
-    [enterOpacity, coverDim],
-    ([enter, dim]: number[]) => enter * dim
-  );
-
-  const y = useTransform(
-    progress,
-    i === 0 ? [0, 1] : [start, end],
-    i === 0 ? [0, 0] : [320, 0],
-    { clamp: true }
-  );
-
-  const targetScale = Math.max(0.90, 1 - (total - i - 1) * 0.02);
-  const scale = useTransform(
-    progress,
-    [Math.max(end, 0.05), 0.95],
-    [1, targetScale],
-    { clamp: true }
-  );
-
-  return (
-    <motion.div
-      style={{
-        opacity,
-        y,
-        scale,
-        top: `${i * 14}px`,
-        zIndex: 20 + i,
-      }}
-      className="absolute w-[92%] max-w-[440px] origin-top flex flex-col overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-xl transition-colors"
-    >
-      <div className="flex items-center justify-between">
-        <span className="font-serif text-2xl font-normal text-[color:var(--gold)]">
-          {step}
-        </span>
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[color:var(--botanical)]/10 text-[color:var(--botanical)]">
-          <Icon className="h-4 w-4" />
-        </span>
-      </div>
-
-      <h3 className="mt-2.5 font-serif text-lg font-normal text-foreground">
-        {title}
-      </h3>
-
-      <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
-        {body}
-      </p>
-
-      <div className="mt-3.5 flex items-center gap-2 text-[10.5px] font-semibold uppercase tracking-wider text-[color:var(--botanical)]">
-        <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
-        <span>{action}</span>
-      </div>
-    </motion.div>
-  );
-};
-
-export function MobileStackedIndications({
-  conditions,
-}: {
-  conditions: any[];
-}) {
-  const runwayRef = useRef<HTMLDivElement>(null);
-  const stageRef = useRef<HTMLDivElement>(null);
-  const { scrollY } = useScroll();
-
-  const [scrollBounds, setScrollBounds] = useState({ start: 0, end: 1000 });
-
-  const total = Math.max(1, conditions.length);
-  const runwayHeight = `${Math.max(180, 60 + total * 28)}vh`;
-
-  useEffect(() => {
-    const measure = () => {
-      if (!runwayRef.current || !stageRef.current) return;
-      const runwayRect = runwayRef.current.getBoundingClientRect();
-      const stageRect = stageRef.current.getBoundingClientRect();
-      const currentScroll = window.scrollY;
-
-      const runwayTop = runwayRect.top + currentScroll;
-      const runwayH = runwayRef.current.offsetHeight;
-      const stageH = stageRect.height;
-      const navOffset = window.innerWidth >= 640 ? 96 : 86;
-
-      const start = runwayTop - navOffset;
-      const end = runwayTop + runwayH - (navOffset + stageH);
-
-      setScrollBounds({
-        start: Math.max(0, start),
-        end: Math.max(start + 50, end),
-      });
-    };
-
-    measure();
-    window.addEventListener("resize", measure, { passive: true });
-    window.addEventListener("load", measure, { passive: true });
-    const timer1 = setTimeout(measure, 300);
-    const timer2 = setTimeout(measure, 800);
-    return () => {
-      window.removeEventListener("resize", measure);
-      window.removeEventListener("load", measure);
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-    };
-  }, []);
-
-  const progress = useTransform(
-    scrollY,
-    [scrollBounds.start, scrollBounds.end],
-    [0, 1],
-    { clamp: true }
-  );
+  // Sticky slot for this card: base (just below the title block) + stagger.
+  // 28px stagger: tight blank-edge peeks (top padding + hairline), numbers
+  // tuck just underneath — the compact deck look.
+  const stickyTop = baseTop + i * 28;
 
   return (
     <div
-      ref={runwayRef}
-      className="relative w-full sm:hidden bg-[color:var(--surface)]"
-      style={{ height: runwayHeight }}
+      className="sticky flex w-full justify-center px-4"
+      style={{
+        top: `${stickyTop}px`,
+        zIndex: 10 + i,
+        // Even flow gap: each card gets its own scroll beat to rise and lock
+        // in turn, kept compact so no beige void opens between the parked
+        // stack and each incoming card. This only paces the journey: stuck
+        // tops and the finished stack are untouched, so the end state is
+        // pixel-identical.
+        marginBottom: i === total - 1 ? "0px" : "48px",
+      }}
     >
-      {/* Pinned Stage: Stays locked under navbar */}
-      <div
-        ref={stageRef}
-        className="sticky top-[86px] sm:top-[96px] w-full flex flex-col items-center z-10 pt-3 pb-6"
+      <motion.div
+        ref={cardRef}
+        style={{ scale }}
+        className="w-full max-w-[420px] origin-top flex flex-col rounded-2xl border border-border/80 bg-card p-5 shadow-[0_-4px_20px_rgba(0,0,0,0.06),0_10px_25px_rgba(0,0,0,0.08)] transition-colors min-h-[208px]"
       >
-        {/* Constant Topic Header */}
-        <div className="w-full flex flex-col items-center text-center px-4 shrink-0">
+        <div className="flex items-center justify-between">
+          <span className="font-serif text-2xl font-normal text-[color:var(--gold)]">{step}</span>
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[color:var(--botanical)]/10 text-[color:var(--botanical)]">
+            <Icon className="h-4 w-4" />
+          </span>
+        </div>
+
+        <h3 className="mt-2.5 font-serif text-base font-semibold text-foreground">{title}</h3>
+
+        <p className="mt-1 text-xs text-muted-foreground leading-relaxed flex-1">{body}</p>
+
+        <div className="mt-3.5 flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-wider text-[color:var(--botanical)]">
+          <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
+          <span>{action}</span>
+        </div>
+      </motion.div>
+    </div>
+  );
+};
+
+export function MobileStackedIndications({ conditions }: { conditions: any[] }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
+  // Exit progress runs 0→1 while the finished section scrolls out AFTER the
+  // pin releases (container end travelling viewport bottom → viewport top).
+  // The title handoff is driven off this — fully relative, so it can never
+  // drift the way absolute-scroll windows do on real page depths.
+  const { scrollYProgress: exitProgress } = useScroll({
+    target: containerRef,
+    offset: ["end end", "end start"],
+  });
+  const titleOpacity = useTransform(exitProgress, [0.12, 0.4], [1, 0], { clamp: true });
+
+  const total = Math.max(1, conditions.length);
+
+  // Runtime-measured geometry so 05/06 park exactly on every device.
+  // Fixed constants can't do this: whether the last card reaches its slot
+  // before the container ends depends on viewport height AND card height.
+  // So measure everything and size the tail exactly: big enough for 06 to
+  // land on its slot (base + 5 × stagger), never bigger (no dead beige).
+  // Defaults = current approved values (SSR-safe).
+  const titleRef = useRef<HTMLDivElement>(null);
+  const lastCardRef = useRef<HTMLDivElement>(null);
+  const [baseTop, setBaseTop] = useState(208);
+  const [tail, setTail] = useState(96);
+
+  useEffect(() => {
+    // Single measurement pass (plus guards for late resources/resizes).
+    // No timer re-measures: with min-heights above, fallback and webfont
+    // metrics render identical boxes, so re-reading would only ever
+    // re-layout a settled deck — the "rearranges after 1s" bug.
+    const measure = () => {
+      const titleH = titleRef.current?.offsetHeight || 119;
+      const cardH = lastCardRef.current?.offsetHeight || 200;
+      const v = window.innerHeight;
+      const base = Math.round(84 + titleH + 5);
+      const nextTail = Math.round(Math.min(420, Math.max(96, v - cardH - (base + 5 * 28))));
+      setBaseTop(base);
+      setTail(nextTail);
+      // Let section 04 overlap the tail: it pulls up by (tail − 28px), so
+      // the handoff keeps a tight 28px rhythm with zero beige. Mobile only
+      // (the deck is sm:hidden); elsewhere the var is removed → no-op.
+      // 04 paints under the stuck cards (static vs positioned), so it stays
+      // hidden behind the opaque deck until release, then reveals cleanly.
+      if (window.matchMedia("(max-width: 639px)").matches) {
+        document.documentElement.style.setProperty(
+          "--deck-tail-pull",
+          `${Math.max(0, nextTail - 28)}px`,
+        );
+      } else {
+        document.documentElement.style.removeProperty("--deck-tail-pull");
+      }
+    };
+    measure();
+    if (document.fonts) {
+      document.fonts.ready.then(measure).catch(() => undefined);
+    }
+    window.addEventListener("resize", measure);
+    window.addEventListener("orientationchange", measure);
+    return () => {
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("orientationchange", measure);
+    };
+  }, []);
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative w-full sm:hidden bg-[color:var(--surface)] pt-2"
+      style={{ paddingBottom: tail }}
+      data-base-top={baseTop}
+      data-tail={tail}
+    >
+      {/* Stationary Title Header - locks beneath navbar while cards stack,
+          then yields as its solo hold would begin, so title + deck read as
+          one unit leaving into 04. Always opaque through the deck phase.
+          min-h reserves the tallest wrap variant (2-line heading + 2-line
+          subtitle) so font swaps can't resize this block post-paint. */}
+      <motion.div
+        ref={titleRef}
+        style={{ opacity: titleOpacity }}
+        className="sticky top-[84px] z-30 bg-[color:var(--surface)] pt-3 pb-3 px-4 text-center min-h-[150px]"
+      >
+        <div className="flex justify-center">
           <SectionLabel index="03" label="Clinical Indications" />
-          <h2 className="mt-1 font-serif text-2xl leading-tight text-foreground">
-            Indications for Complex Wounds
-          </h2>
-          <p className="mt-1 text-xs text-muted-foreground leading-relaxed max-w-sm mx-auto">
-            Formulated for complex wounds requiring disciplined ongoing care.
-          </p>
         </div>
+        <h2 className="mt-1 font-serif text-2xl leading-tight text-foreground">
+          Indications for Complex Wounds
+        </h2>
+        <p className="mt-1 text-xs text-muted-foreground leading-relaxed max-w-sm mx-auto">
+          Formulated for complex wounds requiring disciplined ongoing care.
+        </p>
+      </motion.div>
 
-        {/* Card Deck Area - Cards stack in single slot below title */}
-        <div className="relative w-full flex justify-center mt-3 h-[270px]">
-          {conditions.map((item, i) => {
-            const step = String(i + 1).padStart(2, "0");
-            const action = CONDITION_ACTIONS[item.title] ?? "Clinical Care";
-            const isComponent =
-              typeof item.icon === "function" ||
-              (typeof item.icon === "object" && item.icon !== null);
-            const Icon = isComponent ? item.icon : CheckCircle2;
+      {/* Sticky Card Deck Stream. Content-filled container (no spacer runway).
+          The measured tail gives 06 exactly enough room to park on its slot,
+          then the whole section hands off to 04. */}
+      <div className="relative w-full mt-3">
+        {conditions.map((item, i) => {
+          const step = String(i + 1).padStart(2, "0");
+          const action = CONDITION_ACTIONS[item.title] ?? "Clinical Care";
+          const isComponent =
+            typeof item.icon === "function" ||
+            (typeof item.icon === "object" && item.icon !== null);
+          const Icon = isComponent ? item.icon : CheckCircle2;
 
-            return (
-              <AnimatedIndicationStepCard
-                key={item.title}
-                i={i}
-                step={step}
-                title={item.title}
-                body={item.body}
-                action={action}
-                icon={Icon}
-                progress={progress}
-                total={total}
-              />
-            );
-          })}
-        </div>
+          const targetScale = Math.max(0.88, 1 - (total - i - 1) * 0.025);
+          const range: [number, number] = [total > 1 ? i / total : 0, 1];
+
+          return (
+            <StickyIndicationCard
+              key={item.title || i}
+              i={i}
+              step={step}
+              title={item.title}
+              body={item.body}
+              action={action}
+              icon={Icon}
+              progress={scrollYProgress}
+              range={range}
+              targetScale={targetScale}
+              total={total}
+              baseTop={baseTop}
+              cardRef={i === total - 1 ? lastCardRef : undefined}
+            />
+          );
+        })}
       </div>
     </div>
   );

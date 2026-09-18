@@ -1,5 +1,5 @@
 import { motion, useScroll, useTransform, type MotionValue } from "motion/react";
-import React, { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { CheckCircle2 } from "lucide-react";
 
 export interface StepItem {
@@ -55,156 +55,77 @@ const STEP_ACTIONS: Record<string, string> = {
   "Medical Dressings": "Clinical Compatibility",
 };
 
-interface AnimatedCardProps {
+interface StickyStepCardProps {
   i: number;
   step: string;
   title: string;
   body: string;
   action: string;
   progress: MotionValue<number>;
+  range: [number, number];
+  targetScale: number;
   total: number;
 }
 
-const AnimatedStepCard = ({
+const StickyStepCard = ({
   i,
   step,
   title,
   body,
   action,
   progress,
+  range,
+  targetScale,
   total,
-}: AnimatedCardProps) => {
-  const slot = 0.88 / Math.max(1, total - 1);
-  const start = i === 0 ? 0 : 0.05 + (i - 1) * slot;
-  const end = i === 0 ? 0 : start + slot;
-  const fadeEnd = i === 0 ? 0 : start + slot * 0.35;
-
-  // Initial visibility: Card 0 is 100% visible immediately.
-  // Cards 1, 2, 3 start at 0 opacity and only fade in when their scroll slot arrives.
-  const enterOpacity = useTransform(
-    progress,
-    i === 0 ? [0, 1] : [start, fadeEnd],
-    i === 0 ? [1, 1] : [0, 1],
-    { clamp: true }
-  );
-
-  // Content dims slightly when covered by next card so text never looks awkwardly sliced
-  const nextStart = 0.05 + i * slot;
-  const coverDim = useTransform(
-    progress,
-    i < total - 1 ? [nextStart, nextStart + slot * 0.4] : [0.95, 1],
-    i < total - 1 ? [1, 0.45] : [1, 1],
-    { clamp: true }
-  );
-
-  // Combined opacity: enter fade multiplied by cover dimming
-  const opacity = useTransform(
-    [enterOpacity, coverDim],
-    ([enter, dim]: number[]) => enter * dim
-  );
-
-  // Translation: slides up from below into the deck
-  const y = useTransform(
-    progress,
-    i === 0 ? [0, 1] : [start, end],
-    i === 0 ? [0, 0] : [320, 0],
-    { clamp: true }
-  );
-
-  // Subtle scale-down as cards layer on top
-  const targetScale = Math.max(0.91, 1 - (total - i - 1) * 0.03);
-  const scale = useTransform(
-    progress,
-    [Math.max(end, 0.05), 0.95],
-    [1, targetScale],
-    { clamp: true }
-  );
+}: StickyStepCardProps) => {
+  const scale = useTransform(progress, range, [1, targetScale], { clamp: true });
+  // Deck sticks right below the sticky title (≈84px navbar + ≈106px title).
+  // 80px stagger keeps each buried card's number + title peeking out.
+  const stickyTop = 190 + i * 80;
 
   return (
-    <motion.div
+    <div
+      className="sticky flex w-full justify-center px-4"
       style={{
-        opacity,
-        y,
-        scale,
-        top: `${i * 14}px`,
-        zIndex: 20 + i,
+        top: `${stickyTop}px`,
+        zIndex: 10 + i,
+        marginBottom: i === total - 1 ? "0px" : "24px",
       }}
-      className="absolute w-[92%] max-w-[450px] origin-top flex flex-col overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-xl transition-colors"
     >
-      <span className="font-serif text-3xl font-normal text-[color:var(--gold)]">
-        {step}
-      </span>
-      <h3 className="mt-2.5 font-serif text-xl font-normal text-foreground">
-        {title}
-      </h3>
-      <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">
-        {body}
-      </p>
-      <div className="mt-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[color:var(--botanical)]">
-        <CheckCircle2 className="h-4 w-4 shrink-0" />
-        <span>{action}</span>
-      </div>
-    </motion.div>
+      <motion.div
+        style={{ scale }}
+        className="w-full max-w-[420px] origin-top flex flex-col rounded-2xl border border-border/80 bg-card p-5 shadow-[0_-4px_20px_rgba(0,0,0,0.06),0_10px_25px_rgba(0,0,0,0.08)]"
+      >
+        <span className="font-serif text-3xl font-normal text-[color:var(--gold)]">{step}</span>
+        <h3 className="mt-2.5 font-serif text-xl font-normal text-foreground">{title}</h3>
+        <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">{body}</p>
+        <div className="mt-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[color:var(--botanical)]">
+          <CheckCircle2 className="h-4 w-4 shrink-0" />
+          <span>{action}</span>
+        </div>
+      </motion.div>
+    </div>
   );
 };
 
 export const StickySteps = ({
   steps = DEFAULT_STEPS,
   eyebrow = "SIMPLE APPLICATION",
-  title = "Three simple steps",
+  title = "Four simple steps",
   subtitle = "Gentle, touch-free wound care engineered for rapid recovery and soothing comfort.",
 }: StickyStepsProps) => {
-  const runwayRef = useRef<HTMLDivElement>(null);
-  const stageRef = useRef<HTMLDivElement>(null);
-  const { scrollY } = useScroll();
-
-  const [scrollBounds, setScrollBounds] = useState({ start: 0, end: 1000 });
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
 
   const resolvedSteps = (steps.length > 0 ? steps : DEFAULT_STEPS).map((s) => ({
     ...s,
     action: s.action || STEP_ACTIONS[s.step] || STEP_ACTIONS[s.title] || "Application Step",
   }));
 
-  useEffect(() => {
-    const measure = () => {
-      if (!runwayRef.current || !stageRef.current) return;
-      const runwayRect = runwayRef.current.getBoundingClientRect();
-      const stageRect = stageRef.current.getBoundingClientRect();
-      const currentScroll = window.scrollY;
-
-      const runwayTop = runwayRect.top + currentScroll;
-      const runwayHeight = runwayRef.current.offsetHeight;
-      const stageHeight = stageRect.height;
-      const navOffset = window.innerWidth >= 640 ? 96 : 86;
-
-      const start = runwayTop - navOffset;
-      const end = runwayTop + runwayHeight - (navOffset + stageHeight);
-
-      setScrollBounds({
-        start: Math.max(0, start),
-        end: Math.max(start + 50, end),
-      });
-    };
-
-    measure();
-    window.addEventListener("resize", measure, { passive: true });
-    window.addEventListener("load", measure, { passive: true });
-    const timer1 = setTimeout(measure, 300);
-    const timer2 = setTimeout(measure, 800);
-    return () => {
-      window.removeEventListener("resize", measure);
-      window.removeEventListener("load", measure);
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-    };
-  }, []);
-
-  const progress = useTransform(
-    scrollY,
-    [scrollBounds.start, scrollBounds.end],
-    [0, 1],
-    { clamp: true }
-  );
+  const total = resolvedSteps.length;
 
   return (
     <div className="w-full">
@@ -220,9 +141,7 @@ export const StickySteps = ({
             <h2 className="mt-2 font-serif text-3xl sm:text-4xl text-foreground font-normal">
               {title}
             </h2>
-            <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-              {subtitle}
-            </p>
+            <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{subtitle}</p>
           </div>
 
           <div
@@ -243,9 +162,7 @@ export const StickySteps = ({
                   <span className="font-serif text-3xl sm:text-4xl text-[color:var(--gold)]">
                     {stepData.step}
                   </span>
-                  <h3 className="mt-3 font-serif text-xl text-foreground">
-                    {stepData.title}
-                  </h3>
+                  <h3 className="mt-3 font-serif text-xl text-foreground">{stepData.title}</h3>
                   <p className="mt-2 text-xs sm:text-sm text-muted-foreground leading-relaxed">
                     {stepData.body}
                   </p>
@@ -261,40 +178,45 @@ export const StickySteps = ({
       </div>
 
       {/* =========================================================================
-          MOBILE VIEW: Pinned Scrollytelling Stacked Card Deck (Mobile Only)
+          MOBILE VIEW: Skiper16 sticky card deck.
+          Deep 80px stagger so each buried card keeps its number + title
+          peeking above the next card (Image 1 showed bodies cut with a
+          shallow stagger). Title stays sticky under the navbar; small pb-8
+          tail so no beige void sits below the finished stack (Image 2).
           ========================================================================= */}
       <div className="block md:hidden w-full">
-        <section ref={runwayRef} className="relative w-full bg-[color:var(--surface)] h-[185vh]">
-          {/* Pinned Stage: Stays locked under navbar for entire stacking animation */}
-          <div
-            ref={stageRef}
-            className="sticky top-[86px] w-full flex flex-col items-center z-10 pt-3 pb-6"
-          >
-            {/* Title Header - Never moves, always constant */}
-            <div className="w-full flex flex-col items-center text-center px-4 shrink-0">
-              <p className="eyebrow tracking-[0.2em] text-[color:var(--gold)] text-xs font-semibold">
-                {eyebrow}
-              </p>
-              <h2 className="mt-1 font-serif text-2xl font-normal text-foreground">
-                {title}
-              </h2>
-              <p className="mt-1 text-xs text-muted-foreground max-w-xl mx-auto leading-relaxed">
-                {subtitle}
-              </p>
-            </div>
+        <section
+          ref={containerRef}
+          className="relative w-full bg-[color:var(--surface)] border-t border-b border-border/70 pb-8"
+        >
+          {/* Sticky header - locks beneath navbar while cards stack */}
+          <div className="sticky top-[84px] z-30 bg-[color:var(--surface)] pt-3 pb-3 px-4 text-center">
+            <p className="eyebrow tracking-[0.2em] text-[color:var(--gold)] text-xs font-semibold">
+              {eyebrow}
+            </p>
+            <h2 className="mt-1 font-serif text-2xl font-normal text-foreground">{title}</h2>
+            <p className="mt-1 text-xs text-muted-foreground max-w-xl mx-auto leading-relaxed">
+              {subtitle}
+            </p>
+          </div>
 
-            {/* Card Deck Area - Cards stack in single slot below title */}
-            <div className="relative w-full flex justify-center mt-3 h-[255px]">
-              {resolvedSteps.map((stepData, i) => (
-                <AnimatedStepCard
+          <div className="relative w-full mt-4 flex flex-col">
+            {resolvedSteps.map((stepData, i) => {
+              const targetScale = Math.max(0.9, 1 - (total - i - 1) * 0.04);
+              const range: [number, number] = [total > 1 ? i / total : 0, 1];
+
+              return (
+                <StickyStepCard
                   key={stepData.step}
                   i={i}
                   {...stepData}
-                  progress={progress}
-                  total={resolvedSteps.length}
+                  progress={scrollYProgress}
+                  range={range}
+                  targetScale={targetScale}
+                  total={total}
                 />
-              ))}
-            </div>
+              );
+            })}
           </div>
         </section>
       </div>

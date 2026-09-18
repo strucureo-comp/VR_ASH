@@ -856,7 +856,7 @@ function Soliderma() {
       <SolidermaWhoShouldUse />
 
       {/* =========================================================================
-          SECTION: THREE SIMPLE STEPS (Directly from Reference Frame 7)
+          SECTION: FOUR SIMPLE STEPS (Directly from Reference Frame 7)
           ========================================================================= */}
       <StickySteps />
 
